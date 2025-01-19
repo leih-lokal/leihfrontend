@@ -1,0 +1,186 @@
+:root {
+    --color-primary: #f04d53;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.primary {
+    color: var(--color-primary) !important;
+}
+
+.justify {
+    text-align: justify;
+}
+
+/* Header Styles */
+header {
+    border-bottom: 1px solid var(--color-primary);
+}
+
+.header-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.logo-box {
+    flex: 0 0 auto;
+    padding: 1rem;
+    border-right: 1px solid var(--color-primary);
+}
+
+.logo-box a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+nav {
+    flex: 1;
+    display: flex;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.nav-box {
+    flex: 1;
+    display: flex;
+    border-right: 1px solid var(--color-primary);
+}
+
+.nav-box:last-child {
+    border-right: none;
+}
+
+.nav-box a {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.nav-box a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Footer Styles */
+
+/* Footer Styles */
+footer {
+    border-top: 1px solid var(--color-primary);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.footer-logo-box {
+    flex: 0 0 auto;
+    padding: 1rem;
+    border-right: 1px solid var(--color-primary);
+}
+
+.footer-logo-box a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.footer-nav {
+    flex: 1;
+    display: flex;
+}
+
+.footer-nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.footer-nav-box {
+    flex: 1;
+    display: flex;
+    border-right: 1px solid var(--color-primary);
+}
+
+.footer-nav-box:last-child {
+    border-right: none;
+}
+
+.footer-nav-box a {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.footer-nav-box a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Ensure footer stays at bottom of viewport if page isn't long enough */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 100px; /* Adjust this value to match your footer's height */
+}
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header-grid {
+        flex-direction: column;
+    }
+
+    .logo-box {
+        border-right: none;
+        border-bottom: 1px solid var(--color-primary);
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    .nav-box {
+        border-right: none;
+        border-bottom: 1px solid var(--color-primary);
+    }
+
+    .nav-box:last-child {
+        border-bottom: none;
+    }
+}

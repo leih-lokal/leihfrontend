@@ -1,0 +1,105 @@
+Title: Leih.Lokal
+
+----
+
+Importantnotice: 
+
+----
+
+Importanttoggle: false
+
+----
+
+Hours:
+
+- 
+  day: mon
+  opened: 'true'
+  open_time: 15:00:00
+  close_time: 19:00:00
+- 
+  day: tue
+  opened: 'false'
+  open_time: ""
+  close_time: ""
+- 
+  day: wed
+  opened: 'false'
+  open_time: ""
+  close_time: ""
+- 
+  day: thu
+  opened: 'true'
+  open_time: 15:00:00
+  close_time: 19:00:00
+- 
+  day: fri
+  opened: 'true'
+  open_time: 15:00:00
+  close_time: 19:00:00
+- 
+  day: sat
+  opened: 'true'
+  open_time: 10:00:00
+  close_time: 14:00:00
+- 
+  day: sun
+  opened: 'false'
+  open_time: ""
+  close_time: ""
+
+----
+
+Appointments-mon: 
+
+----
+
+Appointments-tue: 
+
+----
+
+Appointments-wed: 
+
+----
+
+Appointments-thu: 
+
+----
+
+Appointments-fri: 
+
+----
+
+Appointments-sat: 
+
+----
+
+Appointments-sun: 
+
+----
+
+Override: false
+
+----
+
+Db-host: 
+
+----
+
+Db-port: 5432
+
+----
+
+Db-name: 
+
+----
+
+Db-user: 
+
+----
+
+Db-pass: 
+
+----
+
+Uuid: YR58STZWtBDAivzc

@@ -1,0 +1,134 @@
+title: Leihlokal CNC
+
+tabs:
+
+  openings:
+    label: Opening Hours
+    icon: clock
+    fields:
+      importantnotice:
+        type: textarea
+        label: Important Notice
+        help: >
+          This notice will be displayed on the opening hours page.
+        width: 2/3
+      
+      importanttoggle:
+        label: Display Important Notice
+        type: toggle
+        text:
+          - "Hide Notice"
+          - "Show Notice"
+        width: 1/3
+        default: false
+      
+      hours:
+        label: Opening Hours
+        type: structure
+        sortable: false
+        max: 7
+        min: 7
+        default:
+          - day: mon
+            opened: true
+            open_time: 15:00
+            close_time: 19:00
+          - day: tue
+            opened: false
+          - day: wed
+            opened: false
+          - day: thu
+            opened: true
+            open_time: 15:00
+            close_time: 19:00
+          - day: fri
+            opened: true
+            open_time: 15:00
+            close_time: 19:00
+          - day: sat
+            opened: true
+            open_time: 10:00
+            close_time: 14:00
+          - day: sun
+            opened: false
+        fields:
+          day:
+            label: Day
+            type: select
+            options:
+              mon: Monday
+              tue: Tuesday
+              wed: Wednesday
+              thu: Thursday
+              fri: Friday
+              sat: Saturday
+              sun: Sunday
+            width: 1/3
+          opened:
+            label: Opened
+            type: toggle
+            default: false
+            text:
+              - "Closed"
+              - "Opened"
+          open_time:
+            label: Opening Time
+            type: time
+            width: 1/3
+          close_time:
+            label: Closing Time
+            type: time
+            width: 1/3
+            
+  database:
+    label: Database Setup
+    icon: box
+    fields:
+      
+      warning:
+        type: info
+        theme: warning
+        text: >
+          Hey, do not touch these if you don't know what you're doing! <br>
+          You can break the site if you enter wrong values here. Hands off, you are **BEGGING** for trouble!
+          
+      override:
+        label: I know what I'm doing
+        type: toggle
+        text:
+          - "Lock Settings. Thank you for not messing with this."
+          - "Override Settings. Ye who enter here, abandon all hope."
+        width: 1
+        default: false
+          
+      db_host:
+        label: Database Host
+        type: text
+        width: 1/2
+        when:
+          override: true
+      db_port:
+        label: Database Port
+        type: number
+        default: 5432
+        width: 1/2
+        when:
+          override: true
+      db_name:
+        label: Database Name
+        type: text
+        width: 1/3
+        when:
+          override: true
+      db_user:
+        label: Database Username
+        type: text
+        width: 1/3
+        when:
+          override: true
+      db_pass:
+        label: Database Password
+        type: text
+        width: 1/3
+        when:
+          override: true

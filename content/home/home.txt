@@ -1,1 +1,281 @@
 Title: Home
+
+----
+
+Firstword: ENGAGEMENT
+
+----
+
+Secondword: VERBINDET
+
+----
+
+Thirdword: KARLSRUHE
+
+----
+
+Immies:
+
+- file://t4BFXjoui8i7Bgq5
+- file://Y9PjuSWOiEqtDMkN
+- file://5MGf68OLzWmrjR5x
+- file://5ZSDtTfAwREfTtLa
+- file://VbGnT6GKAtUYZsbP
+- file://ux3Pd9TIqBIgDZvF
+- file://VqOnsIXJkeow6fL5
+- file://OYKXiY6TQ0Bsatqp
+- file://I0JZ90hqKT8CUchT
+- file://aeUPNHrIDjfxFwZo
+- file://93BtVofryCXA3Yan
+- file://f6MwWVtae90GhZTb
+- file://AT5oNHCm40vdXn55
+- file://ccIGn2egU9xKfUt4
+- file://lDurPIhGHJbrLF75
+- file://IgDe8jXvvIuWxIk8
+- file://TWy30VUhVEsfkasi
+- file://OPFbCcsJ4SJxraGX
+- file://4eUFC3mhASIoPVfs
+- file://yg70raaJ2SrjlP6U
+- file://RAczuDQdUaJnstmu
+- file://meQ5ApUzb6z1JZqw
+- file://DmOwsgYsLcpilb0L
+- file://sXiighjAS4HTinsW
+- file://Afkv3eovdRCRASEu
+- file://PPCQPc3cfzcWdkjB
+- file://3eg5rBAI1UDENJpI
+- file://w4lmp22iNlchqf8u
+- file://6HZNnwffvfquMNJI
+- file://cZZHMBLgHnDtbu31
+- file://ngOd00xHFbn5SDsp
+- file://Ooh2ugNIminzzO6a
+- file://tyY5linzyA4mCfLg
+- file://yqU3mCxWvCHXZL2I
+- file://K5OUQcgNL7GZuWFi
+- file://QODev5QZ6mVCMbBl
+
+----
+
+Pretext: 
+
+----
+
+Stats:
+
+- 
+  stat: GEGENSTÄNDE IM LEIH.LOKAL
+  value: 1234
+- 
+  stat: AKTIVE NUTZER:INNEN IM LEIH.LOKAL
+  value: 2000
+- 
+  stat: EHRENAMTLICHE HELFER:INNEN
+  value: 25
+
+----
+
+Blurb: Die Bürgerstiftung Karlsruhe ist eine unabhängige Gemeinschaftseinrichtung, die das städtische Leben bereichert und die Bürger aktiv einbindet. Sie fungiert als Plattform für bürgerschaftliches Engagement, bringt Menschen zusammen und setzt sich für vielfältige Themen ein. Von Kunst und Kultur über Bildung und Sport bis hin zu Umweltschutz und Denkmalpflege - die Stiftung fördert Projekte, die Karlsruhe lebendig und liebenswert machen. Zwei Hauptprojekte stehen dabei im Fokus: Das leih.lokal, eine innovative Ausleihbibliothek für Gegenstände des täglichen Bedarfs, fördert nachhaltigen Konsum. Die frei_räume bieten einen flexiblen, vermietbaren Raum für kulturelle Veranstaltungen und kreative Projekte. Die Bürgerstiftung Karlsruhe lädt alle Interessierten ein, sich einzubringen und gemeinsam die Zukunft der Stadt zu gestalten. Jeder Beitrag zählt und kann dazu beitragen, Karlsruhe noch lebenswerter zu machen.
+
+----
+
+Marquee1:
+
+- file://t4BFXjoui8i7Bgq5
+- file://5MGf68OLzWmrjR5x
+- file://ux3Pd9TIqBIgDZvF
+- file://VqOnsIXJkeow6fL5
+- file://OYKXiY6TQ0Bsatqp
+- file://I0JZ90hqKT8CUchT
+- file://aeUPNHrIDjfxFwZo
+- file://93BtVofryCXA3Yan
+- file://f6MwWVtae90GhZTb
+- file://PPCQPc3cfzcWdkjB
+- file://6HZNnwffvfquMNJI
+- file://cZZHMBLgHnDtbu31
+- file://ngOd00xHFbn5SDsp
+- file://Ooh2ugNIminzzO6a
+- file://yqU3mCxWvCHXZL2I
+- file://K5OUQcgNL7GZuWFi
+- file://QODev5QZ6mVCMbBl
+- file://tyY5linzyA4mCfLg
+
+----
+
+Marquee2:
+
+- 
+  id: christian-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/131f4c564b-1724977815/christian-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/131f4c564b-1724977815/christian-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/131f4c564b-1724977815/christian-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/131f4c564b-1724977815/christian-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: /pages/home/files/christian-300x300.jpeg
+  sortable: true
+  text: christian-300x300.jpeg
+  uuid: file://ngOd00xHFbn5SDsp
+  dragText: '(image: christian-300x300.jpeg)'
+  filename: christian-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/131f4c564b-1724977815/christian-300x300.jpeg
+- 
+  id: dirk-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/a0e0124add-1724977815/dirk-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/a0e0124add-1724977815/dirk-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/a0e0124add-1724977815/dirk-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/a0e0124add-1724977815/dirk-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: /pages/home/files/dirk-300x300.jpeg
+  sortable: true
+  text: dirk-300x300.jpeg
+  uuid: file://Ooh2ugNIminzzO6a
+  dragText: '(image: dirk-300x300.jpeg)'
+  filename: dirk-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/a0e0124add-1724977815/dirk-300x300.jpeg
+- 
+  id: ferdinand-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/813310e99a-1724977815/ferdinand-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/813310e99a-1724977815/ferdinand-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/813310e99a-1724977815/ferdinand-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/813310e99a-1724977815/ferdinand-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: /pages/home/files/ferdinand-300x300.jpeg
+  sortable: true
+  text: ferdinand-300x300.jpeg
+  uuid: file://tyY5linzyA4mCfLg
+  dragText: '(image: ferdinand-300x300.jpeg)'
+  filename: ferdinand-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/813310e99a-1724977815/ferdinand-300x300.jpeg
+- 
+  id: gerhard-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/6630a3db7f-1724977815/gerhard-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/6630a3db7f-1724977815/gerhard-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/6630a3db7f-1724977815/gerhard-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/6630a3db7f-1724977815/gerhard-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: /pages/home/files/gerhard-300x300.jpeg
+  sortable: true
+  text: gerhard-300x300.jpeg
+  uuid: file://yqU3mCxWvCHXZL2I
+  dragText: '(image: gerhard-300x300.jpeg)'
+  filename: gerhard-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/6630a3db7f-1724977815/gerhard-300x300.jpeg
+- 
+  id: rafael_halberstadt-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/c1ec348e91-1724977815/rafael_halberstadt-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/c1ec348e91-1724977815/rafael_halberstadt-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/c1ec348e91-1724977815/rafael_halberstadt-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/c1ec348e91-1724977815/rafael_halberstadt-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: >
+    /pages/home/files/rafael_halberstadt-300x300.jpeg
+  sortable: true
+  text: rafael_halberstadt-300x300.jpeg
+  uuid: file://K5OUQcgNL7GZuWFi
+  dragText: '(image: rafael_halberstadt-300x300.jpeg)'
+  filename: rafael_halberstadt-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/c1ec348e91-1724977815/rafael_halberstadt-300x300.jpeg
+- 
+  id: tatjana-300x300.jpeg
+  image:
+    back: pattern
+    color: orange-500
+    cover: false
+    icon: image
+    url: >
+      https://leihlokal2.test/media/pages/home/debe81568e-1724977815/tatjana-300x300.jpeg
+    src: >
+      data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw
+    srcset: >
+      https://leihlokal2.test/media/pages/home/debe81568e-1724977815/tatjana-300x300-352x.jpg
+      352w,
+      https://leihlokal2.test/media/pages/home/debe81568e-1724977815/tatjana-300x300-864x.jpg
+      864w,
+      https://leihlokal2.test/media/pages/home/debe81568e-1724977815/tatjana-300x300-1408x.jpg
+      1408w
+  info: ""
+  link: /pages/home/files/tatjana-300x300.jpeg
+  sortable: true
+  text: tatjana-300x300.jpeg
+  uuid: file://QODev5QZ6mVCMbBl
+  dragText: '(image: tatjana-300x300.jpeg)'
+  filename: tatjana-300x300.jpeg
+  type: image
+  url: >
+    https://leihlokal2.test/media/pages/home/debe81568e-1724977815/tatjana-300x300.jpeg
+
+----
+
+Text: gvfytufvtyifvtyivfyt
+
+----
+
+Uuid: 4mg2NYztH0JeYy09

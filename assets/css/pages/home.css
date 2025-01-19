@@ -1,0 +1,56 @@
+.floating-image {
+    animation: float 20s ease-in-out infinite;
+    animation-delay: var(--delay);
+    transform-origin: center;
+    will-change: transform;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes float {
+    0% {
+        transform: translate(
+            calc(50vw + random(100) * 1%),
+            calc(50vh + random(100) * 1%)
+        ) rotate(0deg) scale(0.8);
+    }
+    25% {
+        transform: translate(
+            calc(20vw + random(100) * 1%),
+            calc(30vh + random(100) * 1%)
+        ) rotate(90deg) scale(1);
+    }
+    50% {
+        transform: translate(
+            calc(70vw + random(100) * 1%),
+            calc(60vh + random(100) * 1%)
+        ) rotate(180deg) scale(0.9);
+    }
+    75% {
+        transform: translate(
+            calc(30vw + random(100) * 1%),
+            calc(40vh + random(100) * 1%)
+        ) rotate(270deg) scale(1.1);
+    }
+    100% {
+        transform: translate(
+            calc(50vw + random(100) * 1%),
+            calc(50vh + random(100) * 1%)
+        ) rotate(360deg) scale(0.8);
+    }
+}
+
+/* Add different animation paths for every nth image to create more variety */
+.floating-image:nth-child(2n) {
+    animation-duration: 25s;
+    animation-direction: reverse;
+}
+
+.floating-image:nth-child(3n) {
+    animation-duration: 30s;
+    animation-timing-function: ease-in-out;
+}
+
+.floating-image:nth-child(4n) {
+    animation-duration: 22s;
+    animation-direction: alternate;
+}

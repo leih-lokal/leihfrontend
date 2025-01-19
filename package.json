@@ -14,5 +14,8 @@
   "scripts": {
     "build": "tailwindcss -i ./assets/css/processing.css -o ./assets/css/tailwind.css --minify",
     "watch": "tailwindcss -i ./assets/css/processing.css -o ./assets/css/tailwind.css --watch"
+  },
+  "dependencies": {
+    "pocketbase": "^0.25.0"
   }
 }
