@@ -2,5 +2,7 @@
 
 return [
     'debug' => true,
-    'routes' => require __DIR__ . '/routes.php'
+    'panel' => [
+        'install' => true
+    ],
 ];
