@@ -13,7 +13,7 @@ return [
 		/**
 		 * Custom icon to replace the arrow down.
 		 */
-		'icon' => function (string|null $icon = null) {
+		'icon' => function (string $icon = null) {
 			return $icon;
 		},
 		/**

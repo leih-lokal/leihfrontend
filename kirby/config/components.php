@@ -14,7 +14,6 @@ use Kirby\Filesystem\Filename;
 use Kirby\Http\Uri;
 use Kirby\Http\Url;
 use Kirby\Image\Darkroom;
-use Kirby\Session\SessionStore;
 use Kirby\Template\Snippet;
 use Kirby\Template\Template;
 use Kirby\Text\Markdown;
@@ -119,7 +118,7 @@ return [
 	 */
 	'markdown' => function (
 		App $kirby,
-		string|null $text = null,
+		string $text = null,
 		array $options = []
 	): string {
 		static $markdown;
@@ -231,7 +230,7 @@ return [
 					$scoring['score'] += 16 * $score;
 					$scoring['hits']  += 1;
 
-					// check for exact beginning matches
+				// check for exact beginning matches
 				} elseif (
 					$options['words'] === false &&
 					Str::startsWith($lowerValue, $query) === true
@@ -239,7 +238,7 @@ return [
 					$scoring['score'] += 8 * $score;
 					$scoring['hits']  += 1;
 
-					// check for exact query matches
+				// check for exact query matches
 				} elseif ($matches = preg_match_all('!' . $exact . '!ui', $value, $r)) {
 					$scoring['score'] += 2 * $score;
 					$scoring['hits']  += $matches;
@@ -264,13 +263,6 @@ return [
 	},
 
 	/**
-	 * Add your own session store
-	 */
-	'session::store' => function (App $kirby): string|SessionStore {
-		return $kirby->root('sessions');
-	},
-
-	/**
 	 * Add your own SmartyPants parser
 	 *
 	 * @param string $text Text to parse
@@ -278,7 +270,7 @@ return [
 	 */
 	'smartypants' => function (
 		App $kirby,
-		string|null $text = null,
+		string $text = null,
 		array $options = []
 	): string {
 		static $smartypants;
@@ -362,7 +354,7 @@ return [
 	 */
 	'url' => function (
 		App $kirby,
-		string|null $path = null,
+		string $path = null,
 		$options = null
 	): string {
 		$language = null;

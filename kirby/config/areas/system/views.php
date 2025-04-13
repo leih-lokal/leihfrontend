@@ -11,8 +11,6 @@ return [
 			$system       = $kirby->system();
 			$updateStatus = $system->updateStatus();
 			$license      = $system->license();
-			$debugMode    = $kirby->option('debug', false) === true;
-			$isLocal      = $system->isLocal();
 
 			$environment = [
 				[
@@ -37,7 +35,7 @@ return [
 				],
 				[
 					'label' => I18n::translate('server'),
-					'value' => $system->serverSoftwareShort() ?? '?',
+					'value' => $system->serverSoftware() ?? '?',
 					'icon'  => 'server'
 				]
 			];
@@ -47,14 +45,10 @@ return [
 			$plugins = $system->plugins()->values(function ($plugin) use (&$exceptions) {
 				$authors      = $plugin->authorsNames();
 				$updateStatus = $plugin->updateStatus();
-				$version      = $updateStatus?->toArray();
-				$version    ??= $plugin->version() ?? '–';
+				$version      = $updateStatus?->toArray() ?? $plugin->version() ?? '–';
 
 				if ($updateStatus !== null) {
-					$exceptions = [
-						...$exceptions,
-						...$updateStatus->exceptionMessages()
-					];
+					$exceptions = array_merge($exceptions, $updateStatus->exceptionMessages());
 				}
 
 				return [
@@ -70,29 +64,15 @@ return [
 
 			$security = $updateStatus?->messages() ?? [];
 
-			if ($isLocal === true) {
+			if ($kirby->option('debug', false) === true) {
 				$security[] = [
-					'id'    => 'local',
-					'icon'  => 'info',
-					'theme' => 'info',
-					'text'  => I18n::translate('system.issues.local')
+					'id'   => 'debug',
+					'text' => I18n::translate('system.issues.debug'),
+					'link' => 'https://getkirby.com/security/debug'
 				];
 			}
 
-			if ($debugMode === true) {
-				$security[] = [
-					'id'    => 'debug',
-					'icon'  => $isLocal ? 'info' : 'alert',
-					'theme' => $isLocal ? 'info' : 'negative',
-					'text'  => I18n::translate('system.issues.debug'),
-					'link'  => 'https://getkirby.com/security/debug'
-				];
-			}
-
-			if (
-				$isLocal === false &&
-				$kirby->environment()->https() !== true
-			) {
+			if ($kirby->environment()->https() !== true) {
 				$security[] = [
 					'id'   => 'https',
 					'text' => I18n::translate('system.issues.https'),
@@ -100,34 +80,20 @@ return [
 				];
 			}
 
-			if ($kirby->option('panel.vue.compiler', null) === null) {
-				$security[] = [
-					'id'    => 'vue-compiler',
-					'link'  => 'https://getkirby.com/security/vue-compiler',
-					'text'  => I18n::translate('system.issues.vue.compiler'),
-					'theme' => 'notice'
-				];
-			}
-
-			// sensitive URLs
-			if ($isLocal === false) {
-				$sensitive = [
-					'content' => $system->exposedFileUrl('content'),
-					'git'     => $system->exposedFileUrl('git'),
-					'kirby'   => $system->exposedFileUrl('kirby'),
-					'site'    => $system->exposedFileUrl('site')
-				];
-			}
-
 			return [
 				'component' => 'k-system-view',
 				'props'     => [
 					'environment' => $environment,
-					'exceptions'  => $debugMode ? $exceptions : [],
+					'exceptions'  => $kirby->option('debug') === true ? $exceptions : [],
 					'info'        => $system->info(),
 					'plugins'     => $plugins,
 					'security'    => $security,
-					'urls'        => $sensitive ?? null
+					'urls'        => [
+						'content' => $system->exposedFileUrl('content'),
+						'git'     => $system->exposedFileUrl('git'),
+						'kirby'   => $system->exposedFileUrl('kirby'),
+						'site'    => $system->exposedFileUrl('site')
+					]
 				]
 			];
 		}

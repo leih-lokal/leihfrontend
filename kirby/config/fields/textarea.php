@@ -26,7 +26,7 @@ return [
 		/**
 		 * Sets the default text when a new page/file/user is created
 		 */
-		'default' => function (string|null $default = null) {
+		'default' => function (string $default = null) {
 			return trim($default ?? '');
 		},
 
@@ -48,28 +48,28 @@ return [
 		/**
 		 * Sets the font family (sans or monospace)
 		 */
-		'font' => function (string|null $font = null) {
+		'font' => function (string $font = null) {
 			return $font === 'monospace' ? 'monospace' : 'sans-serif';
 		},
 
 		/**
 		 * Maximum number of allowed characters
 		 */
-		'maxlength' => function (int|null $maxlength = null) {
+		'maxlength' => function (int $maxlength = null) {
 			return $maxlength;
 		},
 
 		/**
 		 * Minimum number of required characters
 		 */
-		'minlength' => function (int|null $minlength = null) {
+		'minlength' => function (int $minlength = null) {
 			return $minlength;
 		},
 
 		/**
 		 * Changes the size of the textarea. Available sizes: `small`, `medium`, `large`, `huge`
 		 */
-		'size' => function (string|null $size = null) {
+		'size' => function (string $size = null) {
 			return $size;
 		},
 
@@ -80,7 +80,7 @@ return [
 			return $spellcheck;
 		},
 
-		'value' => function (string|null $value = null) {
+		'value' => function (string $value = null) {
 			return trim($value ?? '');
 		}
 	],

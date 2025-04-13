@@ -3,7 +3,6 @@
 use Kirby\Cms\App;
 use Kirby\Cms\Find;
 use Kirby\Cms\UserRules;
-use Kirby\Exception\Exception;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Panel\Field;
 use Kirby\Panel\Panel;
@@ -43,9 +42,7 @@ return [
 							'link'     => false,
 							'required' => true
 						]),
-						'password'     => Field::password([
-							'autocomplete' => 'new-password'
-						]),
+						'password'     => Field::password(),
 						'translation'  => Field::translation([
 							'required' => true
 						]),
@@ -183,23 +180,17 @@ return [
 	'user.changePassword' => [
 		'pattern' => 'users/(:any)/changePassword',
 		'load' => function (string $id) {
-			Find::user($id);
+			$user = Find::user($id);
 
 			return [
 				'component' => 'k-form-dialog',
 				'props' => [
-					'fields'       => [
-						'currentPassword' => Field::password([
-							'label'        => I18n::translate('user.changePassword.current'),
-							'autocomplete' => 'current-password'
-						]),
+					'fields' => [
 						'password' => Field::password([
-							'label'        => I18n::translate('user.changePassword.new'),
-							'autocomplete' => 'new-password'
+							'label' => I18n::translate('user.changePassword.new'),
 						]),
 						'passwordConfirmation' => Field::password([
-							'label'        => I18n::translate('user.changePassword.new.confirm'),
-							'autocomplete' => 'new-password'
+							'label' => I18n::translate('user.changePassword.new.confirm'),
 						])
 					],
 					'submitButton' => I18n::translate('change'),
@@ -207,26 +198,13 @@ return [
 			];
 		},
 		'submit' => function (string $id) {
-			$kirby   = App::instance();
-			$request = $kirby->request();
+			$request = App::instance()->request();
 
 			$user                 = Find::user($id);
-			$currentPassword      = $request->get('currentPassword');
 			$password             = $request->get('password');
 			$passwordConfirmation = $request->get('passwordConfirmation');
 
-			// validate the current password of the acting user
-			try {
-				$kirby->user()->validatePassword($currentPassword);
-			} catch (Exception) {
-				// catching and re-throwing exception to avoid automatic
-				// sign-out of current user from the Panel
-				throw new InvalidArgumentException([
-					'key' => 'user.password.wrong'
-				]);
-			}
-
-			// validate the new password
+			// validate the password
 			UserRules::validPassword($user, $password ?? '');
 
 			// compare passwords

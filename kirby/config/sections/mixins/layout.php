@@ -10,7 +10,7 @@ return [
 		/**
 		 * Columns config for `layout: table`
 		 */
-		'columns' => function (array|null $columns = null) {
+		'columns' => function (array $columns = null) {
 			return $columns ?? [];
 		},
 		/**

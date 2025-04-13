@@ -17,7 +17,7 @@ return [
 		/**
 		 * Overwrites manual sorting and sorts by the given field and sorting direction (i.e. `date desc`)
 		 */
-		'sortBy' => function (string|null $sortBy = null) {
+		'sortBy' => function (string $sortBy = null) {
 			return $sortBy;
 		},
 	],

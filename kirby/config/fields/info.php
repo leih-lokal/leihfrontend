@@ -26,7 +26,7 @@ return [
 		/**
 		 * Change the design of the info box
 		 */
-		'theme' => function (string|null $theme = null) {
+		'theme' => function (string $theme = null) {
 			return $theme;
 		}
 	],

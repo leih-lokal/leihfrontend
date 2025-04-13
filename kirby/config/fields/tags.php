@@ -37,13 +37,13 @@ return [
 		/**
 		 * Minimum number of required entries/tags
 		 */
-		'min' => function (int|null $min = null) {
+		'min' => function (int $min = null) {
 			return $min;
 		},
 		/**
 		 * Maximum number of allowed entries/tags
 		 */
-		'max' => function (int|null $max = null) {
+		'max' => function (int $max = null) {
 			return $max;
 		},
 		/**
@@ -93,7 +93,7 @@ return [
 			return $value;
 		}
 	],
-	'save' => function (array|null $value = null): string {
+	'save' => function (array $value = null): string {
 		return A::join(
 			$value,
 			$this->separator() . ' '

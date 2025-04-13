@@ -115,19 +115,12 @@ abstract class Model
 			$blueprint = null;
 		}
 
-		// convert string blueprint settings to proper array
-		if (is_string($blueprint) === true) {
-			$blueprint = ['query' => $blueprint];
-		}
-
 		// skip image thumbnail if option
 		// is explicitly set to show the icon
 		if ($settings === 'icon') {
 			$settings = ['query' => false];
-		}
-
-		// convert string settings to proper array
-		if (is_string($settings) === true) {
+		} elseif (is_string($settings) === true) {
+			// convert string settings to proper array
 			$settings = ['query' => $settings];
 		}
 

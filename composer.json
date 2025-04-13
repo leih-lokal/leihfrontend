@@ -22,8 +22,7 @@
   },
   "require": {
     "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
-    "getkirby/cms": "^4.0",
-    "vlucas/phpdotenv": "^5.6"
+    "getkirby/cms": "^4.0"
   },
   "config": {
     "allow-plugins": {

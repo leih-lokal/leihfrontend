@@ -5,7 +5,7 @@ return [
 		/**
 		 * Sets the maximum number of allowed entries in the section
 		 */
-		'max' => function (int|null $max = null) {
+		'max' => function (int $max = null) {
 			return $max;
 		}
 	],

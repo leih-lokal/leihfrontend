@@ -2,7 +2,6 @@
 
 namespace Kirby\Image;
 
-use Kirby\Cms\FileVersion;
 use Kirby\Content\Content;
 use Kirby\Exception\LogicException;
 use Kirby\Filesystem\File;
@@ -116,20 +115,15 @@ class Image extends File
 	 */
 	public function html(array $attr = []): string
 	{
-		$model = match (true) {
-			$this->model instanceof FileVersion => $this->model->original(),
-			default                             => $this->model
-		};
-
 		// if no alt text explicitly provided,
 		// try to infer from model content file
 		if (
-			$model !== null &&
-			method_exists($model, 'content') === true &&
-			$model->content() instanceof Content &&
-			$model->content()->get('alt')->isNotEmpty() === true
+			$this->model !== null &&
+			method_exists($this->model, 'content') === true &&
+			$this->model->content() instanceof Content &&
+			$this->model->content()->get('alt')->isNotEmpty() === true
 		) {
-			$attr['alt'] ??= $model->content()->get('alt')->value();
+			$attr['alt'] ??= $this->model->content()->get('alt')->value();
 		}
 
 		if ($url = $this->url()) {

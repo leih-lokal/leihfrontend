@@ -82,11 +82,7 @@ class Role
 
 	public static function factory(array $props, array $inject = []): static
 	{
-		// ensure to properly extend the blueprint
-		$props = $props + $inject;
-		$props = Blueprint::extend($props);
-
-		return new static($props);
+		return new static($props + $inject);
 	}
 
 	public function id(): string

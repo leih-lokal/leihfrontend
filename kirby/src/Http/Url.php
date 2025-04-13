@@ -220,7 +220,7 @@ class Url
 	 */
 	public static function to(
 		string|null $path = null,
-		array|null $options = null
+		array $options = null
 	): string {
 		// make sure $path is string
 		$path ??= '';

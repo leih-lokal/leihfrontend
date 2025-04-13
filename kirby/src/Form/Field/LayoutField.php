@@ -175,7 +175,7 @@ class LayoutField extends BlocksField
 			'method'  => 'ALL',
 			'action'  => function (
 				string $fieldName,
-				string|null $path = null
+				string $path = null
 			) use ($field): array {
 				$form  = $field->attrsForm();
 				$field = $form->field($fieldName);

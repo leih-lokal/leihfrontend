@@ -29,13 +29,13 @@ return [
 		/**
 		 * Maximum number of checked boxes
 		 */
-		'max' => function (int|null $max = null) {
+		'max' => function (int $max = null) {
 			return $max;
 		},
 		/**
 		 * Minimum number of checked boxes
 		 */
-		'min' => function (int|null $min = null) {
+		'min' => function (int $min = null) {
 			return $min;
 		},
 		'value' => function ($value = null) {

@@ -30,28 +30,28 @@ return [
 		/**
 		 * Sets the font family (sans or monospace)
 		 */
-		'font' => function (string|null $font = null) {
+		'font' => function (string $font = null) {
 			return $font === 'monospace' ? 'monospace' : 'sans-serif';
 		},
 
 		/**
 		 * Maximum number of allowed characters
 		 */
-		'maxlength' => function (int|null $maxlength = null) {
+		'maxlength' => function (int $maxlength = null) {
 			return $maxlength;
 		},
 
 		/**
 		 * Minimum number of required characters
 		 */
-		'minlength' => function (int|null $minlength = null) {
+		'minlength' => function (int $minlength = null) {
 			return $minlength;
 		},
 
 		/**
 		 * A regular expression, which will be used to validate the input
 		 */
-		'pattern' => function (string|null $pattern = null) {
+		'pattern' => function (string $pattern = null) {
 			return $pattern;
 		},
 

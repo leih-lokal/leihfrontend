@@ -28,7 +28,7 @@ return [
 		/**
 		 * Set prefix for the help text
 		 */
-		'path'  => function (string|null $path = null) {
+		'path'  => function (string $path = null) {
 			return $path;
 		},
 
@@ -36,7 +36,7 @@ return [
 		 * Name of another field that should be used to
 		 * automatically update this field's value
 		 */
-		'sync'  => function (string|null $sync = null) {
+		'sync'  => function (string $sync = null) {
 			return $sync;
 		},
 

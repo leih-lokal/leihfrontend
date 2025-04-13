@@ -149,7 +149,7 @@ class Dir
 		string $dir,
 		bool $recursive = false,
 		array|false|null $ignore = [],
-		string|null $path = null
+		string $path = null
 	): array {
 		$result = [];
 		$dir    = realpath($dir);
@@ -434,7 +434,7 @@ class Dir
 	 */
 	public static function modified(
 		string $dir,
-		string|null $format = null,
+		string $format = null,
 		string|null $handler = null
 	): int|string {
 		$modified = filemtime($dir);
