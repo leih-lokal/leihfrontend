@@ -617,8 +617,8 @@ foreach ($openingHours as $day) {
                     done: true
                 };
                 
-                // Submit to API
-                const record = await api.pb.collection('reservation').create(reservationData);
+                // Submit to API using our secured proxy
+                const record = await api.createReservation(reservationData);
                 
                 // Show success message and switch to confirmation step
                 submitButton.className = 'hidden'; // Hide the submit button
@@ -935,7 +935,10 @@ foreach ($openingHours as $day) {
     // Initialize API and load initial data
     async function initializeApp() {
         try {
-            await api.initialize();
+            // Remove the initialize call since we don't need it anymore
+            // await api.initialize(); <- REMOVE THIS LINE
+            
+            // Just load the items directly
             await loadItems(1);
             
         } catch (error) {

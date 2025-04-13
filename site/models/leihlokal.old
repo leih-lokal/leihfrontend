@@ -1,0 +1,43 @@
+<?php
+
+use Kirby\Cms\Pages;
+use Kirby\Uuid\Uuid;
+use Kirby\Http\Remote;
+
+class ItemPage extends Page
+{
+    public function children(): Pages
+    {
+        if ($this->children instanceof Pages) {
+            return $this->children;
+        }
+        
+        $results    = [];
+        $pages      = [];
+        $request    = Remote::get('https://stage.leihlokal-ka.de/api/collections/item/records');
+        
+        if ($request->code() === 200) {
+            $results = $request->json(false)->results;
+        }
+        
+        foreach ($results as $key => $item) {
+            $pages[] = [
+                'slug'          => Str::slug($item->iid),
+                'num'           => $key+1,
+                'template'      => 'item',
+                'model'         => 'item',
+                'content'       => [           
+                    'title'         => $item->name,
+                    'iid'           => $item->iid,
+                    'description'   => $item->description,
+                    'image'         => $item->images->first(),               
+                    'uuid'          => Uuid::generate(),
+                ],
+            ];
+        }
+    
+        return $this->children = Pages::factory($pages, $this);
+        
+    }
+    
+}

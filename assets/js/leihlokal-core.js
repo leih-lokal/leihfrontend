@@ -79,52 +79,21 @@ class Cart {
 
 class LeihlocalAPI {
     constructor() {
-        this.pb = new PocketBase('https://stage.leihlokal-ka.de');
-        this.isInitialized = false;
+        // Use a local PocketBase instance but with our proxy endpoints
+        this.pb = new PocketBase('https://stage.leihlokal-ka.de'); // Keep original base URL for image URLs
+        this.isInitialized = true; // No need to initialize - we're using the API key via proxy
         this.ITEMS_PER_PAGE = 20;
-        this.initializationPromise = null;
         this.cart = new Cart();
         this.VALID_STATUSES = ['instock', 'outofstock', 'reserved'];
     }
 
-    // Helper method to get full image URLs
+    // No need for initialize() method anymore!
+
+    // Helper method to get full image URLs (this stays the same)
     getImageUrl(collectionId, recordId, fileName, thumb = '') {
         const baseUrl = this.pb.baseUrl;
         const url = `${baseUrl}/api/files/${collectionId}/${recordId}/${fileName}`;
         return thumb ? `${url}?thumb=${thumb}` : url;
-    }
-
-    async initialize() {
-        // If already initialized, return immediately
-        if (this.isInitialized) return;
-
-        // If initialization is in progress, wait for it
-        if (this.initializationPromise) {
-            return this.initializationPromise;
-        }
-
-        // Start new initialization
-        this.initializationPromise = (async () => {
-            try {
-                const authData = await this.pb.collection('_superusers').authWithPassword(
-                    'api-web@leihlokal-ka.de',
-                    'leihmich41'
-                );
-                
-                console.log('Auth successful:', {
-                    isValid: this.pb.authStore.isValid,
-                    model: authData.record,
-                    token: this.pb.authStore.token
-                });
-
-                this.isInitialized = true;
-            } catch (error) {
-                console.error('Auth failed:', error);
-                throw error;
-            }
-        })();
-
-        return this.initializationPromise;
     }
 
     transformItemImages(item) {
@@ -138,8 +107,6 @@ class LeihlocalAPI {
 
     async getItems(page = 1, additionalFilter = '') {
         try {
-            await this.initialize();
-            
             const options = {
                 sort: 'iid'
             };
@@ -154,18 +121,27 @@ class LeihlocalAPI {
                 options.filter = statusFilter;
             }
             
-            const items = await this.pb.collection('item').getList(page, this.ITEMS_PER_PAGE, options);
+            // Build query parameters
+            const params = new URLSearchParams({
+                action: 'list-items',
+                page: page,
+                perPage: this.ITEMS_PER_PAGE,
+                sort: options.sort,
+                filter: options.filter
+            });
+            
+            // Use the Kirby page with query parameters
+            const response = await fetch(`/api?${params}`);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            
+            const data = await response.json();
+            const items = typeof data === 'string' ? JSON.parse(data) : data;
             
             const transformedItems = items.items.map(item => ({
                 ...item,
                 images: this.transformItemImages(item)
             }));
     
-            console.log('Retrieved items:', {
-                ...items,
-                items: transformedItems
-            });
-            
             return {
                 ...items,
                 items: transformedItems
@@ -175,38 +151,34 @@ class LeihlocalAPI {
             throw error;
         }
     }
-
+    
     async searchItems(query, page = 1) {
         try {
-            await this.initialize();
-            
-            // Search by name, iid, and synonyms
-            const searchFilter = `name ~ "${query}" || 
-                                iid ~ "${query}" || 
-                                synonyms ~ "${query}"`;
-            
-            // Add status filter
+            // Search filter
+            const searchFilter = `name ~ "${query}" || iid ~ "${query}" || synonyms ~ "${query}"`;
             const statusFilter = `status = "${this.VALID_STATUSES.join('" || status = "')}"`;
-            
-            // Combine filters
             const filter = `(${statusFilter}) && (${searchFilter})`;
             
-            const items = await this.pb.collection('item').getList(page, this.ITEMS_PER_PAGE, {
+            // Build query parameters
+            const params = new URLSearchParams({
+                action: 'list-items',
+                page: page,
+                perPage: this.ITEMS_PER_PAGE,
                 filter: filter,
                 sort: 'iid',
                 fields: 'id,iid,name,description,status,deposit,images,cat,brand,model,parts,copies,synonyms'
             });
             
+            const response = await fetch(`/api?${params}`);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            
+            const data = await response.json();
+            const items = typeof data === 'string' ? JSON.parse(data) : data;
+            
             const transformedItems = items.items.map(item => ({
                 ...item,
                 images: this.transformItemImages(item)
             }));
-
-            console.log('Search results:', {
-                query: query,
-                totalItems: items.totalItems,
-                items: transformedItems
-            });
     
             return {
                 ...items,
@@ -217,22 +189,47 @@ class LeihlocalAPI {
             throw error;
         }
     }
-
+    
     async getItem(id) {
         try {
-            await this.initialize();
+            const params = new URLSearchParams({
+                action: 'get-item',
+                id: id
+            });
             
-            const item = await this.pb.collection('item').getOne(id);
+            const response = await fetch(`/api?${params}`);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            
+            const data = await response.json();
+            const item = typeof data === 'string' ? JSON.parse(data) : data;
             
             const transformedItem = {
                 ...item,
                 images: this.transformItemImages(item)
             };
             
-            console.log('Retrieved item:', transformedItem);
             return transformedItem;
         } catch (error) {
             console.error('Failed to fetch item:', error);
+            throw error;
+        }
+    }
+    
+    async createReservation(reservationData) {
+        try {
+            const response = await fetch('/api?action=create-reservation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reservationData)
+            });
+            
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            const data = await response.json();
+            return typeof data === 'string' ? JSON.parse(data) : data;
+        } catch (error) {
+            console.error('Failed to create reservation:', error);
             throw error;
         }
     }
