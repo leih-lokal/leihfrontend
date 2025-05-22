@@ -2,11 +2,11 @@ Title: Leih.Lokal
 
 ----
 
-Importantnotice: 
+Importantnotice: was geht ab berlin seid ihr gut drauf oder was
 
 ----
 
-Importanttoggle: false
+Importanttoggle: true
 
 ----
 
@@ -50,6 +50,30 @@ Hours:
 
 ----
 
+Override: false
+
+----
+
+Db-host: 
+
+----
+
+Db-port: 5432
+
+----
+
+Db-name: 
+
+----
+
+Db-user: 
+
+----
+
+Db-pass: 
+
+----
+
 Appointments-mon: 
 
 ----
@@ -75,30 +99,6 @@ Appointments-sat:
 ----
 
 Appointments-sun: 
-
-----
-
-Override: false
-
-----
-
-Db-host: 
-
-----
-
-Db-port: 5432
-
-----
-
-Db-name: 
-
-----
-
-Db-user: 
-
-----
-
-Db-pass: 
 
 ----
 

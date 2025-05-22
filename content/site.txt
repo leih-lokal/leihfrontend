@@ -1,1 +1,13 @@
 Title: Bürgerstiftung Karlsruhe
+
+----
+
+Importantnotice: was geht ab berl;in
+
+----
+
+Importanttoggle: true
+
+----
+
+Events: 

@@ -5,6 +5,9 @@
     <title><?= $page->title() ?></title>
     <link rel="stylesheet" href="assets/css/tailwind.css">
     <link rel="stylesheet" href="assets/css/pages/<?php echo $page->intendedTemplate() ?>.css">
+    <script src="assets/js/main.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js" defer></script>
 </head>
 <body class="mb-[100px] font-sans leading-relaxed text-gray-700">
 <header class="border-b border-leihlokal-500">

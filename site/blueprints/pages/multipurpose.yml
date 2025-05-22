@@ -1,0 +1,40 @@
+title: Multipurpose Page
+icon: layout
+
+fields:
+  layout:
+    type: layout
+    layouts:
+      - "1/1"
+      - "1/2, 1/2"
+      - "1/3, 1/3, 1/3"
+      - "1/4, 1/4, 1/4, 1/4"
+      - "1/3, 2/3"
+      - "2/3, 1/3"
+    fieldsets:
+      - heading
+      - text
+      - image
+      - list
+      - quote
+    settings:
+      fields:
+        class:
+          type: text
+          width: 1/2
+        id:
+          type: text
+          width: 1/2
+        background:
+          label: Background Color
+          type: text
+          width: 1/2
+        spacing:
+          label: Section Spacing
+          type: select
+          options:
+            none: None
+            small: Small
+            medium: Medium
+            large: Large
+          width: 1/2

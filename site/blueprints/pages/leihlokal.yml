@@ -6,22 +6,6 @@ tabs:
     label: Opening Hours
     icon: clock
     fields:
-      importantnotice:
-        type: textarea
-        label: Important Notice
-        help: >
-          This notice will be displayed on the opening hours page.
-        width: 2/3
-      
-      importanttoggle:
-        label: Display Important Notice
-        type: toggle
-        text:
-          - "Hide Notice"
-          - "Show Notice"
-        width: 1/3
-        default: false
-      
       hours:
         label: Opening Hours
         type: structure

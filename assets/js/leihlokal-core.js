@@ -108,7 +108,7 @@ class LeihlocalAPI {
             try {
                 const authData = await this.pb.collection('_superusers').authWithPassword(
                     'api-web@leihlokal-ka.de',
-                    'leihmich41'
+                    'jnwMYbEP0A7HO6A'
                 );
                 
                 console.log('Auth successful:', {

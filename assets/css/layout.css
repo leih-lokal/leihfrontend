@@ -1,0 +1,114 @@
+/* Layout Styles for Multipurpose Page */
+
+/* Container width - make it full width with reasonable max-width */
+.container {
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* General layout spacing */
+.grid {
+  margin-bottom: 2rem;
+}
+
+/* Block type: heading */
+.block-type-heading h1,
+.block-type-heading h2,
+.block-type-heading h3 {
+  color: #f04d53; /* leihlokal color */
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.block-type-heading h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.block-type-heading h2 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.block-type-heading h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+/* Block type: text */
+.block-type-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.block-type-text a {
+  color: #f04d53; /* leihlokal color */
+  text-decoration: underline;
+}
+
+/* Block type: list */
+.block-type-list ul,
+.block-type-list ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.block-type-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.block-type-list ul li {
+  list-style-type: disc;
+}
+
+.block-type-list ol li {
+  list-style-type: decimal;
+}
+
+/* Block type: quote */
+.block-type-quote blockquote {
+  border-left: 4px solid #f04d53; /* leihlokal color */
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+.block-type-quote footer {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  font-style: normal;
+}
+
+/* Block type: image */
+.block-type-image figure {
+  margin: 1.5rem 0;
+}
+
+.block-type-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.block-type-image figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Section with background color */
+section[style*="background-color"] {
+  padding: 2rem;
+}
+
+/* Add more space between layout sections */
+.grid + .grid {
+  margin-top: 3rem;
+  padding-top: 1rem;
+}
+
+/* Custom spacing classes are already being applied through the PHP template */ 

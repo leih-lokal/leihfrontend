@@ -1,0 +1,52 @@
+Title: Veranstaltungen
+
+----
+
+Headline: 
+
+----
+
+Intro: 
+
+----
+
+Coverimage: 
+
+----
+
+Events:
+
+- 
+  title: Test
+  date_start: 2025-04-20 15:05:00
+  date_end: 2025-04-20 18:05:00
+  location: Here
+  address: 33 5 Av, NYC
+  description: Testing blahblahblah
+  registration_required: 'false'
+  registration_link: ""
+  featured: 'false'
+- 
+  title: gtyvoyi
+  date_start: 2025-04-23 15:15:00
+  date_end: ""
+  location: ""
+  address: ""
+  description: ""
+  registration_required: 'false'
+  registration_link: ""
+  featured: 'false'
+- 
+  title: rthswjthydsr
+  date_start: 2025-04-24 15:30:00
+  date_end: ""
+  location: ""
+  address: ""
+  description: ""
+  registration_required: 'false'
+  registration_link: ""
+  featured: 'true'
+
+----
+
+Uuid: Gq95eaHzgpFs1C3y

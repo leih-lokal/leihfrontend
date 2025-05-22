@@ -1,5 +1,107 @@
 title: Site
 
-sections:
-  pages:
-    type: pages
+columns:
+  # left column
+  main:
+    width: 2/3
+    sections:
+      content:
+        type: fields
+        fields:
+          notices_separator:
+            type: headline
+            label: Wichtige Informationen
+          
+          importantnotice:
+            type: textarea
+            label: Wichtige Information
+            help: >
+            Diese Information wird auf der Website des Leihlokals angezeigt.
+            width: 2/3
+          
+          importanttoggle:
+            label: Wichtige Information anzeigen
+            type: toggle
+            text:
+              - "Ausblenden"
+              - "Anzeigen"
+            width: 1/3
+            default: false
+          
+          events_separator:
+            type: line
+          
+          events_headline:
+            type: headline
+            label: Veranstaltungen
+          
+          
+          events:
+            label: Veranstaltungen
+            type: structure
+            help: >
+              Hier werden die Veranstaltungen erstellt und verwaltet, die auf der Website angezeigt werden.
+            columns:
+              title:
+                width: 1/4
+              date_start:
+                width: 1/4
+              location:
+                width: 1/4
+            fields:
+              title:
+                label: Title
+                type: text
+                required: true
+              date_start:
+                label: Start Date & Time
+                type: date
+                required: true
+                time: true
+                width: 1/2
+              date_end:
+                label: End Date & Time
+                type: date
+                time: true
+                width: 1/2
+              location:
+                label: Location
+                type: text
+                width: 1/2
+              address:
+                label: Address
+                type: text
+                width: 1/2
+              description:
+                label: Description
+                type: textarea
+                size: medium
+              registration_required:
+                label: Registration Required
+                type: toggle
+                text:
+                  - No
+                  - Yes
+                width: 1/3
+              registration_link:
+                label: Registration Link
+                type: url
+                width: 2/3
+                when:
+                  registration_required: true
+              featured:
+                label: Featured Event
+                type: toggle
+                text:
+                  - No
+                  - Yes
+                width: 1/2
+          
+
+  # right column
+  sidebar:
+    width: 1/3
+    sections:
+      pages:
+        type: pages
+        label: Seiten
