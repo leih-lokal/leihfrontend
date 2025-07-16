@@ -17,6 +17,7 @@ fields:
       - image
       - list
       - quote
+      - markdown
     settings:
       fields:
         class:

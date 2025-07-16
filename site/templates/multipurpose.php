@@ -4,9 +4,6 @@
 
 <main class="container mx-auto px-4 py-8">
   <!-- Page Title -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-leihlokal-500"><?= $page->title() ?></h1>
-  </div>
   
   <?php foreach ($page->layout()->toLayouts() as $layout): ?>
     <?php 
