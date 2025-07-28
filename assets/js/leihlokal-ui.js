@@ -226,6 +226,9 @@ document.getElementById('submitReservation').addEventListener('click', async fun
             const formData = isExistingUser 
                 ? {
                     customer_iid: document.querySelector('#existingUserForm input').value,
+                    customer_name: "exists",
+                    customer_email: "ex@is.ts",
+                    customer_phone: "0123456789",
                     is_new_customer: false
                 }
                 : {
@@ -244,7 +247,19 @@ document.getElementById('submitReservation').addEventListener('click', async fun
             };
             
             // Submit to API
-            const record = await api.pb.collection('reservation').create(reservationData);
+            const response = await fetch('https://stage.leihlokal-ka.de/api/collections/reservation/records', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reservationData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const record = await response.json();
             
             // Show success message and switch to confirmation step
             submitButton.className = 'hidden'; // Hide the submit button

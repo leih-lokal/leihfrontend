@@ -1,6 +1,6 @@
 // LEIHLOKAL CORE API INTERFACE
 // This module provides a simple interface to the Leihlokal API using PocketBase.
-// It handles authentication and provides methods for fetching items and searching.
+// It handles authentication (no it don't) and provides methods for fetching items and searching.
 // The API is initialized lazily, so you don't have to worry about it.
 // The API instance is exported as a default export, so you can import it anywhere.
 // 
@@ -105,23 +105,9 @@ class LeihlocalAPI {
 
         // Start new initialization
         this.initializationPromise = (async () => {
-            try {
-                const authData = await this.pb.collection('_superusers').authWithPassword(
-                    'api-web@leihlokal-ka.de',
-                    'jnwMYbEP0A7HO6A'
-                );
-                
-                console.log('Auth successful:', {
-                    isValid: this.pb.authStore.isValid,
-                    model: authData.record,
-                    token: this.pb.authStore.token
-                });
-
-                this.isInitialized = true;
-            } catch (error) {
-                console.error('Auth failed:', error);
-                throw error;
-            }
+            
+            this.isInitialized = true;
+            
         })();
 
         return this.initializationPromise;
@@ -138,7 +124,6 @@ class LeihlocalAPI {
 
     async getItems(page = 1, additionalFilter = '') {
         try {
-            await this.initialize();
             
             const options = {
                 sort: 'iid'
@@ -178,7 +163,6 @@ class LeihlocalAPI {
 
     async searchItems(query, page = 1) {
         try {
-            await this.initialize();
             
             // Search by name, iid, and synonyms
             const searchFilter = `name ~ "${query}" || 
@@ -220,7 +204,6 @@ class LeihlocalAPI {
 
     async getItem(id) {
         try {
-            await this.initialize();
             
             const item = await this.pb.collection('item').getOne(id);
             
