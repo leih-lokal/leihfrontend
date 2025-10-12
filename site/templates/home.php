@@ -9,44 +9,44 @@
   ?>
 
   <!-- Top image row -->
-  <section class="grid grid-cols-3 md:grid-cols-6 gap-4 p-8 pb-4">
+  <section class="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 p-4 md:p-8 pb-2 md:pb-4">
       <?php for ($i = 0; $i < 6; $i++): ?>
       <div class="aspect-square overflow-hidden border-2 border-leihlokal-500 transition-all duration-200 image-frame" data-index="<?= $i ?>">
-          <?php 
-          if ($pics->count() > 0): 
+          <?php
+          if ($pics->count() > 0):
               $randomImage = $pics->shuffle()->first();
           ?>
-              <img src="<?= $randomImage->url() ?>" 
-                   alt="<?= $randomImage->alt() ?>" 
+              <img src="<?= $randomImage->url() ?>"
+                   alt="<?= $randomImage->alt() ?>"
                    class="w-full h-full object-cover transition-opacity duration-500"
                    loading="lazy">
           <?php endif ?>
       </div>
       <?php endfor ?>
   </section>
-  
-      <section class="flex justify-between items-center p-8 pb-0 pt-4 md:text-[6vw] text-left relative z-10">
-          <h1 class="font-bold uni-cd text-[8vw] p-0 leading-[0.8] inline-block md:text-[6vw] lg:text-8xl sm:text-[10vw] text-leihlokal-500">
+
+      <section class="flex justify-between items-center px-4 md:px-8 pb-0 pt-2 md:pt-4 text-left relative z-10">
+          <h1 class="font-bold uni-cd text-[12vw] md:text-[6vw] lg:text-8xl p-0 leading-[0.8] text-black">
               <?= $page->firstword()->esc() ?>
           </h1>
       </section>
-      <section class="p-8 pt-0 pb-0 text-center relative z-10">
-          <h1 class="font-bold uni-cd text-[8vw] p-0 leading-[0.8] inline-block md:text-[6vw] lg:text-8xl sm:text-[10vw] text-leihlokal-500">
+      <section class="px-4 md:px-8 pt-0 pb-0 text-center relative z-10">
+          <h1 class="font-bold uni-cd text-[12vw] md:text-[6vw] lg:text-8xl p-0 leading-[0.8] text-leihlokal-500">
               <?= $page->secondword()->esc() ?>
           </h1>
       </section>
-      <section class="p-8 pt-0 pb-4 border-b border-leihlokal text-right relative z-10">
-          <h1 class="font-bold uni-cd text-[8vw] p-0 leading-[0.8] inline-block md:text-[6vw] lg:text-8xl sm:text-[10vw] text-leihlokal-500">
+      <section class="px-4 md:px-8 pt-0 pb-2 md:pb-4 border-b border-leihlokal text-right relative z-10">
+          <h1 class="font-bold uni-cd text-[12vw] md:text-[6vw] lg:text-8xl p-0 leading-[0.8] text-black">
               <?= $page->thirdword()->esc() ?>
           </h1>
       </section>
-      
-      <section class="grid grid-cols-3 md:grid-cols-6 gap-4 p-8 pt-4">
+
+      <section class="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 p-4 md:p-8 pt-2 md:pt-4">
           <?php for ($i = 6; $i < 12; $i++): ?>
           <div class="aspect-square overflow-hidden border-2 border-leihlokal-500 transition-all duration-500 image-frame" data-index="<?= $i ?>">
               <?php if ($pic = $page->immies()->toFiles()->shuffle()->first()): ?>
-              <img src="<?= $pic->url() ?>" 
-                   alt="<?= $pic->alt() ?>" 
+              <img src="<?= $pic->url() ?>"
+                   alt="<?= $pic->alt() ?>"
                    class="w-full h-full object-cover transition-opacity duration-500"
                    loading="lazy">
               <?php endif ?>
@@ -55,18 +55,18 @@
       </section>
   
 
-    <section class="pretext">
-        <p><?= $page->pretext()->kt() ?></p>
+    <section class="pretext px-4 md:px-8 py-4 md:py-6">
+        <p class="text-base md:text-lg"><?= $page->pretext()->kt() ?></p>
     </section>
 
-<section class="relative overflow-hidden p-8 border-b border-leihlokal">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="relative bg-gradient-to-br from-leihlokal-50 to-white border-2 border-leihlokal-500 p-6 duration-300">
-            <div class="text-[4vw] font-bold leading-[1.2] md:text-[3vw] lg:text-4xl sm:text-[5vw] mb-4" id="statDescription"></div>
-            <div class="text-[12vw] text-right font-bold text-leihlokal-500 mt-auto md:text-[9vw] lg:text-12xl sm:text-[15vw]" id="statValue">0</div>
+<section class="relative overflow-hidden p-4 md:p-8 border-b border-leihlokal">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+        <div class="relative bg-gradient-to-br from-leihlokal-50 to-white border-2 border-leihlokal-500 p-4 md:p-6 duration-300">
+            <div class="text-[6vw] md:text-[3vw] lg:text-4xl font-bold leading-[1.2] mb-4" id="statDescription"></div>
+            <div class="text-[18vw] md:text-[9vw] lg:text-9xl text-right font-bold text-leihlokal-500 mt-auto" id="statValue">0</div>
         </div>
-        <div class="prose prose-lg max-w-none md:pl-8 relative">
-            <div class="absolute top-0 left-0 w-1 h-full bg-leihlokal-500 opacity-20"></div>
+        <div class="prose prose-sm md:prose-lg max-w-none md:pl-8 relative">
+            <div class="hidden md:block absolute top-0 left-0 w-1 h-full bg-leihlokal-500 opacity-20"></div>
             <?= $page->blurb()->html() ?>
         </div>
     </div>

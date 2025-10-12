@@ -23,51 +23,250 @@
   <div class="flex flex-col lg:flex-row lg:gap-8" id="events-container">
     <!-- Events List (Left Side) -->
     <div class="w-full lg:w-full transition-all duration-300" id="events-list-container">
-      <?php 
-      $events = $site->events()->toStructure();
-      $featuredEvents = $events->filterBy('featured', true);
-      $regularEvents = $events->not($featuredEvents);
-      
+      <?php
+      // Function to unescape iCal text
+      function unescapeIcalText($text) {
+        // Unescape iCal special characters
+        $text = str_replace('\\n', "\n", $text);
+        $text = str_replace('\\N', "\n", $text);
+        $text = str_replace('\\,', ',', $text);
+        $text = str_replace('\\;', ';', $text);
+        $text = str_replace('\\\\', '\\', $text);
+        return $text;
+      }
+
+      // Function to extract iCal field (handles multi-line)
+      function extractIcalField($fieldName, $content) {
+        // Match field and capture everything until the next field starts
+        // Pattern: field name, colon, value, and continuation lines (start with space/tab)
+        if (preg_match('/' . $fieldName . ':(.*)$/m', $content, $match)) {
+          $lines = explode("\n", $content);
+          $value = '';
+          $capturing = false;
+
+          foreach ($lines as $line) {
+            // Start capturing when we find the field
+            if (preg_match('/^' . $fieldName . ':(.*)$/', $line, $m)) {
+              $value = $m[1];
+              $capturing = true;
+              continue;
+            }
+
+            // If capturing and line starts with space/tab, it's a continuation
+            if ($capturing && preg_match('/^[ \t](.*)$/', $line, $m)) {
+              $value .= $m[1];
+            }
+            // If capturing and line doesn't start with space/tab, we're done
+            elseif ($capturing) {
+              break;
+            }
+          }
+
+          return $value ? unescapeIcalText(trim($value)) : null;
+        }
+        return null;
+      }
+
+      // Function to parse iCal file and extract events
+      function parseIcal($url) {
+        $events = [];
+
+        try {
+          // Fetch the iCal file
+          $icalContent = file_get_contents($url);
+
+          if ($icalContent === false) {
+            return [];
+          }
+
+          // Normalize line endings
+          $icalContent = str_replace(["\r\n", "\r"], "\n", $icalContent);
+
+          // Split into events
+          preg_match_all('/BEGIN:VEVENT(.*?)END:VEVENT/s', $icalContent, $matches);
+
+          foreach ($matches[1] as $eventBlock) {
+            $event = [];
+
+            // Extract UID
+            $event['uid'] = extractIcalField('UID', $eventBlock);
+
+            // Extract SUMMARY (title)
+            $event['title'] = extractIcalField('SUMMARY', $eventBlock);
+
+            // Extract DESCRIPTION
+            $event['description'] = extractIcalField('DESCRIPTION', $eventBlock);
+
+            // Extract LOCATION
+            $event['location'] = extractIcalField('LOCATION', $eventBlock);
+
+            // Extract DTSTART
+            if (preg_match('/DTSTART[;:]([^\r\n]+)/m', $eventBlock, $dtstart)) {
+              $dateStr = trim($dtstart[1]);
+              // Remove VALUE=DATE: prefix if present
+              $dateStr = preg_replace('/^[^:]*:/', '', $dateStr);
+              $event['date_start'] = parseIcalDate($dateStr);
+            }
+
+            // Extract DTEND
+            if (preg_match('/DTEND[;:]([^\r\n]+)/m', $eventBlock, $dtend)) {
+              $dateStr = trim($dtend[1]);
+              // Remove VALUE=DATE: prefix if present
+              $dateStr = preg_replace('/^[^:]*:/', '', $dateStr);
+              $event['date_end'] = parseIcalDate($dateStr);
+            }
+
+            // Extract URL for registration
+            $url = extractIcalField('URL', $eventBlock);
+            if ($url) {
+              $event['registration_link'] = $url;
+              $event['registration_required'] = true;
+            } else {
+              $event['registration_required'] = false;
+            }
+
+            $event['featured'] = false;
+            $event['source'] = 'ical';
+
+            if (!empty($event['title']) && !empty($event['date_start'])) {
+              $events[] = $event;
+            }
+          }
+        } catch (Exception $e) {
+          // Silently fail and return empty array
+          error_log('iCal parsing error: ' . $e->getMessage());
+        }
+
+        return $events;
+      }
+
+      // Function to parse iCal date format
+      function parseIcalDate($dateStr) {
+        // Handle different iCal date formats
+        // Format: 20240101T120000Z or 20240101
+        $dateStr = str_replace(['T', 'Z'], ['', ''], $dateStr);
+
+        if (strlen($dateStr) == 8) {
+          // Date only: YYYYMMDD
+          return strtotime(substr($dateStr, 0, 4) . '-' . substr($dateStr, 4, 2) . '-' . substr($dateStr, 6, 2));
+        } elseif (strlen($dateStr) >= 14) {
+          // Date and time: YYYYMMDDHHMMSS
+          return strtotime(
+            substr($dateStr, 0, 4) . '-' .
+            substr($dateStr, 4, 2) . '-' .
+            substr($dateStr, 6, 2) . ' ' .
+            substr($dateStr, 8, 2) . ':' .
+            substr($dateStr, 10, 2) . ':' .
+            substr($dateStr, 12, 2)
+          );
+        }
+
+        return strtotime($dateStr);
+      }
+
+      // Get events from Kirby structure
+      $kirbyEvents = $site->events()->toStructure();
+
+      // Get events from iCal if URL is provided
+      $icalEvents = [];
+      if ($page->ical_url()->isNotEmpty()) {
+        $icalEvents = parseIcal($page->ical_url()->value());
+      }
+
+      // Merge events: convert Kirby events to array format
+      $allEventsArray = [];
+
+      foreach ($kirbyEvents as $event) {
+        $allEventsArray[] = [
+          'title' => $event->title()->value(),
+          'date_start' => $event->date_start()->toDate(),
+          'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate() : null,
+          'location' => $event->location()->value(),
+          'address' => $event->address()->value(),
+          'description' => $event->description()->kt()->value(),
+          'registration_required' => $event->registration_required()->toBool(),
+          'registration_link' => $event->registration_link()->value(),
+          'featured' => $event->featured()->toBool(),
+          'source' => 'kirby'
+        ];
+      }
+
+      // Add iCal events
+      foreach ($icalEvents as $icalEvent) {
+        $allEventsArray[] = [
+          'title' => $icalEvent['title'] ?? '',
+          'date_start' => $icalEvent['date_start'] ?? time(),
+          'date_end' => $icalEvent['date_end'] ?? null,
+          'location' => $icalEvent['location'] ?? '',
+          'address' => '',
+          'description' => $icalEvent['description'] ?? '',
+          'registration_required' => $icalEvent['registration_required'] ?? false,
+          'registration_link' => $icalEvent['registration_link'] ?? '',
+          'featured' => $icalEvent['featured'] ?? false,
+          'source' => 'ical'
+        ];
+      }
+
+      // Sort all events by date
+      usort($allEventsArray, function($a, $b) {
+        return $a['date_start'] - $b['date_start'];
+      });
+
+      $featuredEvents = array_filter($allEventsArray, function($event) {
+        return $event['featured'] === true;
+      });
+      $regularEvents = array_filter($allEventsArray, function($event) {
+        return $event['featured'] !== true;
+      });
+
       // Get current timestamp for comparison
       $now = time();
-      
+
       // Separate upcoming and past events
-      $upcomingEvents = $events->filter(function($event) use($now) {
-          return $event->date_start()->toDate() >= $now;
-      })->sortBy('date_start', 'asc');
-      
-      $pastEvents = $events->filter(function($event) use($now) {
-          return $event->date_start()->toDate() < $now;
-      })->sortBy('date_start', 'desc'); // Past events in reverse chronological order
-      
-      // Featured events that are upcoming
-      $upcomingFeaturedEvents = $featuredEvents->filter(function($event) use($now) {
-          return $event->date_start()->toDate() >= $now;
+      $upcomingEvents = array_filter($allEventsArray, function($event) use($now) {
+          return $event['date_start'] >= $now;
       });
-      
-      if($events->count()): 
+      // Sort upcoming events ascending
+      usort($upcomingEvents, function($a, $b) {
+        return $a['date_start'] - $b['date_start'];
+      });
+
+      $pastEvents = array_filter($allEventsArray, function($event) use($now) {
+          return $event['date_start'] < $now;
+      });
+      // Sort past events descending (most recent first)
+      usort($pastEvents, function($a, $b) {
+        return $b['date_start'] - $a['date_start'];
+      });
+
+      // Featured events that are upcoming
+      $upcomingFeaturedEvents = array_filter($upcomingEvents, function($event) {
+          return $event['featured'] === true;
+      });
+
+      if(count($allEventsArray) > 0): 
       ?>
-        <?php if($upcomingFeaturedEvents->count()): ?>
+        <?php if(count($upcomingFeaturedEvents) > 0): ?>
           <div class="mb-8">
             <h2 class="text-2xl font-bold mb-4">Hervorgehobene Veranstaltungen</h2>
             <div class="space-y-4">
               <?php foreach($upcomingFeaturedEvents as $event): ?>
-              <?php 
-                $date = $event->date_start()->toDate();
+              <?php
+                $date = $event['date_start'];
                 $day = date('d', $date);
                 $month = date('M', $date);
                 $time = date('H:i', $date);
               ?>
-              <div class="event-item bg-white p-4 cursor-pointer transition-all border border-leihlokal-500 selected:border-2" 
+              <div class="event-item bg-white p-4 cursor-pointer transition-all border border-leihlokal-500 selected:border-2"
                    data-event='<?= json_encode([
-                     'title' => $event->title()->value(),
-                     'date_start' => $event->date_start()->toDate('d.m.Y H:i'),
-                     'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate('d.m.Y H:i') : null,
-                     'location' => $event->location()->value(),
-                     'address' => $event->address()->value(),
-                     'description' => $event->description()->kt()->value(),
-                     'registration_required' => $event->registration_required()->toBool(),
-                     'registration_link' => $event->registration_link()->value()
+                     'title' => $event['title'],
+                     'date_start' => date('d.m.Y H:i', $event['date_start']),
+                     'date_end' => $event['date_end'] ? date('d.m.Y H:i', $event['date_end']) : null,
+                     'location' => $event['location'],
+                     'address' => $event['address'],
+                     'description' => $event['description'],
+                     'registration_required' => $event['registration_required'],
+                     'registration_link' => $event['registration_link']
                    ]) ?>'>
                 <div class="flex items-start gap-4">
                   <div class="flex-shrink-0 text-center min-w-16 bg-gray-50 rounded-lg p-2 shadow-sm border border-gray-100">
@@ -77,11 +276,11 @@
                   </div>
                   <div class="flex-grow">
                     <div class="flex justify-between items-center">
-                      <h3 class="text-xl font-semibold"><?= $event->title() ?></h3>
+                      <h3 class="text-xl font-semibold"><?= $event['title'] ?></h3>
                       <span class="bg-leihlokal-500 text-white px-2 py-1 text-xs rounded-full">Featured</span>
                     </div>
-                    <?php if($event->location()->isNotEmpty()): ?>
-                      <p class="text-sm text-gray-600 mt-1"><?= $event->location() ?></p>
+                    <?php if(!empty($event['location'])): ?>
+                      <p class="text-sm text-gray-600 mt-1"><?= $event['location'] ?></p>
                     <?php endif ?>
                   </div>
                 </div>
@@ -91,26 +290,26 @@
           </div>
         <?php endif ?>
         
-        <?php if($upcomingEvents->count()): ?>
+        <?php if(count($upcomingEvents) > 0): ?>
         <h2 class="text-2xl font-bold mb-4">Kommende Veranstaltungen</h2>
         <div class="space-y-4" id="upcoming-events">
           <?php foreach($upcomingEvents as $event): ?>
-          <?php 
-            $date = $event->date_start()->toDate();
+          <?php
+            $date = $event['date_start'];
             $day = date('d', $date);
             $month = date('M', $date);
             $time = date('H:i', $date);
           ?>
-          <div class="event-item bg-white p-4 cursor-pointer transition-all border border-leihlokal-500 selected:border-2" 
+          <div class="event-item bg-white p-4 cursor-pointer transition-all border border-leihlokal-500 selected:border-2"
                data-event='<?= json_encode([
-                 'title' => $event->title()->value(),
-                 'date_start' => $event->date_start()->toDate('d.m.Y H:i'),
-                 'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate('d.m.Y H:i') : null,
-                 'location' => $event->location()->value(),
-                 'address' => $event->address()->value(),
-                 'description' => $event->description()->kt()->value(),
-                 'registration_required' => $event->registration_required()->toBool(),
-                 'registration_link' => $event->registration_link()->value()
+                 'title' => $event['title'],
+                 'date_start' => date('d.m.Y H:i', $event['date_start']),
+                 'date_end' => $event['date_end'] ? date('d.m.Y H:i', $event['date_end']) : null,
+                 'location' => $event['location'],
+                 'address' => $event['address'],
+                 'description' => $event['description'],
+                 'registration_required' => $event['registration_required'],
+                 'registration_link' => $event['registration_link']
                ]) ?>'>
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0 text-center min-w-16 bg-gray-50 rounded-lg p-2 shadow-sm border border-gray-100">
@@ -119,9 +318,9 @@
                 <div class="text-xs font-medium text-gray-500 bg-white rounded-full px-2 py-0.5 inline-block"><?= $time ?></div>
               </div>
               <div class="flex-grow">
-                <h3 class="text-xl font-semibold"><?= $event->title() ?></h3>
-                <?php if($event->location()->isNotEmpty()): ?>
-                  <p class="text-sm text-gray-600 mt-1"><?= $event->location() ?></p>
+                <h3 class="text-xl font-semibold"><?= $event['title'] ?></h3>
+                <?php if(!empty($event['location'])): ?>
+                  <p class="text-sm text-gray-600 mt-1"><?= $event['location'] ?></p>
                 <?php endif ?>
               </div>
             </div>
@@ -134,26 +333,26 @@
         </div>
         <?php endif ?>
         
-        <?php if($pastEvents->count()): ?>
+        <?php if(count($pastEvents) > 0): ?>
         <h2 class="text-2xl font-bold mb-4 mt-12">Vergangene Veranstaltungen</h2>
         <div class="space-y-4" id="past-events">
           <?php foreach($pastEvents as $event): ?>
-          <?php 
-            $date = $event->date_start()->toDate();
+          <?php
+            $date = $event['date_start'];
             $day = date('d', $date);
             $month = date('M', $date);
             $time = date('H:i', $date);
           ?>
-          <div class="event-item bg-gray-50 p-4 cursor-pointer transition-all border border-gray-300 selected:border-2 opacity-75" 
+          <div class="event-item bg-gray-50 p-4 cursor-pointer transition-all border border-gray-300 selected:border-2 opacity-75"
                data-event='<?= json_encode([
-                 'title' => $event->title()->value(),
-                 'date_start' => $event->date_start()->toDate('d.m.Y H:i'),
-                 'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate('d.m.Y H:i') : null,
-                 'location' => $event->location()->value(),
-                 'address' => $event->address()->value(),
-                 'description' => $event->description()->kt()->value(),
-                 'registration_required' => $event->registration_required()->toBool(),
-                 'registration_link' => $event->registration_link()->value()
+                 'title' => $event['title'],
+                 'date_start' => date('d.m.Y H:i', $event['date_start']),
+                 'date_end' => $event['date_end'] ? date('d.m.Y H:i', $event['date_end']) : null,
+                 'location' => $event['location'],
+                 'address' => $event['address'],
+                 'description' => $event['description'],
+                 'registration_required' => $event['registration_required'],
+                 'registration_link' => $event['registration_link']
                ]) ?>'>
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0 text-center min-w-16 bg-gray-100 rounded-lg p-2 shadow-sm border border-gray-200">
@@ -163,11 +362,11 @@
               </div>
               <div class="flex-grow">
                 <div class="flex justify-between items-center">
-                  <h3 class="text-xl font-semibold text-gray-600"><?= $event->title() ?></h3>
+                  <h3 class="text-xl font-semibold text-gray-600"><?= $event['title'] ?></h3>
                   <span class="bg-gray-400 text-white px-2 py-1 text-xs rounded-full">Vergangen</span>
                 </div>
-                <?php if($event->location()->isNotEmpty()): ?>
-                  <p class="text-sm text-gray-500 mt-1"><?= $event->location() ?></p>
+                <?php if(!empty($event['location'])): ?>
+                  <p class="text-sm text-gray-500 mt-1"><?= $event['location'] ?></p>
                 <?php endif ?>
               </div>
             </div>

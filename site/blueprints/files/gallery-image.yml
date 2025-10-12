@@ -1,0 +1,35 @@
+title: Gallery Image
+
+accept:
+  mime: image/jpeg, image/png, image/gif, image/webp
+
+fields:
+  alt:
+    label: Alt Text
+    type: text
+    help: Describe the image for accessibility and SEO
+    icon: eye
+
+  caption:
+    label: Caption
+    type: textarea
+    size: small
+    help: Optional caption displayed with the image
+
+  category:
+    label: Category
+    type: text
+    help: Optional category for filtering (e.g., "Nature", "People", "Events")
+    icon: tag
+
+  photographer:
+    label: Photographer
+    type: text
+    help: Photo credit
+    icon: user
+
+  date:
+    label: Date Taken
+    type: date
+    help: When the photo was taken
+    icon: calendar

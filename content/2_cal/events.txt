@@ -10,6 +10,10 @@ Intro:
 
 ----
 
+Ical-url: https://download.hebcal.com/ical/jewish-holidays-v2.ics
+
+----
+
 Coverimage: 
 
 ----

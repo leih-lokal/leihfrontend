@@ -1,0 +1,125 @@
+title: Content - Feature Seite
+icon: bolt
+
+tabs:
+  content:
+    label: Content
+    columns:
+      main:
+        width: 2/3
+        sections:
+          hero:
+            type: fields
+            fields:
+              hero_title:
+                label: Hero Title
+                type: text
+                help: Main title for hero section
+
+              hero_subtitle:
+                label: Hero Subtitle
+                type: textarea
+                size: small
+
+              hero_image:
+                label: Hero Background Image
+                type: files
+                max: 1
+                layout: cards
+
+              hero_cta_text:
+                label: CTA Button Text
+                type: text
+                width: 1/2
+
+              hero_cta_link:
+                label: CTA Button Link
+                type: url
+                width: 1/2
+
+          intro:
+            type: fields
+            fields:
+              intro:
+                label: Introduction Text
+                type: textarea
+                size: medium
+
+          features:
+            type: fields
+            fields:
+              features:
+                label: Feature Sections
+                type: structure
+                help: Alternating text/image sections
+                fields:
+                  heading:
+                    label: Section Heading
+                    type: text
+
+                  text:
+                    label: Section Text
+                    type: textarea
+
+                  image:
+                    label: Section Image
+                    type: files
+                    max: 1
+
+                  layout:
+                    label: Image Position
+                    type: select
+                    options:
+                      left: Image Left
+                      right: Image Right
+                    default: right
+
+                  cta_text:
+                    label: Optional CTA Text
+                    type: text
+                    width: 1/2
+
+                  cta_link:
+                    label: Optional CTA Link
+                    type: url
+                    width: 1/2
+
+          stats:
+            type: fields
+            fields:
+              stats_headline:
+                label: Stats Section Headline
+                type: text
+                help: Optional headline above stats
+
+              stats:
+                label: Statistics/Highlights
+                type: structure
+                help: Display key numbers or highlights
+                fields:
+                  number:
+                    label: Number/Value
+                    type: text
+                    width: 1/3
+
+                  label:
+                    label: Label
+                    type: text
+                    width: 1/3
+
+                  icon:
+                    label: Icon (emoji or text)
+                    type: text
+                    width: 1/3
+                    help: "e.g. 🎯 or any emoji"
+
+      sidebar:
+        width: 1/3
+        sections:
+          subpages:
+            type: pages
+            label: Subpages
+
+          files:
+            type: files
+            label: Images

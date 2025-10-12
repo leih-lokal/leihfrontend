@@ -1,0 +1,54 @@
+Title: Textseite
+
+----
+
+Subtitle: Beispielseite
+
+----
+
+Banner-image: - file://afakfXizuWo6uIfx
+
+----
+
+Show-banner: true
+
+----
+
+Intro:
+
+Ea ex cupidatat labore ex pariatur eu in occaecat enim aliqua Lorem. Laboris occaecat pariatur eu commodo veniam aute tempor nostrud exercitation. Qui ullamco adipisicing laborum Lorem mollit. Fugiat quis aliqua velit cillum ullamco non ut nulla aliquip velit consequat enim incididunt excepteur sit.
+
+Cillum laboris ut amet proident ullamco nostrud nulla ut anim. Enim enim ea esse aliqua exercitation enim dolore ex ullamco. Do eu in qui duis culpa Lorem cillum ipsum occaecat aute minim occaecat sit ea. Tempor proident cupidatat reprehenderit reprehenderit eu voluptate commodo duis minim. Ex fugiat deserunt ex voluptate adipisicing id cupidatat voluptate do ad. Eiusmod deserunt proident in pariatur ex qui magna adipisicing ullamco. Quis pariatur id pariatur dolore.
+
+Velit eu consectetur ipsum occaecat laboris sint dolore tempor consectetur nulla duis non. Aute ex reprehenderit esse magna pariatur. Irure exercitation ullamco est et sint cupidatat do voluptate in enim cillum magna anim ipsum. Id sint tempor amet.
+
+----
+
+Content-sections: 
+
+----
+
+Additional-content: Irure ad dolore Lorem. Magna ex reprehenderit ullamco et adipisicing officia. Proident ullamco dolore excepteur aliquip aliqua esse mollit pariatur sit incididunt ea est voluptate aliquip. Quis ut eiusmod est cillum occaecat fugiat enim ex adipisicing aliquip. Duis aute qui irure id. Labore sunt sunt exercitation cupidatat ullamco irure anim ad minim. Quis ad pariatur enim nostrud. Amet consectetur ad voluptate minim ad do eu consectetur do tempor.
+
+----
+
+Sidebar-heading: Auf dieser Seite
+
+----
+
+Sidebar-content: Ad ea veniam ea Lorem voluptate anim exercitation voluptate do mollit cillum veniam magna id. Sunt incididunt consequat ad ullamco qui quis mollit esse deserunt veniam ut cillum. Cupidatat laboris exercitation occaecat cupidatat. Esse dolor nulla adipisicing nisi mollit aliquip voluptate commodo dolor dolor amet fugiat nulla voluptate. Eiusmod veniam et reprehenderit minim dolor elit voluptate. Elit sunt irure aute est excepteur amet fugiat nisi culpa eu et ea velit excepteur exercitation. Mollit consequat aute duis ex veniam labore dolor proident.
+
+----
+
+Quick-links:
+
+- 
+  title: Test 1
+  url: https://example.com/
+- 
+  title: Test 2
+  url: https://google.com
+
+----
+
+Uuid: VOAMHmCoGfIvCEqJ

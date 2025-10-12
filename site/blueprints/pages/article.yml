@@ -1,0 +1,82 @@
+title: Content - Artikel
+icon: text
+
+columns:
+  main:
+    width: 2/3
+    sections:
+      content:
+        type: fields
+        fields:
+          subtitle:
+            label: Subtitle
+            type: text
+            help: Optional subtitle or tagline
+
+          cover:
+            label: Cover Image
+            type: files
+            max: 1
+            layout: cards
+            help: Optional hero image for the article
+
+          intro:
+            label: Introduction
+            type: textarea
+            size: small
+            help: Short introduction (will be displayed prominently)
+
+          text:
+            label: Main Content
+            type: textarea
+            size: huge
+            buttons:
+              - bold
+              - italic
+              - link
+              - ul
+              - ol
+              - h2
+              - h3
+
+          author:
+            label: Author
+            type: text
+            width: 1/2
+
+          date:
+            label: Date
+            type: date
+            width: 1/2
+            default: today
+
+  sidebar:
+    width: 1/3
+    sections:
+      meta:
+        type: fields
+        fields:
+          sidebar_content:
+            label: Sidebar Content
+            type: textarea
+            help: Optional additional content for sidebar
+
+          related_links:
+            label: Related Links
+            type: structure
+            fields:
+              title:
+                label: Link Title
+                type: text
+              url:
+                label: URL
+                type: url
+
+      subpages:
+        type: pages
+        label: Subpages
+        status: all
+
+      files:
+        type: files
+        label: Images & Files

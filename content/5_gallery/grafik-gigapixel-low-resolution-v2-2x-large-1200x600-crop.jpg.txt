@@ -1,0 +1,17 @@
+Sort: 3
+
+----
+
+Caption: 
+
+----
+
+Date: 
+
+----
+
+Uuid: sePL3uIznqheDxr9
+
+----
+
+Template: gallery-image

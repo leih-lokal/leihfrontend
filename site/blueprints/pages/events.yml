@@ -1,4 +1,4 @@
-title: Events
+title: Spezial - Veranstaltungen
 icon: calendar
 
 tabs:
@@ -19,6 +19,11 @@ tabs:
                 label: Introduction
                 type: textarea
                 size: small
+              ical_url:
+                label: iCal URL
+                type: url
+                help: Optional URL to an external iCal (.ics) file to import events from
+                placeholder: https://example.com/calendar.ics
       - width: 1/3
         sections:
           meta:

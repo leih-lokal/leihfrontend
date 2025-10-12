@@ -11,14 +11,14 @@ columns:
           notices_separator:
             type: headline
             label: Wichtige Informationen
-          
+
           importantnotice:
             type: textarea
             label: Wichtige Information
             help: >
             Diese Information wird auf der Website des Leihlokals angezeigt.
             width: 2/3
-          
+
           importanttoggle:
             label: Wichtige Information anzeigen
             type: toggle
@@ -27,15 +27,15 @@ columns:
               - "Anzeigen"
             width: 1/3
             default: false
-          
+
           events_separator:
             type: line
-          
+
           events_headline:
             type: headline
             label: Veranstaltungen
-          
-          
+
+
           events:
             label: Veranstaltungen
             type: structure
@@ -96,7 +96,7 @@ columns:
                   - No
                   - Yes
                 width: 1/2
-          
+
 
   # right column
   sidebar:
@@ -105,3 +105,13 @@ columns:
       pages:
         type: pages
         label: Seiten
+        template:
+          - article
+          - feature
+          - gallery
+          - textpage
+          - multipurpose
+          - default
+          - events
+          - home
+          - leihlokal
