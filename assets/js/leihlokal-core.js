@@ -5,7 +5,7 @@
 // The API instance is exported as a default export, so you can import it anywhere.
 // 
 // API Schema:
-// Collection 'item':
+// Collection 'item_public' is a view copy of the item database. It includes:
 // - id: string. Item ID in the database. Returned as a string. Not relevant for users or volunteers.
 // - iid: number. Item ID on the shelves, SH.IT notation. Returned as a number.
 // - name: string. Item title. Returned as a string.
@@ -139,7 +139,7 @@ class LeihlocalAPI {
                 options.filter = statusFilter;
             }
             
-            const items = await this.pb.collection('item').getList(page, this.ITEMS_PER_PAGE, options);
+            const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, options);
             
             const transformedItems = items.items.map(item => ({
                 ...item,
@@ -175,7 +175,7 @@ class LeihlocalAPI {
             // Combine filters
             const filter = `(${statusFilter}) && (${searchFilter})`;
             
-            const items = await this.pb.collection('item').getList(page, this.ITEMS_PER_PAGE, {
+            const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, {
                 filter: filter,
                 sort: 'iid',
                 fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms'
@@ -205,7 +205,7 @@ class LeihlocalAPI {
     async getItem(id) {
         try {
             
-            const item = await this.pb.collection('item').getOne(id);
+            const item = await this.pb.collection('item_public').getOne(id);
             
             const transformedItem = {
                 ...item,

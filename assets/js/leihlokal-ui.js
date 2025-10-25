@@ -251,9 +251,9 @@ document
           ? {
               customer_iid: document.querySelector("#existingUserForm input")
                 .value,
-              customer_name: "exists",
-              customer_email: "ex@is.ts",
-              customer_phone: "0123456789",
+              customer_name: null,
+              customer_email: null,
+              customer_phone: null,
               is_new_customer: false,
             }
           : {
@@ -419,17 +419,21 @@ function createProductCard(item) {
 
   const status = statusConfig[item.status] || statusConfig.instock;
 
+  const paddedIid = String(item.iid).padStart(4, '0');
+
   return `
-        <div class="border border-black relative">
-            <div class="absolute -top-3 right-4 bg-white px-2 border border-black">
-                <span class="font-mono text-lg font-bold text-leihlokal-600">${formatIID(item.iid)}</span>
+        <div class="border border-black">
+            <!-- ID Header -->
+            <div class="bg-white px-4 pt-4 flex items-center justify-between ">
+                <span class="text-2xl font-bold font-mono">
+                    <span class="bg-leihlokal-500 text-white px-2 py-1">${paddedIid.slice(0, 2)}</span><span class="text-leihlokal-500 px-2 py-1">${paddedIid.slice(2)}</span>
+                </span>
+                <span class="${status.bg} ${status.text} px-2 py-1 text-sm font-medium">
+                    ${status.label}
+                </span>
             </div>
+
             <div class="p-4">
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="${status.bg} ${status.text} px-2 py-1 text-sm flex items-center gap-1">
-                        ${status.label}
-                    </span>
-                </div>
                 <div class="aspect-w-1 aspect-h-1 bg-gray-200 mb-4 h-48 cursor-pointer item-detail-trigger" data-item-id="${item.id}">
                     ${
                       item.images?.[0]
@@ -882,7 +886,7 @@ function playAddToCartAnimation(buttonEl) {
   document.body.appendChild(dot);
 
   // Get the cart element position
-  const cart = document.querySelector(".border.border-black:nth-child(2)"); // Cart container
+  const cart = document.querySelector(".border.border-black:nth-child(3)"); // Cart container
   const cartRect = cart.getBoundingClientRect();
   const buttonRect = buttonEl.getBoundingClientRect();
 

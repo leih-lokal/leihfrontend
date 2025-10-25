@@ -16,7 +16,7 @@ columns:
             type: textarea
             label: Wichtige Information
             help: >
-            Diese Information wird auf der Website des Leihlokals angezeigt.
+              Diese Information wird auf der Website des Leihlokals angezeigt.
             width: 2/3
 
           importanttoggle:
@@ -27,6 +27,31 @@ columns:
               - "Anzeigen"
             width: 1/3
             default: false
+
+          notice_intensity:
+            label: Intensität der Nachricht
+            type: select
+            options:
+              info: "Info (Subtil) - Blau, für allgemeine Ankündigungen"
+              warning: "Warnung (Mittel) - Gelb/Orange, für temporäre Änderungen"
+              urgent: "Dringend (Intensiv) - Rot mit Animation, für kritische Infos"
+            default: info
+            width: 1/2
+            when:
+              importanttoggle: true
+
+          notice_icon:
+            label: Symbol
+            type: select
+            options:
+              info: "Info-Symbol"
+              warning: "Warnung-Symbol"
+              alert: "Alarm-Symbol"
+              clock: "Uhr-Symbol (für Öffnungszeiten)"
+            default: info
+            width: 1/2
+            when:
+              importanttoggle: true
 
           events_separator:
             type: line

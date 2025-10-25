@@ -1,0 +1,31 @@
+/* Important Notice Animations */
+
+/* Pulse animation for urgent notices */
+@keyframes notice-pulse {
+  0%, 100% {
+    border-color: oklch(0.55 0.22 25);
+    box-shadow: 0 0 0 0 oklch(0.55 0.22 25 / 0.4);
+  }
+  50% {
+    border-color: oklch(0.65 0.22 25);
+    box-shadow: 0 0 0 8px oklch(0.55 0.22 25 / 0);
+  }
+}
+
+.notice-pulse {
+  animation: notice-pulse 2s ease-in-out infinite;
+}
+
+/* Bounce animation for urgent icon */
+@keyframes notice-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.notice-bounce {
+  animation: notice-bounce 1s ease-in-out infinite;
+}

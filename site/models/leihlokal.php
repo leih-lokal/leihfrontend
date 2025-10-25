@@ -13,8 +13,26 @@ class LeihlokalPage extends Page {
             return $this->children;
         }
 
+        // 1. Get real file-based children first (from content/1_ll/)
+        $realChildren = [];
+        try {
+            $realChildrenPages = parent::children();
+            foreach ($realChildrenPages as $child) {
+                $realChildren[] = [
+                    'slug'     => $child->slug(),
+                    'num'      => $child->num(),
+                    'template' => $child->intendedTemplate(),
+                    'model'    => $child->intendedTemplate(),
+                    'content'  => $child->content()->toArray()
+                ];
+            }
+        } catch (Exception $e) {
+            // If there's an error getting real children, continue with just virtual ones
+        }
+
+        // 2. Get virtual children from PocketBase API
         $results = [];
-        $pages = [];
+        $virtualPages = [];
 
         // PocketBase pagination: fetch all items across all pages
         // Default perPage is 30, max is 500. We'll use 500 to minimize requests.
@@ -24,7 +42,7 @@ class LeihlokalPage extends Page {
 
         // Loop through all pages to get ALL items
         do {
-            $url = 'https://stage.leihlokal-ka.de/api/collections/item/records?page=' . $currentPage . '&perPage=' . $perPage;
+            $url = 'https://stage.leihlokal-ka.de/api/collections/item_public/records?page=' . $currentPage . '&perPage=' . $perPage;
             $request = Remote::get($url);
 
             if ($request->code() === 200) {
@@ -47,6 +65,9 @@ class LeihlokalPage extends Page {
             $currentPage++;
         } while ($currentPage <= $totalPages);
 
+        // Start virtual page numbering after real pages
+        $virtualStartNum = count($realChildren) + 1;
+
         foreach ($results as $key => $item) {
             // Generate stable UUID based on item's iid
             $uuid = 'item-' . $item->iid;
@@ -54,9 +75,9 @@ class LeihlokalPage extends Page {
             // Pad iid with leading zeros to preserve format (e.g., 5 -> 0005)
             $paddedIid = str_pad($item->iid, 4, '0', STR_PAD_LEFT);
 
-            $pages[] = [
+            $virtualPages[] = [
                 'slug'     => $paddedIid,
-                'num'      => $key + 1,
+                'num'      => $virtualStartNum + $key,
                 'template' => 'item',
                 'model'    => 'item',
                 'content'  => [
@@ -85,6 +106,9 @@ class LeihlokalPage extends Page {
             ];
         }
 
-        return $this->children = Pages::factory($pages, $this);
+        // 3. Merge real and virtual children (real pages first, then virtual)
+        $allPages = array_merge($realChildren, $virtualPages);
+
+        return $this->children = Pages::factory($allPages, $this);
     }
 }

@@ -46,47 +46,83 @@ foreach ($page->hours()->toStructure() as $day) {
 ?>
 
 <!-- Today's Opening Hours with Toggle -->
-<div class="relative bg-gray-100 border-b border-gray-200">
-  <div class="container mx-auto px-4 py-2">
-    <div class="flex justify-between items-center cursor-pointer" id="toggleHours">
-      <div class="flex items-center">
-        <svg class="h-5 w-5 text-leihlokal-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<div class="relative bg-white border-b border-leihlokal-500">
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors px-2 -mx-2 rounded" id="toggleHours">
+      <div class="flex items-center gap-3">
+        <svg class="h-6 w-6 text-leihlokal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span class="font-medium">Heute (<?= $todayName ?>):</span>
-        <span class="ml-2">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-base">Heute (<?= $todayName ?>)</span>
+          <?php if ($todayHours && $todayHours->opened()->bool()): ?>
+            <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-2 py-1 text-xs font-semibold">
+              <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+              GEÖFFNET
+            </span>
+          <?php else: ?>
+            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-800 px-2 py-1 text-xs font-semibold">
+              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+              GESCHLOSSEN
+            </span>
+          <?php endif ?>
+        </div>
+        <span class="ml-2 text-lg font-mono font-semibold text-leihlokal-600">
           <?php if ($todayHours && $todayHours->opened()->bool()): ?>
             <?= formatTime($todayHours->open_time()) ?> - <?= formatTime($todayHours->close_time()) ?>
           <?php else: ?>
-            Geschlossen
+            —
           <?php endif ?>
         </span>
       </div>
-      <div>
-        <svg id="hoursChevron" class="h-5 w-5 transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-500 hidden sm:inline">Alle Zeiten</span>
+        <svg id="hoursChevron" class="h-5 w-5 text-gray-600 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </div>
     </div>
   </div>
-  
+
   <!-- Full Hours Dropdown -->
-  <div id="fullHours" class="hidden border-t border-gray-200 bg-white">
-    <div class="container mx-auto px-4 py-4">
-      <h3 class="font-bold text-lg mb-4">Öffnungszeiten</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <?php foreach ($page->hours()->toStructure() as $day): ?>
-          <div class="flex justify-between items-center py-2 <?= $day->day()->value() === $todayDayCode ? 'bg-leihlokal-100 px-2 rounded' : '' ?>">
-            <span class="font-medium"><?= $daysTranslation[$day->day()->value()] ?>:</span>
-            <span>
-              <?php if ($day->opened()->bool()): ?>
-                <?= formatTime($day->open_time()) ?> - <?= formatTime($day->close_time()) ?>
-              <?php else: ?>
-                Geschlossen
-              <?php endif ?>
-            </span>
-          </div>
-        <?php endforeach ?>
+  <div id="fullHours" class="hidden border-t border-leihlokal-500 bg-white overflow-hidden transition-all duration-300">
+    <div class="container mx-auto px-4 py-6">
+      <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
+        <svg class="h-5 w-5 text-leihlokal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        Wochenübersicht
+      </h3>
+      <div class="border border-leihlokal-500">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-leihlokal-500 text-white">
+              <th class="text-left py-3 px-4 font-bold">Tag</th>
+              <th class="text-left py-3 px-4 font-bold">Öffnungszeiten</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($page->hours()->toStructure() as $day): ?>
+              <tr class="border-t border-gray-300 <?= $day->day()->value() === $todayDayCode ? 'bg-leihlokal-50' : 'bg-white' ?> hover:bg-gray-50 transition-colors">
+                <td class="py-3 px-4 font-medium <?= $day->day()->value() === $todayDayCode ? 'text-leihlokal-600 font-bold' : '' ?>">
+                  <div class="flex items-center gap-2">
+                    <?= $daysTranslation[$day->day()->value()] ?>
+                    <?php if ($day->day()->value() === $todayDayCode): ?>
+                      <span class="inline-block w-2 h-2 bg-leihlokal-500 rounded-full"></span>
+                    <?php endif ?>
+                  </div>
+                </td>
+                <td class="py-3 px-4 font-mono <?= $day->day()->value() === $todayDayCode ? 'font-bold text-leihlokal-600' : '' ?>">
+                  <?php if ($day->opened()->bool()): ?>
+                    <?= formatTime($day->open_time()) ?> - <?= formatTime($day->close_time()) ?>
+                  <?php else: ?>
+                    <span class="text-gray-400">Geschlossen</span>
+                  <?php endif ?>
+                </td>
+              </tr>
+            <?php endforeach ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -94,16 +130,61 @@ foreach ($page->hours()->toStructure() as $day) {
 
 <!-- Important Notice -->
 <?php if($site->importanttoggle()->bool()): ?>
-<div class="bg-red-100 border-l-4 border-leihlokal-500 p-4 my-2">
+<?php
+// Get notice settings
+$intensity = $site->notice_intensity()->value() ?: 'info';
+$iconType = $site->notice_icon()->value() ?: 'info';
+
+// Define styling based on intensity
+$styles = [
+  'info' => [
+    'container' => 'bg-blue-50 border-l-4 border-blue-400',
+    'icon_color' => 'text-blue-500',
+    'text_color' => 'text-blue-800',
+    'text_size' => 'text-sm',
+    'icon_size' => 'h-5 w-5',
+    'animation' => ''
+  ],
+  'warning' => [
+    'container' => 'bg-yellow-50 border-l-4 border-yellow-500',
+    'icon_color' => 'text-yellow-600',
+    'text_color' => 'text-yellow-900',
+    'text_size' => 'text-base',
+    'icon_size' => 'h-6 w-6',
+    'animation' => ''
+  ],
+  'urgent' => [
+    'container' => 'bg-red-100 border-l-4 border-leihlokal-500',
+    'icon_color' => 'text-leihlokal-500',
+    'text_color' => 'text-leihlokal-600',
+    'text_size' => 'text-base font-bold',
+    'icon_size' => 'h-7 w-7',
+    'animation' => 'notice-pulse'
+  ]
+];
+
+$style = $styles[$intensity];
+
+// Define icons
+$icons = [
+  'info' => '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />',
+  'warning' => '<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />',
+  'alert' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />',
+  'clock' => '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />'
+];
+
+$icon = $icons[$iconType];
+?>
+<div class="<?= $style['container'] ?> p-4 my-2 <?= $style['animation'] ?>">
   <div class="container mx-auto">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <svg class="h-5 w-5 text-leihlokal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
+    <div class="flex items-start gap-3">
+      <div class="flex-shrink-0 <?= $intensity === 'urgent' ? 'notice-bounce' : '' ?>">
+        <svg class="<?= $style['icon_size'] ?> <?= $style['icon_color'] ?>" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <?= $icon ?>
         </svg>
       </div>
-      <div class="ml-3">
-        <p class="text-leihlokal-500 text-sm"><?= $site->importantnotice()->kt() ?></p>
+      <div class="flex-1">
+        <div class="<?= $style['text_color'] ?> <?= $style['text_size'] ?>"><?= $site->importantnotice()->kt() ?></div>
       </div>
     </div>
   </div>
@@ -177,6 +258,23 @@ foreach ($openingHours as $day) {
 
       <!-- Sidebar Content (toggleable on mobile) -->
       <div class="hidden lg:block space-y-8 lg:sticky lg:top-8" id="mobileSidebar">
+        <!-- Subpages -->
+        <?php
+        $realSubpages = $page->children()->filterBy('intendedTemplate', '!=', 'item');
+        if ($realSubpages->isNotEmpty()):
+        ?>
+        <div class="border border-black">
+            <div class="bg-leihlokal-500 text-white p-4">Mehr zum leih.lokal</div>
+            <div class="p-4 space-y-2">
+                <?php foreach ($realSubpages as $subpage): ?>
+                <a href="<?= $subpage->url() ?>" class="block p-2 hover:bg-gray-100 transition-colors">
+                    <?= $subpage->title() ?>
+                </a>
+                <?php endforeach ?>
+            </div>
+        </div>
+        <?php endif ?>
+
         <!-- Categories -->
         <div class="border border-black">
             <div class="bg-leihlokal-500 text-white p-4">Rubriken</div>

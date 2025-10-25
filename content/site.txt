@@ -2,33 +2,32 @@ Title: Bürgerstiftung Karlsruhe
 
 ----
 
-Importantnotice: was geht ab berl;in
+Importantnotice: Closed today soz
 
 ----
 
-Importanttoggle: true
+Importanttoggle: false
 
 ----
 
-Events:
+Notice-intensity: urgent
 
-- 
-  title: Test
-  date_start: 2025-10-08 18:30:00
-  date_end: 2025-10-08 20:00:00
-  location: hier
-  address: hier
-  description: nerwivneroivnerovner
-  registration_required: 'true'
-  registration_link: ""
-  featured: 'true'
-- 
-  title: Test2
-  date_start: 2025-10-09 18:30:00
-  date_end: 2025-10-09 20:00:00
-  location: hier
-  address: hier
-  description: nerwivneroivnerovner
-  registration_required: 'false'
-  registration_link: ""
-  featured: 'false'
+----
+
+Notice-icon: clock
+
+----
+
+Events: 
+
+----
+
+Notice-dismissible: false
+
+----
+
+Importanticon: clock
+
+----
+
+Importantcolor: urgent
