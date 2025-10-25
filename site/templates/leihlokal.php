@@ -287,17 +287,17 @@ foreach ($openingHours as $day) {
 </div>
 
 <!-- Modal Container -->
-<div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white max-w-4xl w-full mx-4 relative">
+<div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white max-w-lg w-full relative border-2 border-black">
         <!-- Close button -->
-        <button id="closeModal" class="absolute -top-3 -right-3 bg-white border border-black p-2 hover:bg-gray-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button id="closeModal" class="absolute  bg-white border-2 border-black p-2 hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        
+
         <!-- Modal Content -->
-        <div id="itemModalContent" class="p-6">
+        <div id="itemModalContent">
             <!-- Content will be inserted here -->
         </div>
     </div>

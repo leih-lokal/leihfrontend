@@ -5,9 +5,9 @@ A modern, file-based CMS website for Leihlokal - a community lending and borrowi
 ## Prerequisites
 
 - **PHP**: 8.1.0 or higher (tested with 8.1, 8.2, 8.3)
-- **PHP Extensions**: SimpleXML, ctype, curl, dom, filter, hash, iconv, json, libxml, mbstring, openssl
+- **PHP Extensions**: SimpleXML, ctype, curl, dom, gd, filter, hash, iconv, json, libxml, mbstring, openssl
 - **Node.js**: For building Tailwind CSS
-- **Composer**: For PHP dependency management
+- **Composer**: For PHP dependency management (optional)
 
 ## Installation
 

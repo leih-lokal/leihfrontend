@@ -13,7 +13,7 @@
 // - status: select. Item status. Returned as a string.
 // - deposit: number. Suggested item tare. Returned as a number.
 // - images: array. Item images. Returned as an array of strings.
-// - cat: multiselect. Item categories. Returned as an array of strings.
+// - category: multiselect. Item categories. Returned as an array of strings.
 // - brand: string. Item brand. Returned as a string.
 // - model: string. Item model. Returned as a string.
 // - parts: number. Amount of parts of an item. Returned as a number.
@@ -178,7 +178,7 @@ class LeihlocalAPI {
             const items = await this.pb.collection('item').getList(page, this.ITEMS_PER_PAGE, {
                 filter: filter,
                 sort: 'iid',
-                fields: 'id,iid,name,description,status,deposit,images,cat,brand,model,parts,copies,synonyms'
+                fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms'
             });
             
             const transformedItems = items.items.map(item => ({

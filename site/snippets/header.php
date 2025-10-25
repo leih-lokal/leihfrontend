@@ -41,14 +41,14 @@
                         <?php else: ?>
                             <?= $item->title() ?>
                         <?php endif ?>
-                        <?php if ($item->hasChildren()): ?>
+                        <?php if ($item->hasChildren() && $item->intendedTemplate()->name() !== 'leihlokal'): ?>
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                         <?php endif ?>
                     </a>
 
-                    <?php if ($item->hasChildren()): ?>
+                    <?php if ($item->hasChildren() && $item->intendedTemplate()->name() !== 'leihlokal'): ?>
                     <div class="nav-dropdown absolute top-full left-0 right-0 bg-white border-x border-b border-leihlokal-500 opacity-0 invisible transition-all duration-200 z-50">
                         <ul class="list-none m-0 p-0">
                             <?php foreach ($item->children()->listed() as $subitem): ?>
@@ -73,7 +73,7 @@
         <ul class="list-none m-0 p-0">
             <?php foreach($site->children()->listed() as $item): ?>
             <li class="border-b border-leihlokal-500 last:border-b-0">
-                <?php if ($item->hasChildren()): ?>
+                <?php if ($item->hasChildren() && $item->intendedTemplate()->name() !== 'leihlokal'): ?>
                     <div class="mobile-nav-item">
                         <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-100 transition-colors duration-300"
                              onclick="this.parentElement.classList.toggle('open')">

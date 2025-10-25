@@ -351,7 +351,7 @@ async function filterByCategory(category) {
     let filter = [];
 
     if (category) {
-      filter.push(`cat ~ "${category}"`);
+      filter.push(`category ~ "${category}"`);
     }
 
     if (showOnlyAvailable) {
@@ -460,121 +460,77 @@ function showItemDetails(itemId) {
 
   // Fetch item details
   api.getItem(itemId).then((item) => {
-    const statusConfig = {
-      instock: {
-        bg: "bg-green-100",
-        text: "text-green-800",
-        label: "Ausleihbar",
-      },
-      deleted: { bg: "bg-gray-100", text: "text-gray-800", label: "Gelöscht" },
-      outofstock: {
-        bg: "bg-yellow-100",
-        text: "text-yellow-800",
-        label: "Ausgeliehen",
-      },
-      onbackorder: {
-        bg: "bg-purple-100",
-        text: "text-purple-800",
-        label: "Nachbestellt",
-      },
-      reserved: {
-        bg: "bg-blue-100",
-        text: "text-blue-800",
-        label: "Vorbestellt",
-      },
-      lost: { bg: "bg-orange-100", text: "text-orange-800", label: "Verloren" },
-      repairing: {
-        bg: "bg-red-100",
-        text: "text-red-800",
-        label: "In Reparatur",
-      },
-      forsale: {
-        bg: "bg-indigo-100",
-        text: "text-indigo-800",
-        label: "Zum Verkauf",
-      },
-    };
-
-    const status = statusConfig[item.status] || statusConfig.instock;
+    const paddedIid = String(item.iid).padStart(4, "0");
+    const detailUrl = `/ll/${paddedIid}`;
 
     modalContent.innerHTML = `
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/2">
-                    <div class="aspect-w-1 aspect-h-1 bg-gray-200 mb-4">
-                        ${
-                          item.images?.[0]
-                            ? `
-                            <img src="${item.images[0].full}" alt="${item.name}" class="w-full h-full object-cover">
-                        `
-                            : ""
-                        }
-                    </div>
-                    ${
-                      item.images?.length > 1
-                        ? `
-                        <div class="grid grid-cols-4 gap-2">
-                            ${item.images
-                              .slice(1)
-                              .map(
-                                (img) => `
-                                <img src="${img.thumb}" alt="" class="w-full h-20 object-cover">
-                            `,
-                              )
-                              .join("")}
-                        </div>
-                    `
-                        : ""
-                    }
-                </div>
-                <div class="md:w-1/2">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2 class="text-4xl mt-4 font-bold">${item.name}</h2>
-                        <span class="font-mono text-xl font-bold border p-4 border-leihlokal-500 text-leihlokal-600">${formatIID(item.iid)}</span>
-                    </div>
-                    <span class="${status.bg} ${status.text} px-2 py-1 text-sm inline-flex items-center gap-1 mb-4">
-                        ${status.label}
-                    </span>
-                    ${
-                      item.brand || item.model
-                        ? `
-                        <div class="mb-4">
-                            ${item.brand ? `<p class="font-medium">${item.brand}</p>` : ""}
-                            ${item.model ? `<p class="font-mono">${item.model}</p>` : ""}
-                        </div>
-                    `
-                        : ""
-                    }
-                    <div class="prose prose-sm max-w-none mb-6">
-                        ${item.description || ""}
-                    </div>
-                    ${
-                      item.parts > 1
-                        ? `
-                        <p class="text-sm mb-4">Dieser Gegenstand hat ${item.parts} Teile.</p>
-                    `
-                        : ""
-                    }
-                    ${
-                      item.deposit
-                        ? `
-                        <p class="text-xl mb-4">Pfand: €${item.deposit}</p>
-                    `
-                        : ""
-                    }
-                    <button class="w-full ${item.status === "instock" ? "bg-leihlokal-500 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"} p-2 mt-auto"
-                                    ${item.status !== "instock" ? "disabled" : ""}
-                                    data-item='${JSON.stringify(item)}'
-                                    ${item.status === "instock" ? 'data-action="add-to-cart"' : ""}
-                            >
-                                ${item.status === "instock" ? "In den Ausleihkorb" : "Bald wieder da!"}
-                            </button>
-                </div>
+      <!-- Image -->
+      <div class="relative">
+        ${
+          item.images?.[0]
+            ? `<img src="${item.images[0].full}" alt="${item.name}" class="w-full h-64 object-cover">`
+            : '<div class="w-full h-64 bg-gray-200 flex items-center justify-center"><span class="text-gray-400">Kein Bild</span></div>'
+        }
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <!-- Item ID -->
+        <div class="text-center mb-4">
+          <div class="text-5xl py-4 font-bold font-mono leading-none inline-block">
+            <span class="border-2 border-leihlokal-500 bg-leihlokal-500 text-white p-2">${paddedIid.slice(0, 2)}</span><span class="border-2 border-leihlokal-500 p-2 text-leihlokal-500">${paddedIid.slice(2)}</span>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <h2 class="text-2xl font-bold mb-2 text-center">${item.name}</h2>
+
+        ${
+          item.brand || item.model
+            ? `<p class="text-center text-gray-600 mb-4">${item.brand || ""}${item.brand && item.model ? " - " : ""}${item.model || ""}</p>`
+            : ""
+        }
+
+        <!-- Deposit -->
+        ${
+          item.deposit
+            ? `
+          <div class="bg-leihlokal-50 border-2 border-leihlokal-500 p-3 text-center mb-6">
+            <div class="text-xs text-gray-600 mb-1">Pfand</div>
+            <div class="text-3xl font-bold text-leihlokal-600">€${item.deposit}</div>
+          </div>
+        `
+            : ""
+        }
+
+        <!-- Buttons -->
+        <div class="space-y-3">
+          ${
+            item.status === "instock"
+              ? `
+            <button class="w-full bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-3 font-bold transition-colors"
+                    data-item='${JSON.stringify(item)}'
+                    data-action="add-to-cart-modal">
+              In den Ausleihkorb
+            </button>
+          `
+              : `
+            <div class="w-full bg-gray-200 text-gray-500 p-3 font-bold text-center">
+              Zurzeit nicht verfügbar
             </div>
-        `;
+          `
+          }
+
+          <a href="${detailUrl}" class="block w-full border-2 border-black hover:bg-gray-100 text-center p-3 font-bold transition-colors">
+            Details →
+          </a>
+        </div>
+      </div>
+    `;
 
     modal.classList.remove("hidden");
     modal.classList.add("flex");
-    document.body.style.overflow = "hidden"; // Prevent scrolling
+    document.body.style.overflow = "hidden";
   });
 }
 
@@ -712,7 +668,7 @@ window.loadItems = async function (page = 1) {
     let filter = [];
 
     if (currentCategory) {
-      filter.push(`cat ~ "${currentCategory}"`);
+      filter.push(`category ~ "${currentCategory}"`);
     }
 
     if (showOnlyAvailable) {
@@ -846,11 +802,20 @@ document.addEventListener("click", function (e) {
     showItemDetails(itemId);
   }
 
-  // Handle add to cart clicks
+  // Handle add to cart clicks (from product grid)
   if (e.target.matches('[data-action="add-to-cart"]')) {
     const itemData = JSON.parse(e.target.dataset.item);
     addToCart(itemData);
     playAddToCartAnimation(e.target);
+  }
+
+  // Handle add to cart clicks (from modal)
+  if (e.target.matches('[data-action="add-to-cart-modal"]')) {
+    const itemData = JSON.parse(e.target.dataset.item);
+    addToCart(itemData);
+    playAddToCartAnimation(e.target);
+    // Close modal after adding
+    closeItemModal();
   }
 
   // Handle time slot selection

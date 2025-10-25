@@ -1,0 +1,3 @@
+- ENV vars for url & db connection
+- wait for board
+- laundry day
