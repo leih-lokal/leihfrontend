@@ -275,22 +275,6 @@ foreach ($openingHours as $day) {
             </div>
         </div>
         
-        <!-- Subpages -->
-        <?php
-        $realSubpages = $page->children()->filterBy('intendedTemplate', '!=', 'item');
-        if ($realSubpages->isNotEmpty()):
-        ?>
-        <div class="border border-black">
-            <div class="bg-leihlokal-500 text-white p-4">Mehr zum leih.lokal</div>
-            <div class="p-4 space-y-2">
-                <?php foreach ($realSubpages as $subpage): ?>
-                <a href="<?= $subpage->url() ?>" class="block p-2 hover:bg-gray-100 transition-colors">
-                    <?= $subpage->title() ?>
-                </a>
-                <?php endforeach ?>
-            </div>
-        </div>
-        <?php endif ?>
 
         <!-- Categories -->
         <div class="border border-black">
@@ -341,6 +325,22 @@ foreach ($openingHours as $day) {
             </div>
         </div>
 
+        <!-- Subpages -->
+        <?php
+        $realSubpages = $page->children()->filterBy('intendedTemplate', '!=', 'item');
+        if ($realSubpages->isNotEmpty()):
+        ?>
+        <div class="border border-black">
+            <div class="bg-leihlokal-500 text-white p-4">Mehr zum leih.lokal</div>
+            <div class="p-4 space-y-2">
+                <?php foreach ($realSubpages as $subpage): ?>
+                <a href="<?= $subpage->url() ?>" class="block p-2 hover:bg-gray-100 transition-colors">
+                    <?= $subpage->title() ?>
+                </a>
+                <?php endforeach ?>
+            </div>
+        </div>
+        <?php endif ?>
       </div>
     </div>
 
