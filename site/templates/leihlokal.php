@@ -258,6 +258,23 @@ foreach ($openingHours as $day) {
 
       <!-- Sidebar Content (toggleable on mobile) -->
       <div class="hidden lg:block space-y-8 lg:sticky lg:top-8" id="mobileSidebar">
+        <!-- Cart -->
+        <div class="border border-black">
+            <div class="bg-leihlokal-500 text-white p-4">Ausleihkorb</div>
+            <div id="cartItems" class="p-4 space-y-2">
+                <!-- Cart items will be inserted here -->
+                <div class="empty-cart-message text-gray-500 text-sm">Hier ist noch nichts. Such' dir was aus!</div>
+            </div>
+            <div class="p-4">
+                <button id="completeReservation" class="w-full mb-2 bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-2 hidden">
+                  Vorbestellung absenden
+                </button>
+                <button id="clearCart" class="w-full bg-white hover:bg-gray-200 text-black border p-2 hidden">
+                  Alles zurücklegen
+                </button>
+            </div>
+        </div>
+        
         <!-- Subpages -->
         <?php
         $realSubpages = $page->children()->filterBy('intendedTemplate', '!=', 'item');
@@ -324,22 +341,6 @@ foreach ($openingHours as $day) {
             </div>
         </div>
 
-        <!-- Cart -->
-        <div class="border border-black">
-            <div class="bg-leihlokal-500 text-white p-4">Ausleihkorb</div>
-            <div id="cartItems" class="p-4 space-y-2">
-                <!-- Cart items will be inserted here -->
-                <div class="empty-cart-message text-gray-500 text-sm">Hier ist noch nichts. Such' dir was aus!</div>
-            </div>
-            <div class="p-4">
-                <button id="completeReservation" class="w-full mb-2 bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-2 hidden">
-                  Vorbestellung absenden
-                </button>
-                <button id="clearCart" class="w-full bg-white hover:bg-gray-200 text-black border p-2 hidden">
-                  Alles zurücklegen
-                </button>
-            </div>
-        </div>
       </div>
     </div>
 

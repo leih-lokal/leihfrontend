@@ -886,7 +886,7 @@ function playAddToCartAnimation(buttonEl) {
   document.body.appendChild(dot);
 
   // Get the cart element position
-  const cart = document.querySelector(".border.border-black:nth-child(3)"); // Cart container
+  const cart = document.querySelector(".border.border-black:nth-child(1)"); // Cart container
   const cartRect = cart.getBoundingClientRect();
   const buttonRect = buttonEl.getBoundingClientRect();
 
