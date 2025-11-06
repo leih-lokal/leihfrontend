@@ -1,0 +1,106 @@
+title: Content - Fullwidth Page
+icon: page
+
+columns:
+  main:
+    width: 2/3
+    sections:
+      header:
+        type: fields
+        fields:
+          subtitle:
+            label: Subtitle
+            type: text
+            help: Optional subtitle or tagline
+
+          banner_image:
+            label: Banner Image
+            type: files
+            max: 1
+            layout: cards
+            help: Optional banner image (not as dominant as feature hero)
+
+          show_banner:
+            label: Show Banner
+            type: toggle
+            text:
+              - "No Banner"
+              - "Show Banner"
+            default: false
+            width: 1/2
+
+      intro:
+        type: fields
+        fields:
+          intro:
+            label: Introduction
+            type: textarea
+            size: medium
+            help: Optional introduction paragraph
+
+      content:
+        type: fields
+        fields:
+          content_sections:
+            label: Content Sections
+            type: structure
+            help: Add multiple content sections with optional images
+            fields:
+              heading:
+                label: Section Heading
+                type: text
+
+              text:
+                label: Section Text
+                type: textarea
+                size: large
+                buttons:
+                  - bold
+                  - italic
+                  - link
+                  - ul
+                  - ol
+
+              image:
+                label: Section Image
+                type: files
+                max: 1
+                help: Optional image for this section
+
+              image_position:
+                label: Image Position
+                type: select
+                options:
+                  none: No Image
+                  right: Right
+                  left: Left
+                  full: Full Width
+                default: none
+                width: 1/2
+
+              callout:
+                label: Callout Box
+                type: textarea
+                size: small
+                help: Optional highlighted information box
+
+      additional:
+        type: fields
+        fields:
+          additional_content:
+            label: Additional Content
+            type: textarea
+            size: large
+            help: Optional bottom section content
+
+  sidebar:
+    width: 1/3
+    sections:
+      subpages:
+        type: pages
+        label: Subpages
+        status: all
+
+      files:
+        type: files
+        label: Images & Files

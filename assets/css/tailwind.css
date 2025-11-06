@@ -652,6 +652,27 @@ video {
   src: url(/assets/fonts/UniversLTStd-BoldCnObl.woff2) format("woff2");
 }
 
+/* Hyphenation rules for headlines */
+
+h1, h2, h3, h4, h5, h6 {
+  /* Enable hyphenation on mobile for better text wrapping */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Disable hyphenation on desktop screens */
+
+@media (min-width: 768px) {
+  h1, h2, h3, h4, h5, h6 {
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+}
+
 .container {
   width: 100%;
 }
@@ -2089,6 +2110,10 @@ video {
 
 .max-w-4xl {
   max-width: 56rem;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
 }
 
 .max-w-lg {
