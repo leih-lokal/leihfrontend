@@ -1,0 +1,16 @@
+title: Colo/Priv
+icon: page
+
+fields:
+  text:
+    label: Content
+    type: textarea
+    size: huge
+    buttons:
+      - bold
+      - italic
+      - link
+      - ul
+      - ol
+      - h2
+      - h3
