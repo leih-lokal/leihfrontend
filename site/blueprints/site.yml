@@ -135,6 +135,7 @@ columns:
           - textpage
           - fullwidth
           - multipurpose
+          - directory
           - default
           - events
           - home

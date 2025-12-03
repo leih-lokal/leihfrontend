@@ -1,0 +1,35 @@
+title: Meta - Directory
+icon: list
+
+columns:
+  main:
+    width: 2/3
+    sections:
+      header:
+        type: fields
+        fields:
+          subtitle:
+            label: Subtitle
+            type: text
+            help: Optional subtitle or tagline
+
+      intro:
+        type: fields
+        fields:
+          intro:
+            label: Introduction
+            type: textarea
+            size: medium
+            help: Optional introduction text for the directory page
+
+  sidebar:
+    width: 1/3
+    sections:
+      subpages:
+        type: pages
+        label: Subpages
+        status: all
+
+      files:
+        type: files
+        label: Images & Files
