@@ -403,22 +403,23 @@ foreach ($openingHours as $day) {
 </div>
 
 <!-- Reservation Modal -->
-<div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white max-w-2xl w-full mx-4 relative shadow-xl border-2 border-leihlokal-600">
+<div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white max-w-3xl w-full mx-4 relative shadow-2xl border-4 border-leihlokal-500 overflow-hidden transform transition-all">
         <!-- Close button -->
-        <button id="closeReservationModal" class="absolute -top-3 -right-3 bg-white border-2 border-leihlokal-600 p-2 hover:bg-gray-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button id="closeReservationModal" class="absolute top-4 right-4 z-10 bg-white border-2 border-leihlokal-600 p-2 hover:bg-leihlokal-50 hover:scale-110 transition-all shadow-lg">
+            <svg class="w-5 h-5 text-leihlokal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        
+
         <!-- Modal Header -->
-        <div class="bg-leihlokal-500 text-white p-6">
-            <h2 class="text-2xl font-bold">Deine Reservierung</h2>
+        <div class="bg-leihlokal-500 text-white p-8">
+            <h2 class="text-3xl font-bold">Deine Reservierung</h2>
+            <p class="mt-2">Wir freuen uns auf deinen Besuch!</p>
         </div>
 
         <!-- Modal Content -->
-        <div class="p-6">
+        <div class="p-8">
             <!-- Cart Summary -->
             <div class="mb-6">
                 <h3 class="text-lg font-bold mb-4">Ausleihkorb</h3>
@@ -430,80 +431,64 @@ foreach ($openingHours as $day) {
                 </div>
             </div>
 
-            <!-- User Type Switch -->
-            <div class="flex items-center justify-center space-x-4 mb-6">
-                <span class="text-gray-500">Neue:r Nutzer:in</span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="userTypeSwitch" class="sr-only peer">
-                    <div class="w-14 h-7 bg-gray-200 rounded-full peer-focus:outline-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
-                </label>
-                <span class="text-gray-500">Bestandsnutzer:in</span>
-            </div>
+            <!-- Customer Email Form - Simplified & Styled -->
+            <div id="formContainer" class="mb-8">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-leihlokal-600 mb-2">Fast geschafft!</h3>
+                    <p class="text-gray-600">Gib deine Email-Adresse ein, um die Reservierung abzuschließen</p>
+                </div>
 
-            <!-- Forms Container -->
-            <div id="formContainer">
-                <!-- New User Form -->
-                <form id="newUserForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nachname</label>
-                        <input type="text" required 
-                               class="w-full p-2 border border-gray-300  focus:outline-none focus:border-leihlokal-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" required 
-                               class="w-full p-2 border border-gray-300  focus:outline-none focus:border-leihlokal-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Telefonnummer für Rückfragen</label>
-                        <input type="tel" required 
-                               class="w-full p-2 border border-gray-300  focus:outline-none focus:border-leihlokal-500">
-                    </div>
-                </form>
-
-                <!-- Existing User Form -->
-                <form id="existingUserForm" class="space-y-4 hidden">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nutzernummer</label>
-                        <input type="text" required pattern="\d{4}" maxlength="4" 
-                               placeholder="Gib deine 4-stellige Nutzernummer ein (beispielsweise 0123)"
-                               class="w-full p-2 border border-gray-300  focus:outline-none focus:border-leihlokal-500">
+                <form id="customerForm" class="max-w-md mx-auto">
+                    <div class="relative">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            Email-Adresse
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            placeholder="deine@email.de"
+                            class="w-full p-4 text-lg border-2 border-leihlokal-500 focus:outline-none focus:border-leihlokal-600 transition-all"
+                        >
                     </div>
                 </form>
             </div>
             
             <!-- Time Slot Selection (Initially Hidden) -->
             <div id="timeSlotSelection" class="hidden">
-                <h3 class="text-lg font-bold mb-4">Wähle einen Abholtermin</h3>
-                
-                <div class="overflow-x-auto">
-                    <table class="min-w-full border border-gray-200">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-leihlokal-600 mb-2">Wann möchtest du abholen?</h3>
+                    <p class="text-gray-600">Wähle einen passenden Termin aus</p>
+                </div>
+
+                <div class="overflow-x-auto border-2 border-leihlokal-200">
+                    <table class="min-w-full">
                         <thead>
-                            <tr>
+                            <tr class="bg-leihlokal-500">
                                 <?php foreach ($weekSchedule as $day): ?>
-                                <th class="border-b px-4 py-2 bg-gray-50 text-sm">
+                                <th class="px-4 py-3 text-sm font-bold text-white border-r border-leihlokal-400 last:border-r-0">
                                     <?= $day['name'] ?>
                                 </th>
                                 <?php endforeach ?>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-white">
                             <?php
                             // Find the maximum number of slots
                             $maxSlots = 0;
                             foreach ($weekSchedule as $day) {
                                 $maxSlots = max($maxSlots, count($day['slots']));
                             }
-                            
+
                             // Generate rows for each time slot
                             for ($i = 0; $i < $maxSlots; $i++):
                             ?>
-                            <tr>
+                            <tr class="border-b border-gray-200 hover:bg-leihlokal-50 transition-colors">
                                 <?php foreach ($weekSchedule as $dayKey => $day): ?>
-                                <td class="border px-4 py-2 text-sm">
+                                <td class="px-4 py-3 text-sm border-r border-gray-200 last:border-r-0">
                                     <?php if ($day['isOpen'] && isset($day['slots'][$i])): ?>
-                                    <button 
-                                        class="w-full text-center py-1 transition-colors hover:bg-leihlokal-100 time-slot-button"
+                                    <button
+                                        class="w-full text-center py-2 px-3 font-medium transition-all transform hover:scale-105 time-slot-button border-2 border-leihlokal-300 hover:border-leihlokal-500 hover:bg-leihlokal-100"
                                         data-day="<?= $dayKey ?>"
                                         data-time="<?= $day['slots'][$i] ?>"
                                     >
@@ -517,39 +502,57 @@ foreach ($openingHours as $day) {
                         </tbody>
                     </table>
                 </div>
-                
-                <div class="mt-4 text-sm text-gray-600">
-                    Selected time: <span id="selectedTimeDisplay">None</span>
+
+                <div class="mt-4 p-4 bg-leihlokal-50 border-2 border-leihlokal-200">
+                    <p class="text-sm font-medium text-gray-700">
+                        Ausgewählter Termin: <span id="selectedTimeDisplay" class="text-leihlokal-600 font-bold">Noch nicht ausgewählt</span>
+                    </p>
                 </div>
             </div>
             
             <!-- Confirmation Step (Initially Hidden) -->
             <div id="confirmationStep" class="hidden text-center">
-                <div class="mb-8">
-                    <div class="inline-block p-4 rounded-full bg-red-100 mb-4">
-                        <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <!-- Success Icon -->
+                <div class="mb-8 animate-bounce-once">
+                    <div class="inline-block p-6 bg-leihlokal-500 mb-4 shadow-xl">
+                        <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2">Deine Reservierung ist bestätigt!</h3>
-                    <p class="text-gray-600">Wir freuen uns auf deinen Besuch.</p>
+                    <h3 class="text-3xl font-bold text-leihlokal-600 mb-2">Geschafft!</h3>
+                    <p class="text-lg text-gray-600">Deine Reservierung wurde bestätigt</p>
                 </div>
-                
-                <div class="bg-gray-50 p-6 mb-8">
-                    <h4 class="font-bold mb-4">Reservierungsdetails</h4>
-                    <div id="confirmationDetails" class="space-y-2 text-left">
+
+                <!-- OTP Display - Bold & Prominent -->
+                <div id="otpDisplay" class="hidden mb-8">
+                    <div class="bg-leihlokal-500 border-4 border-black p-8 mx-auto max-w-md shadow-2xl transform hover:scale-105 transition-transform">
+                        <p class="text-white text-lg font-bold mb-3">🎫 Dein Abholcode:</p>
+                        <div class="bg-white p-6 mb-4 shadow-inner">
+                            <p class="text-6xl font-bold font-mono text-leihlokal-600 tracking-wider" id="otpNumber">
+                                <!-- OTP will be inserted here -->
+                            </p>
+                        </div>
+                        <p class="text-white text-sm font-medium">Zeige diesen Code bei der Abholung vor</p>
+                    </div>
+                </div>
+
+                <!-- Reservation Details -->
+                <div class="bg-gray-100 p-6 border-2 border-gray-300 mb-8 shadow-md">
+                    <h4 class="font-bold text-lg text-leihlokal-600 mb-4">📋 Reservierungsdetails</h4>
+                    <div id="confirmationDetails" class="space-y-3 text-left">
                         <!-- Details will be inserted here -->
                     </div>
                 </div>
-                
+
+                <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="addToCalendar" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300  shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <button id="addToCalendar" class="inline-flex items-center justify-center px-6 py-3 border-2 border-leihlokal-500 shadow-md bg-white text-leihlokal-600 font-bold hover:bg-leihlokal-500 hover:text-white transition-all transform hover:scale-105">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                         Zum Kalender hinzufügen
                     </button>
-                    <button id="shareReservation" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300  shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <button id="shareReservation" class="inline-flex items-center justify-center px-6 py-3 border-2 border-leihlokal-500 shadow-md bg-leihlokal-500 text-white font-bold hover:bg-leihlokal-600 transition-all transform hover:scale-105">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                         </svg>
@@ -560,17 +563,51 @@ foreach ($openingHours as $day) {
 
             <!-- Submit Button -->
             <div class="mt-6">
-                <button id="submitReservation" 
-                        class="w-full bg-leihlokal-500 text-white p-3 hover:bg-leihlokal-600 transition-colors">
-                          Vorbestellung abschicken! &rarr;
+                <button id="submitReservation"
+                        class="w-full bg-leihlokal-500 text-white p-4 text-lg font-bold hover:bg-leihlokal-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    Weiter zur Terminauswahl →
+                </button>
+            </div>
+
+            <!-- TEST MODE: Skip to Confirmation (Remove this in production) -->
+            <div class="mt-4">
+                <button id="testConfirmation"
+                        class="w-full bg-gray-500 text-white p-3 text-sm hover:bg-gray-600 transition-colors">
+                    🧪 TEST: Bestätigung anzeigen
                 </button>
             </div>
         </div>
     </div>
 </div>
+<!-- Custom Styles for Reservation Flow -->
+<style>
+/* Smooth transitions for modal and forms */
+.transition-all {
+    transition: all 0.3s ease;
+}
 
+/* Success icon bounce animation */
+@keyframes bounce-once {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
 
+.animate-bounce-once {
+    animation: bounce-once 0.6s ease-out;
+}
 
+/* Time slot button selected state */
+.time-slot-button.bg-leihlokal-500 {
+    background-color: #ff0000;
+    color: white;
+    border-color: #cc0000;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+</style>
 
 <!-- Scripts -->
 <script type="text/javascript">
@@ -588,6 +625,38 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleIcon.classList.toggle('rotate-180');
         }
     });
+
+    // TEST MODE: Button to skip to confirmation screen
+    const testButton = document.getElementById('testConfirmation');
+    if (testButton) {
+        testButton.addEventListener('click', function() {
+            // Mock reservation data
+            const mockReservationData = {
+                pickup: new Date(Date.now() + 86400000 * 3).toISOString(), // 3 days from now
+                customer_email: 'test@example.com'
+            };
+
+            // Mock API response with OTP
+            const mockRecord = {
+                id: 'test_reservation_123',
+                customer_iid: '1234',
+                customer_name: 'Test User',
+                customer_email: 'test@example.com',
+                customer_phone: '+49123456789',
+                is_new_customer: false,
+                otp: '789012',
+                created: new Date().toISOString()
+            };
+
+            // Simulate what happens in showConfirmationStep
+            // Import the function from the module
+            if (window.showConfirmationStepTest) {
+                window.showConfirmationStepTest(mockReservationData, mockRecord);
+            } else {
+                alert('Test function not loaded. Make sure the page is fully loaded.');
+            }
+        });
+    }
 });
 
     window.weekSchedule = <?= json_encode($weekSchedule) ?>;

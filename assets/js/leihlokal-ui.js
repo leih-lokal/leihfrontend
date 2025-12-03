@@ -38,14 +38,35 @@ function getNextWeekdayDate(dayKey) {
 }
 
 // Function to generate ICS file
-function generateICS(pickup, items) {
+function generateICS(pickup, items, otp = null) {
   const event = {
     start: new Date(pickup),
     end: new Date(new Date(pickup).getTime() + 30 * 60000), // 30 minutes duration
-    title: "Leihlokal Abholung",
-    description: `Abholung deiner reservierten Artikel:\n${items.map((item) => `- ${formatIID(item.iid)} ${item.name}`).join("\n")}`,
-    location: "Leihlokal Karlsruhe, Gerwigstraße 41, 76131 Karlsruhe",
+    title: "leih.lokal Abholung",
+    location: "leih.lokal Karlsruhe, Gerwigstraße 41, 76131 Karlsruhe",
   };
+
+  // Build description with proper ICS formatting
+  let descriptionLines = ["Abholung deiner reservierten Artikel:"];
+
+  if (otp) {
+    descriptionLines.push("");
+    descriptionLines.push(`ABHOLCODE: ${otp}`);
+    descriptionLines.push("");
+  }
+
+  descriptionLines.push("");
+  descriptionLines.push("Reservierte Artikel:");
+  items.forEach((item) => {
+    descriptionLines.push(`- ${formatIID(item.iid)} ${item.name}`);
+  });
+
+  // Escape special characters for ICS format and join with \n
+  const description = descriptionLines
+    .join("\\n")
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,");
 
   const icsContent = [
     "BEGIN:VCALENDAR",
@@ -60,11 +81,11 @@ function generateICS(pickup, items) {
       .replace(/[-:]/g, "")
       .replace(/\.\d{3}/, "")}`,
     `SUMMARY:${event.title}`,
-    `DESCRIPTION:${event.description}`,
+    `DESCRIPTION:${description}`,
     `LOCATION:${event.location}`,
     "END:VEVENT",
     "END:VCALENDAR",
-  ].join("\n");
+  ].join("\r\n");
 
   const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -81,15 +102,23 @@ function showConfirmationStep(reservationData, record) {
   // Store cart items for sharing
   const reservedItems = [...cart.items]; // Make a copy of cart items
 
+  // Store OTP for later use
+  const otp = record?.otp || null;
+
   // Hide time slot selection and show confirmation
   document.getElementById("timeSlotSelection").classList.add("hidden");
   document.getElementById("confirmationStep").classList.remove("hidden");
 
-  // Hide ONLY the top cart summary and user type switch
+  // Hide the top cart summary
   document.querySelector(".mb-6:first-child").classList.add("hidden");
-  document
-    .querySelector(".flex.items-center.justify-center.space-x-4.mb-6")
-    .classList.add("hidden");
+
+  // Display OTP if it exists in the record
+  if (otp) {
+    const otpDisplay = document.getElementById("otpDisplay");
+    const otpNumber = document.getElementById("otpNumber");
+    otpNumber.textContent = otp;
+    otpDisplay.classList.remove("hidden");
+  }
 
   // Update confirmation details
   const pickupDate = getNextWeekdayDate(selectedTimeSlot.day);
@@ -128,7 +157,7 @@ function showConfirmationStep(reservationData, record) {
 
   // Add event listeners for calendar and share buttons
   document.getElementById("addToCalendar").addEventListener("click", () => {
-    generateICS(reservationData.pickup, reservedItems);
+    generateICS(reservationData.pickup, reservedItems, otp);
   });
 
   document
@@ -137,9 +166,10 @@ function showConfirmationStep(reservationData, record) {
       if (navigator.share) {
         try {
           const pickupDate = getNextWeekdayDate(selectedTimeSlot.day);
+          const otpText = otp ? `\n\nAbholcode: ${otp}` : "";
           await navigator.share({
-            title: "Meine Leihlokal Reservierung",
-            text: `Ich habe folgende Artikel im Leihlokal reserviert:\n${reservedItems.map((item) => `- ${formatIID(item.iid)} ${item.name}`).join("\n")}\nAbholung: ${weekSchedule[selectedTimeSlot.day].name}, ${formatDate(pickupDate)}, ${selectedTimeSlot.time} Uhr`,
+            title: "Meine leih.lokal Reservierung",
+            text: `Ich habe folgende Artikel im leih.lokal reserviert:\n${reservedItems.map((item) => `- ${formatIID(item.iid)} ${item.name}`).join("\n")}\nAbholung: ${weekSchedule[selectedTimeSlot.day].name}, ${formatDate(pickupDate)}, ${selectedTimeSlot.time} Uhr${otpText}`,
           });
         } catch (err) {
           console.error("Share failed:", err);
@@ -211,19 +241,16 @@ document
     e.preventDefault();
 
     if (currentReservationStep === 1) {
-      const isExistingUser = document.getElementById("userTypeSwitch").checked;
-      const activeForm = document.getElementById(
-        isExistingUser ? "existingUserForm" : "newUserForm",
-      );
+      const customerForm = document.getElementById("customerForm");
 
-      if (activeForm.checkValidity()) {
+      if (customerForm.checkValidity()) {
         // Move to time slot selection
         document.getElementById("formContainer").classList.add("hidden");
         document.getElementById("timeSlotSelection").classList.remove("hidden");
         this.textContent = "Reservierung abschließen →";
         currentReservationStep = 2;
       } else {
-        activeForm.reportValidity();
+        customerForm.reportValidity();
       }
     } else {
       if (!selectedTimeSlot) {
@@ -245,29 +272,10 @@ document
         `;
 
       try {
-        const isExistingUser =
-          document.getElementById("userTypeSwitch").checked;
-        const formData = isExistingUser
-          ? {
-              customer_iid: document.querySelector("#existingUserForm input")
-                .value,
-              customer_name: null,
-              customer_email: null,
-              customer_phone: null,
-              is_new_customer: false,
-            }
-          : {
-              customer_name: document.querySelector(
-                '#newUserForm input[type="text"]',
-              ).value,
-              customer_email: document.querySelector(
-                '#newUserForm input[type="email"]',
-              ).value,
-              customer_phone: document.querySelector(
-                '#newUserForm input[type="tel"]',
-              ).value,
-              is_new_customer: true,
-            };
+        // Collect email only - backend will handle everything else
+        const formData = {
+          customer_email: document.querySelector('#customerForm input[name="email"]').value,
+        };
 
         const reservationData = {
           ...formData,
@@ -419,7 +427,7 @@ function createProductCard(item) {
 
   const status = statusConfig[item.status] || statusConfig.instock;
 
-  const paddedIid = String(item.iid).padStart(4, '0');
+  const paddedIid = String(item.iid).padStart(4, "0");
 
   return `
         <div class="border border-black">
@@ -592,9 +600,8 @@ function closeReservationModal() {
   modal.classList.remove("flex");
   document.body.style.overflow = "";
 
-  // Reset forms
-  document.getElementById("newUserForm").reset();
-  document.getElementById("existingUserForm").reset();
+  // Reset form
+  document.getElementById("customerForm").reset();
 
   // Reset state
   currentReservationStep = 1;
@@ -617,8 +624,10 @@ function closeReservationModal() {
     btn.classList.remove("bg-leihlokal-500", "text-white");
   });
 
-  // Also hide confirmation step
+  // Also hide confirmation step and OTP display
   document.getElementById("confirmationStep").classList.add("hidden");
+  document.getElementById("otpDisplay").classList.add("hidden");
+  document.getElementById("otpNumber").textContent = "";
 }
 
 // Update Complete Reservation button click handler
@@ -637,22 +646,6 @@ document
   .addEventListener("click", function (e) {
     if (e.target === this) {
       closeReservationModal();
-    }
-  });
-
-// Handle user type switch
-document
-  .getElementById("userTypeSwitch")
-  .addEventListener("change", function (e) {
-    const newUserForm = document.getElementById("newUserForm");
-    const existingUserForm = document.getElementById("existingUserForm");
-
-    if (this.checked) {
-      newUserForm.classList.add("hidden");
-      existingUserForm.classList.remove("hidden");
-    } else {
-      newUserForm.classList.remove("hidden");
-      existingUserForm.classList.add("hidden");
     }
   });
 
@@ -927,3 +920,30 @@ function playAddToCartAnimation(buttonEl) {
 
 // Start the app
 initializeApp();
+
+// TEST MODE: Expose function for testing confirmation screen
+window.showConfirmationStepTest = function(reservationData, record) {
+  // Add mock cart items if cart is empty
+  if (cart.items.length === 0) {
+    cart.addItem({
+      id: 'test_item_1',
+      iid: 123,
+      name: 'Test Bohrmaschine',
+      deposit: 25
+    });
+    cart.addItem({
+      id: 'test_item_2',
+      iid: 456,
+      name: 'Test Schleifmaschine',
+      deposit: 30
+    });
+  }
+
+  // Set a mock time slot
+  selectedTimeSlot = {
+    day: 'wed',
+    time: '14:00'
+  };
+
+  showConfirmationStep(reservationData, record);
+};

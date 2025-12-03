@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Kirby CMS-based website for "Leihlokal" (a community lending/borrowing service), built with PHP, Tailwind CSS, and modern JavaScript. The site uses Kirby 4.x as the CMS backend with custom templates, blueprints, and controllers.
+This is a Kirby CMS-based website for leih.lokal Karlsruhe (a community lending/borrowing service), built with PHP, Tailwind CSS, and modern JavaScript. The site uses Kirby 5 as the CMS backend with custom templates, blueprints, and controllers.
 
 ## Development Commands
 
@@ -19,7 +19,7 @@ This is a Kirby CMS-based website for "Leihlokal" (a community lending/borrowing
 - **Install dependencies**: `composer install`
 
 ### PHP Requirements
-- PHP 8.1.0 or higher (compatible with 8.1, 8.2, 8.3)
+- PHP 8.1.0 or higher (compatible with 8.1, 8.2, 8.3. 8.3 recommended)
 - Required extensions: SimpleXML, ctype, curl, dom, filter, hash, iconv, json, libxml, mbstring, openssl
 
 ## Architecture

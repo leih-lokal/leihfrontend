@@ -1,4 +1,4 @@
-# Leihlokal Website
+# leih.lokal Website (LLKA-W)
 
 A modern, file-based CMS website for Leihlokal - a community lending and borrowing service. Built with Kirby CMS 4.x, Tailwind CSS, and modern JavaScript.
 
