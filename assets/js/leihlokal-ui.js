@@ -282,26 +282,12 @@ document
           items: cart.items.map((item) => item.id),
           pickup: formatPickupDate(selectedTimeSlot.day, selectedTimeSlot.time),
           comments: "",
+          is_new_customer: true,
           done: false,
         };
 
-        // Submit to API
-        const response = await fetch(
-          "https://stage.leihlokal-ka.de/api/collections/reservation/records",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reservationData),
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const record = await response.json();
+        // Submit to API using the LeihlocalAPI class method
+        const record = await api.submitReservation(reservationData);
 
         // Show success message and switch to confirmation step
         submitButton.className = "hidden"; // Hide the submit button
@@ -920,30 +906,3 @@ function playAddToCartAnimation(buttonEl) {
 
 // Start the app
 initializeApp();
-
-// TEST MODE: Expose function for testing confirmation screen
-window.showConfirmationStepTest = function(reservationData, record) {
-  // Add mock cart items if cart is empty
-  if (cart.items.length === 0) {
-    cart.addItem({
-      id: 'test_item_1',
-      iid: 123,
-      name: 'Test Bohrmaschine',
-      deposit: 25
-    });
-    cart.addItem({
-      id: 'test_item_2',
-      iid: 456,
-      name: 'Test Schleifmaschine',
-      deposit: 30
-    });
-  }
-
-  // Set a mock time slot
-  selectedTimeSlot = {
-    day: 'wed',
-    time: '14:00'
-  };
-
-  showConfirmationStep(reservationData, record);
-};

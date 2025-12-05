@@ -204,18 +204,44 @@ class LeihlocalAPI {
 
     async getItem(id) {
         try {
-            
+
             const item = await this.pb.collection('item_public').getOne(id);
-            
+
             const transformedItem = {
                 ...item,
                 images: this.transformItemImages(item)
             };
-            
+
             console.log('Retrieved item:', transformedItem);
             return transformedItem;
         } catch (error) {
             console.error('Failed to fetch item:', error);
+            throw error;
+        }
+    }
+
+    async submitReservation(reservationData) {
+        try {
+            const response = await fetch(
+                `${this.pb.baseUrl}/api/collections/reservation/records`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reservationData),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const record = await response.json();
+            console.log('Reservation created:', record);
+            return record;
+        } catch (error) {
+            console.error('Failed to submit reservation:', error);
             throw error;
         }
     }

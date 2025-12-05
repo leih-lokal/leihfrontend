@@ -568,14 +568,6 @@ foreach ($openingHours as $day) {
                     Weiter zur Terminauswahl →
                 </button>
             </div>
-
-            <!-- TEST MODE: Skip to Confirmation (Remove this in production) -->
-            <div class="mt-4">
-                <button id="testConfirmation"
-                        class="w-full bg-gray-500 text-white p-3 text-sm hover:bg-gray-600 transition-colors">
-                    🧪 TEST: Bestätigung anzeigen
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -616,7 +608,7 @@ foreach ($openingHours as $day) {
 document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.getElementById('sidebarToggleBtn');
     const toggleIcon = document.getElementById('sidebarToggleIcon');
-    
+
     toggleBtn.addEventListener('click', function() {
         const sidebar = document.getElementById('mobileSidebar');
         if (sidebar) {
@@ -625,38 +617,6 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleIcon.classList.toggle('rotate-180');
         }
     });
-
-    // TEST MODE: Button to skip to confirmation screen
-    const testButton = document.getElementById('testConfirmation');
-    if (testButton) {
-        testButton.addEventListener('click', function() {
-            // Mock reservation data
-            const mockReservationData = {
-                pickup: new Date(Date.now() + 86400000 * 3).toISOString(), // 3 days from now
-                customer_email: 'test@example.com'
-            };
-
-            // Mock API response with OTP
-            const mockRecord = {
-                id: 'test_reservation_123',
-                customer_iid: '1234',
-                customer_name: 'Test User',
-                customer_email: 'test@example.com',
-                customer_phone: '+49123456789',
-                is_new_customer: false,
-                otp: '789012',
-                created: new Date().toISOString()
-            };
-
-            // Simulate what happens in showConfirmationStep
-            // Import the function from the module
-            if (window.showConfirmationStepTest) {
-                window.showConfirmationStepTest(mockReservationData, mockRecord);
-            } else {
-                alert('Test function not loaded. Make sure the page is fully loaded.');
-            }
-        });
-    }
 });
 
     window.weekSchedule = <?= json_encode($weekSchedule) ?>;
