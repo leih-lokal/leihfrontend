@@ -6,9 +6,11 @@
     <title><?= $page->title() ?></title>
     <link rel="icon" href="/favicon-48x48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="stylesheet" href="<?= url('assets/css/tailwind.css') ?>">
-    <link rel="stylesheet" href="<?= url('assets/css/pages/' . $page->intendedTemplate() . '.css') ?>">
-    <script src="<?= url('assets/js/main.js') ?>" defer></script>
+    <link rel="stylesheet" href="<?= url("assets/css/tailwind.css") ?>">
+    <link rel="stylesheet" href="<?= url(
+      "assets/css/pages/" . $page->intendedTemplate() . ".css",
+    ) ?>">
+    <script src="<?= url("assets/js/main.js") ?>" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js" defer></script>
 </head>
@@ -32,45 +34,56 @@
         <!-- Desktop navigation -->
         <nav class="hidden md:flex flex-1">
             <ul class="flex list-none m-0 p-0 w-full">
-                <?php foreach($site->children()->listed() as $item): ?>
+                <?php foreach ($site->children()->listed() as $item): ?>
                 <?php
                 // Filter out virtual item pages from dropdown
-                $realChildren = $item->children()->filterBy('intendedTemplate', '!=', 'item');
+                $realChildren = $item
+                  ->children()
+                  ->filterBy("intendedTemplate", "!=", "item");
                 $hasRealChildren = $realChildren->isNotEmpty();
                 ?>
                 <li class="flex-1 border-r border-leihlokal-500 last:border-r-0 relative nav-item">
                     <a href="<?= $item->url() ?>"
                        class="flex items-center justify-center p-4 no-underline text-gray-700 hover:bg-gray-100 transition-colors duration-300 w-full h-full">
-                        <?php if ($item->title()->value() == 'Leih.Lokal'): ?>
-                            <img src="<?= url('assets/svg/leihlokal.svg') ?>" alt="Leih.Lokal" class="h-6">
-                        <?php elseif ($item->title()->value() == 'Frei_Räume'): ?>
-                            <img src="<?= url('assets/svg/frei-raume.svg') ?>" alt="Frei_Räume" class="h-6">
+                        <?php if ($item->title()->value() == "Leih.Lokal"): ?>
+                            <img src="<?= url(
+                              "assets/svg/leihlokal.svg",
+                            ) ?>" alt="Leih.Lokal" class="h-6">
+                        <?php elseif (
+                          $item->title()->value() == "Frei_Räume"
+                        ): ?>
+                            <img src="<?= url(
+                              "assets/svg/frei-raume.svg",
+                            ) ?>" alt="Frei_Räume" class="h-6">
                         <?php else: ?>
                             <?= $item->title() ?>
-                        <?php endif ?>
+                        <?php endif; ?>
                         <?php if ($hasRealChildren): ?>
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
-                        <?php endif ?>
+                        <?php endif; ?>
                     </a>
 
                     <?php if ($hasRealChildren): ?>
                     <div class="nav-dropdown absolute top-full left-0 right-0 bg-white border-x border-b border-leihlokal-500 opacity-0 invisible transition-all duration-200 z-50">
                         <ul class="list-none m-0 p-0">
-                            <?php foreach ($realChildren->listed() as $subitem): ?>
+                            <?php foreach (
+                              $realChildren->listed()
+                              as $subitem
+                            ): ?>
                             <li class="border-b border-gray-200 last:border-b-0">
                                 <a href="<?= $subitem->url() ?>"
                                    class="block p-3 no-underline text-gray-700 hover:bg-gray-100 transition-colors duration-200 text-sm">
                                     <?= $subitem->title() ?>
                                 </a>
                             </li>
-                            <?php endforeach ?>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
-                    <?php endif ?>
+                    <?php endif; ?>
                 </li>
-                <?php endforeach ?>
+                <?php endforeach; ?>
             </ul>
         </nav>
     </div>
@@ -78,10 +91,12 @@
     <!-- Mobile navigation -->
     <nav id="mobile-menu" class="hidden md:hidden border-t border-leihlokal-500">
         <ul class="list-none m-0 p-0">
-            <?php foreach($site->children()->listed() as $item): ?>
+            <?php foreach ($site->children()->listed() as $item): ?>
             <?php
             // Filter out virtual item pages from dropdown (mobile)
-            $realChildren = $item->children()->filterBy('intendedTemplate', '!=', 'item');
+            $realChildren = $item
+              ->children()
+              ->filterBy("intendedTemplate", "!=", "item");
             $hasRealChildren = $realChildren->isNotEmpty();
             ?>
             <li class="border-b border-leihlokal-500 last:border-b-0">
@@ -92,43 +107,60 @@
                             <a href="<?= $item->url() ?>"
                                class="flex-1 no-underline text-gray-700"
                                onclick="event.stopPropagation()">
-                                <?php if ($item->title()->value() == 'Leih.Lokal'): ?>
-                                    <img src="<?= url('assets/svg/leihlokal.svg') ?>" alt="Leih.Lokal" class="h-6">
-                                <?php elseif ($item->title()->value() == 'Frei_Räume'): ?>
-                                    <img src="<?= url('assets/svg/frei-raume.svg') ?>" alt="Frei_Räume" class="h-6">
+                                <?php if (
+                                  $item->title()->value() == "leih.lokal"
+                                ): ?>
+                                    <img src="<?= url(
+                                      "assets/svg/leihlokal.svg",
+                                    ) ?>" alt="Leih.Lokal" class="h-6">
+                                <?php elseif (
+                                  $item->title()->value() == "Frei_Räume"
+                                ): ?>
+                                    <img src="<?= url(
+                                      "assets/svg/frei-raume.svg",
+                                    ) ?>" alt="Frei_Räume" class="h-6">
                                 <?php else: ?>
                                     <?= $item->title() ?>
-                                <?php endif ?>
+                                <?php endif; ?>
                             </a>
                             <svg class="w-5 h-5 text-gray-700 transition-transform mobile-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </div>
                         <ul class="hidden mobile-submenu list-none m-0 p-0 bg-gray-50">
-                            <?php foreach ($realChildren->listed() as $subitem): ?>
+                            <?php foreach (
+                              $realChildren->listed()
+                              as $subitem
+                            ): ?>
                             <li class="border-t border-gray-200">
                                 <a href="<?= $subitem->url() ?>"
                                    class="block pl-6 pr-4 py-3 no-underline text-gray-700 hover:bg-gray-100 transition-colors duration-200 text-sm">
                                     <?= $subitem->title() ?>
                                 </a>
                             </li>
-                            <?php endforeach ?>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php else: ?>
                     <a href="<?= $item->url() ?>"
                        class="block p-4 no-underline text-gray-700 hover:bg-gray-100 transition-colors duration-300">
-                        <?php if ($item->title()->value() == 'leih.lokal'): ?>
-                            <img src="<?= url('assets/svg/leihlokal.svg') ?>" alt="Leih.Lokal" class="h-6">
-                        <?php elseif ($item->title()->value() == 'Frei_Räume'): ?>
-                            <img src="<?= url('assets/svg/frei-raume.svg') ?>" alt="Frei_Räume" class="h-6">
+                        <?php if ($item->title()->value() == "leih.lokal"): ?>
+                            <img src="<?= url(
+                              "assets/svg/leihlokal.svg",
+                            ) ?>" alt="Leih.Lokal" class="h-6">
+                        <?php elseif (
+                          $item->title()->value() == "Frei_Räume"
+                        ): ?>
+                            <img src="<?= url(
+                              "assets/svg/frei-raume.svg",
+                            ) ?>" alt="Frei_Räume" class="h-6">
                         <?php else: ?>
                             <?= $item->title() ?>
-                        <?php endif ?>
+                        <?php endif; ?>
                     </a>
-                <?php endif ?>
+                <?php endif; ?>
             </li>
-            <?php endforeach ?>
+            <?php endforeach; ?>
         </ul>
     </nav>
 </header>
