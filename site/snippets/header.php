@@ -45,10 +45,10 @@
                 <li class="flex-1 border-r border-leihlokal-500 last:border-r-0 relative nav-item">
                     <a href="<?= $item->url() ?>"
                        class="flex items-center justify-center p-4 no-underline text-gray-700 hover:bg-gray-100 transition-colors duration-300 w-full h-full">
-                        <?php if ($item->title()->value() == "Leih.Lokal"): ?>
+                        <?php if ($item->title()->value() == "leih.lokal"): ?>
                             <img src="<?= url(
                               "assets/svg/leihlokal.svg",
-                            ) ?>" alt="Leih.Lokal" class="h-6">
+                            ) ?>" alt="leih.lokal" class="h-6">
                         <?php elseif (
                           $item->title()->value() == "Frei_Räume"
                         ): ?>
@@ -112,7 +112,7 @@
                                 ): ?>
                                     <img src="<?= url(
                                       "assets/svg/leihlokal.svg",
-                                    ) ?>" alt="Leih.Lokal" class="h-6">
+                                    ) ?>" alt="leih.lokal" class="h-6">
                                 <?php elseif (
                                   $item->title()->value() == "Frei_Räume"
                                 ): ?>
@@ -147,7 +147,7 @@
                         <?php if ($item->title()->value() == "leih.lokal"): ?>
                             <img src="<?= url(
                               "assets/svg/leihlokal.svg",
-                            ) ?>" alt="Leih.Lokal" class="h-6">
+                            ) ?>" alt="leih.lokal" class="h-6">
                         <?php elseif (
                           $item->title()->value() == "Frei_Räume"
                         ): ?>
