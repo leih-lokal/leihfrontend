@@ -29,3 +29,57 @@
 .notice-bounce {
   animation: notice-bounce 1s ease-in-out infinite;
 }
+
+/* Day Selector Enhancements */
+
+/* Yesterday disabled state */
+.cursor-not-allowed {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Hover effect for clickable days */
+.day-selector-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Selected state styling */
+.day-selector-button[data-selected="true"] {
+    background-color: oklch(0.55 0.22 25);
+    border-color: oklch(0.50 0.22 25);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.day-selector-button[data-selected="true"] .text-gray-700,
+.day-selector-button[data-selected="true"] .text-gray-600,
+.day-selector-button[data-selected="true"] .text-leihlokal-600 {
+    color: white !important;
+}
+
+.day-selector-button[data-selected="true"] .selected-indicator {
+    display: block;
+}
+
+/* Reservation Modal Day Selection */
+.day-option {
+    cursor: pointer;
+}
+
+.day-selected {
+    background-color: oklch(0.55 0.22 25) !important;
+    border-color: oklch(0.50 0.22 25) !important;
+}
+
+.day-selected * {
+    color: white !important;
+}
+
+.day-selected .day-selected-indicator {
+    display: block !important;
+}
+
+.day-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}

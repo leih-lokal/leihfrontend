@@ -9,8 +9,6 @@ const pageNumbers = document.getElementById("pageNumbers");
 let currentPage = 1;
 let currentCategory = "";
 let cart = api.cart;
-let selectedTimeSlot = null;
-let currentReservationStep = 1;
 let showOnlyAvailable = true;
 
 // Helper function to format date
@@ -97,87 +95,94 @@ function generateICS(pickup, items, otp = null) {
   document.body.removeChild(link);
 }
 
-// Function to show confirmation step
-function showConfirmationStep(reservationData, record) {
-  // Store cart items for sharing
-  const reservedItems = [...cart.items]; // Make a copy of cart items
+// ============================================================================
+// RESERVATION FLOW
+// ============================================================================
 
-  // Store OTP for later use
-  const otp = record?.otp || null;
+let selectedPickupDay = null;
 
-  // Hide time slot selection and show confirmation
-  document.getElementById("timeSlotSelection").classList.add("hidden");
-  document.getElementById("confirmationStep").classList.remove("hidden");
+// Show success screen
+function showReservationSuccess(record, reservationData, reservedItems) {
+  // Hide form, show success
+  document.getElementById("reservationForm").classList.add("hidden");
+  document.getElementById("successDisplay").classList.remove("hidden");
 
-  // Hide the top cart summary
-  document.querySelector(".mb-6:first-child").classList.add("hidden");
-
-  // Display OTP if it exists in the record
-  if (otp) {
-    const otpDisplay = document.getElementById("otpDisplay");
-    const otpNumber = document.getElementById("otpNumber");
-    otpNumber.textContent = otp;
-    otpDisplay.classList.remove("hidden");
+  // Display OTP
+  if (record.otp) {
+    document.getElementById("otpNumber").textContent = record.otp;
   }
 
-  // Update confirmation details
-  const pickupDate = getNextWeekdayDate(selectedTimeSlot.day);
-  const details = document.getElementById("confirmationDetails");
-  details.innerHTML = `
-        <div class="flex justify-between border-b pb-2">
-            <span class="font-medium">Abholtermin:</span>
-            <span>${weekSchedule[selectedTimeSlot.day].name}, ${formatDate(pickupDate)}, ${selectedTimeSlot.time} Uhr</span>
-        </div>
-        <div class="border-b pb-2">
-            <div class="font-medium mb-2">Reservierte Artikel:</div>
-            ${reservedItems
-              .map(
-                (item) => `
-                <div class="flex justify-between pl-4">
-                    <span class="font-mono">${formatIID(item.iid)} - ${item.name}</span>
-                    <span class="text-gray-600">€${item.deposit || 0}</span>
-                </div>
-            `,
-              )
-              .join("")}
-        </div>
-        <div class="flex justify-between pt-2">
-            <span class="font-medium">Gesamtpfand:</span>
-            <span>€${reservedItems.reduce((sum, item) => sum + (item.deposit || 0), 0)}</span>
-        </div>
-    `;
-
-  // Trigger confetti
-  confetti({
-    particleCount: 200,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: ["#ff0000", "#ffffff"],
+  // Build summary
+  const pickupDate = new Date(reservationData.pickup);
+  const formattedDate = pickupDate.toLocaleDateString("de-DE", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const formattedTime = pickupDate.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
-  // Add event listeners for calendar and share buttons
-  document.getElementById("addToCalendar").addEventListener("click", () => {
-    generateICS(reservationData.pickup, reservedItems, otp);
-  });
+  const totalDeposit = reservedItems.reduce((sum, item) => sum + (item.deposit || 0), 0);
 
-  document
-    .getElementById("shareReservation")
-    .addEventListener("click", async () => {
-      if (navigator.share) {
-        try {
-          const pickupDate = getNextWeekdayDate(selectedTimeSlot.day);
-          const otpText = otp ? `\n\nAbholcode: ${otp}` : "";
-          await navigator.share({
-            title: "Meine leih.lokal Reservierung",
-            text: `Ich habe folgende Artikel im leih.lokal reserviert:\n${reservedItems.map((item) => `- ${formatIID(item.iid)} ${item.name}`).join("\n")}\nAbholung: ${weekSchedule[selectedTimeSlot.day].name}, ${formatDate(pickupDate)}, ${selectedTimeSlot.time} Uhr${otpText}`,
-          });
-        } catch (err) {
-          console.error("Share failed:", err);
-        }
-      } else {
-        alert("Teilen wird von deinem Browser nicht unterstützt");
-      }
+  const summary = `
+    <div class="flex justify-between border-b pb-2">
+      <span class="font-medium">Abholtermin:</span>
+      <span>${formattedDate}, ${formattedTime} Uhr</span>
+    </div>
+    <div class="flex justify-between border-b pb-2">
+      <span class="font-medium">Email:</span>
+      <span>${reservationData.customer_email}</span>
+    </div>
+    <div class="flex justify-between border-b pb-2">
+      <span class="font-medium">Artikel:</span>
+      <span>${reservationData.items.length} Stück</span>
+    </div>
+    <div class="flex justify-between font-bold text-lg">
+      <span>Gesamtpfand:</span>
+      <span class="text-leihlokal-600">${totalDeposit.toFixed(2).replace(".", ",")} €</span>
+    </div>
+  `;
+
+  document.getElementById("reservationSummary").innerHTML = summary;
+
+  // Confetti!
+  if (typeof confetti !== "undefined") {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
     });
+  }
+
+  // Setup calendar button
+  const calendarBtn = document.getElementById("addToCalendarBtn");
+  const newCalendarBtn = calendarBtn.cloneNode(true);
+  calendarBtn.parentNode.replaceChild(newCalendarBtn, calendarBtn);
+  newCalendarBtn.addEventListener("click", () => {
+    generateICS(reservationData.pickup, reservedItems, record.otp);
+  });
+
+  // Setup share button
+  const shareBtn = document.getElementById("shareReservationBtn");
+  const newShareBtn = shareBtn.cloneNode(true);
+  shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+  newShareBtn.addEventListener("click", () => {
+    const otp = record.otp;
+    const text = `Meine Reservierung bei leih.lokal Karlsruhe\nAbholcode: ${otp}\nAbholung: ${formattedDate}, ${formattedTime} Uhr`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: "leih.lokal Reservierung",
+        text: text,
+      });
+    } else {
+      navigator.clipboard.writeText(text);
+      alert("In Zwischenablage kopiert!");
+    }
+  });
 }
 
 function updateCartUI() {
@@ -214,111 +219,163 @@ function updateCartUI() {
   completeReservationBtn.classList.remove("hidden");
 }
 
-function formatPickupDate(dayKey, timeSlot) {
-  // Get current date and find next occurrence of the selected day
-  const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]; // Changed order to match PHP
-  const today = new Date();
-  const currentDay = today.getDay();
-  const targetDay = days.indexOf(dayKey);
+function formatPickupDate(dateISO, timeSlot) {
+  // Parse ISO date (YYYY-MM-DD)
+  const [year, month, day] = dateISO.split('-').map(Number);
+  const [hours, minutes] = timeSlot.split(':').map(Number);
 
-  let daysToAdd = targetDay - (currentDay - 1); // Adjusted for Monday-based week
-  if (daysToAdd <= 0) daysToAdd += 7;
-
-  const pickupDate = new Date(today);
-  pickupDate.setDate(today.getDate() + daysToAdd);
-
-  // Set the time
-  const [hours, minutes] = timeSlot.split(":");
-  pickupDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
+  const pickupDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
   return pickupDate.toISOString();
 }
 
-// Update the submit button handler
-document
-  .getElementById("submitReservation")
-  .addEventListener("click", async function (e) {
-    e.preventDefault();
+// Open reservation modal
+document.getElementById("completeReservation").addEventListener("click", () => {
+  if (cart.items.length === 0) {
+    alert("Dein Ausleihkorb ist leer");
+    return;
+  }
 
-    if (currentReservationStep === 1) {
-      const customerForm = document.getElementById("customerForm");
+  // Populate modal cart summary
+  const modalCartItems = document.getElementById("modalCartItems");
+  const totalDeposit = cart.items.reduce((sum, item) => sum + item.deposit, 0);
 
-      if (customerForm.checkValidity()) {
-        // Move to time slot selection
-        document.getElementById("formContainer").classList.add("hidden");
-        document.getElementById("timeSlotSelection").classList.remove("hidden");
-        this.textContent = "Reservierung abschließen →";
-        currentReservationStep = 2;
-      } else {
-        customerForm.reportValidity();
-      }
-    } else {
-      if (!selectedTimeSlot) {
-        alert("Bitte wähle einen Abholtermin aus");
-        return;
-      }
+  modalCartItems.innerHTML = cart.items
+    .map(
+      (item) => `
+      <div class="flex justify-between text-sm">
+        <span class="font-mono">${formatIID(item.iid)}</span>
+        <span class="flex-1 px-3">${item.name}</span>
+        <span class="font-bold">${item.deposit.toFixed(2)} €</span>
+      </div>
+    `
+    )
+    .join("");
 
-      // Get the button reference
-      const submitButton = this;
+  document.getElementById("modalTotalDeposit").textContent =
+    totalDeposit.toFixed(2).replace(".", ",") + " €";
 
-      // Show loading state
-      submitButton.disabled = true;
-      submitButton.innerHTML = `
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Wird verarbeitet...
-        `;
-
-      try {
-        // Collect email only - backend will handle everything else
-        const formData = {
-          customer_email: document.querySelector('#customerForm input[name="email"]').value,
-        };
-
-        const reservationData = {
-          ...formData,
-          items: cart.items.map((item) => item.id),
-          pickup: formatPickupDate(selectedTimeSlot.day, selectedTimeSlot.time),
-          comments: "",
-          is_new_customer: true,
-          done: false,
-        };
-
-        // Submit to API using the LeihlocalAPI class method
-        const record = await api.submitReservation(reservationData);
-
-        // Show success message and switch to confirmation step
-        submitButton.className = "hidden"; // Hide the submit button
-        showConfirmationStep(reservationData, record);
-
-        // Clear cart (but don't close modal)
-        cart.clearCart();
-        updateCartUI();
-      } catch (error) {
-        console.error("Reservation failed:", error);
-
-        // Show error state
-        submitButton.className =
-          "w-full bg-red-500 text-white p-3 transition-colors";
-        submitButton.innerHTML = `
-                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-                Fehler beim Reservieren
-            `;
-
-        // Reset button after delay
-        setTimeout(() => {
-          submitButton.className =
-            "w-full bg-leihlokal-500 text-white p-3 hover:bg-leihlokal-600 transition-colors";
-          submitButton.innerHTML = "Vorbestellung abschicken! →";
-          submitButton.disabled = false;
-        }, 3000);
-      }
-    }
+  // Reset form state
+  selectedPickupDay = null;
+  document.querySelectorAll(".day-option").forEach((btn) => {
+    btn.classList.remove("day-selected");
   });
+  document.getElementById("reservationForm").classList.remove("hidden");
+  document.getElementById("successDisplay").classList.add("hidden");
+
+  // Show modal
+  document.getElementById("reservationModal").classList.remove("hidden");
+});
+
+// Close modal handlers
+document.getElementById("closeReservationModal").addEventListener("click", () => {
+  document.getElementById("reservationModal").classList.add("hidden");
+  // If success screen was showing, refresh page to clear state
+  if (!document.getElementById("successDisplay").classList.contains("hidden")) {
+    window.location.reload();
+  }
+});
+
+document.getElementById("closeSuccessBtn")?.addEventListener("click", () => {
+  document.getElementById("reservationModal").classList.add("hidden");
+  // Refresh page to clear state
+  window.location.reload();
+});
+
+// Day selection
+document.querySelectorAll(".day-option").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    const clickedBtn = e.currentTarget;
+
+    // Deselect all
+    document.querySelectorAll(".day-option").forEach((b) => {
+      b.classList.remove("day-selected");
+    });
+
+    // Select clicked
+    clickedBtn.classList.add("day-selected");
+
+    // Store selection
+    selectedPickupDay = {
+      dateISO: clickedBtn.dataset.dateIso,
+      time: clickedBtn.dataset.middleTime,
+    };
+  });
+});
+
+// Form submission
+document.getElementById("quickReservationForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  // Validation
+  const email = e.target.querySelector('input[name="email"]').value.trim();
+  if (!email) {
+    alert("Bitte gib deine Email-Adresse ein");
+    return;
+  }
+
+  if (!selectedPickupDay) {
+    alert("Bitte wähle einen Abholtermin aus");
+    return;
+  }
+
+  // Store cart items before clearing
+  const reservedItems = [...cart.items];
+
+  const submitBtn = document.getElementById("submitReservationBtn");
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = `
+    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Wird verarbeitet...
+  `;
+
+  try {
+    // Build pickup datetime
+    const [year, month, day] = selectedPickupDay.dateISO.split("-").map(Number);
+    const [hours, minutes] = selectedPickupDay.time.split(":").map(Number);
+    const pickupDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+    // Build reservation payload
+    const reservationData = {
+      customer_email: email,
+      items: cart.items.map((item) => item.id),
+      pickup: pickupDate.toISOString(),
+      comments: "",
+      is_new_customer: true,
+      done: false,
+    };
+
+    // Submit to API
+    const record = await api.submitReservation(reservationData);
+
+    // Show success
+    showReservationSuccess(record, reservationData, reservedItems);
+
+    // Clear cart
+    cart.clearCart();
+    updateCartUI();
+  } catch (error) {
+    console.error("Reservation failed:", error);
+
+    // Show error
+    submitBtn.classList.add("bg-red-500");
+    submitBtn.innerHTML = `
+      <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+      Fehler beim Reservieren
+    `;
+
+    // Reset after delay
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.className = "w-full bg-leihlokal-500 text-white p-4 text-lg font-bold hover:bg-leihlokal-600 transition-colors";
+      submitBtn.innerHTML = "Jetzt reservieren →";
+    }, 3000);
+  }
+});
 
 // Function to add item to cart
 window.addToCart = function (item) {
@@ -541,99 +598,6 @@ function closeItemModal() {
 }
 
 // Reservation Modal Functions
-function showReservationModal() {
-  const modal = document.getElementById("reservationModal");
-  const cartItemsContainer = document.getElementById("reservationCartItems");
-  const totalDepositSpan = document.getElementById("totalDeposit");
-
-  // Calculate total deposit and create items summary
-  let totalDeposit = 0;
-  const itemsHTML = cart.items
-    .map((item) => {
-      const deposit = item.deposit || 0;
-      totalDeposit += deposit;
-      return `
-            <div class="flex justify-between items-center py-2">
-                <span class="font-mono">${formatIID(item.iid)} - ${item.name}</span>
-                <span class="text-gray-600">€${deposit}</span>
-            </div>
-        `;
-    })
-    .join("");
-
-  cartItemsContainer.innerHTML = itemsHTML;
-  totalDepositSpan.textContent = `€${totalDeposit}`;
-
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-  document.body.style.overflow = "hidden";
-
-  // Reset state
-  currentReservationStep = 1;
-  selectedTimeSlot = null;
-  document.getElementById("timeSlotSelection").classList.add("hidden");
-  document.getElementById("formContainer").classList.remove("hidden");
-  document.getElementById("selectedTimeDisplay").textContent = "None";
-
-  // Update button text
-  document.getElementById("submitReservation").textContent =
-    "Weiter zur Terminauswahl →";
-}
-
-function closeReservationModal() {
-  const modal = document.getElementById("reservationModal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
-  document.body.style.overflow = "";
-
-  // Reset form
-  document.getElementById("customerForm").reset();
-
-  // Reset state
-  currentReservationStep = 1;
-  selectedTimeSlot = null;
-
-  // Reset UI
-  document.getElementById("timeSlotSelection").classList.add("hidden");
-  document.getElementById("formContainer").classList.remove("hidden");
-  document.getElementById("selectedTimeDisplay").textContent = "None";
-
-  // Reset button
-  const submitButton = document.getElementById("submitReservation");
-  submitButton.className =
-    "w-full bg-leihlokal-500 text-white p-3 hover:bg-leihlokal-600 transition-colors";
-  submitButton.innerHTML = "Vorbestellung abschicken! →";
-  submitButton.disabled = false;
-
-  // Clear selected time slot styling
-  document.querySelectorAll(".time-slot-button").forEach((btn) => {
-    btn.classList.remove("bg-leihlokal-500", "text-white");
-  });
-
-  // Also hide confirmation step and OTP display
-  document.getElementById("confirmationStep").classList.add("hidden");
-  document.getElementById("otpDisplay").classList.add("hidden");
-  document.getElementById("otpNumber").textContent = "";
-}
-
-// Update Complete Reservation button click handler
-document
-  .getElementById("completeReservation")
-  .addEventListener("click", showReservationModal);
-
-// Close button handler
-document
-  .getElementById("closeReservationModal")
-  .addEventListener("click", closeReservationModal);
-
-// Close on background click
-document
-  .getElementById("reservationModal")
-  .addEventListener("click", function (e) {
-    if (e.target === this) {
-      closeReservationModal();
-    }
-  });
 
 // Initialize API and load initial data
 async function initializeApp() {
@@ -799,28 +763,6 @@ document.addEventListener("click", function (e) {
     playAddToCartAnimation(e.target);
     // Close modal after adding
     closeItemModal();
-  }
-
-  // Handle time slot selection
-  if (e.target.matches(".time-slot-button")) {
-    // Remove previous selection
-    document.querySelectorAll(".time-slot-button").forEach((btn) => {
-      btn.classList.remove("bg-leihlokal-500", "text-white");
-    });
-
-    // Add selection to clicked button
-    e.target.classList.add("bg-leihlokal-500", "text-white");
-
-    // Store selection
-    selectedTimeSlot = {
-      day: e.target.dataset.day,
-      time: e.target.dataset.time,
-    };
-
-    // Update display with date
-    const targetDate = getNextWeekdayDate(selectedTimeSlot.day);
-    document.getElementById("selectedTimeDisplay").textContent =
-      `${weekSchedule[selectedTimeSlot.day].name}, ${formatDate(targetDate)}, ${selectedTimeSlot.time} Uhr`;
   }
 });
 
