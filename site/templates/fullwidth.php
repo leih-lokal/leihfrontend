@@ -103,7 +103,7 @@
           <?php else: ?>
           <!-- Text Only -->
           <div class="prose prose-lg max-w-none mb-6">
-            <?= $section->text()->html() ?>
+            <?= $section->text()->kt() ?>
           </div>
           <?php endif; ?>
 
