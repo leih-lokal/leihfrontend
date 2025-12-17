@@ -5,6 +5,9 @@ return [
     'panel' => [
         'install' => true
     ],
+    'api'=> [
+        'slug' => 'rest'
+    ],
 
     // Janitor job for emergency closing
     'callemergency' => function ($model, $data = null) {
