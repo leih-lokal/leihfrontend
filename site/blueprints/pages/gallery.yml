@@ -20,6 +20,9 @@ columns:
             options:
               grid: Grid Layout
               masonry: Masonry Layout
+              justified: Justified Layout
+              carousel: Carousel/Slider
+              metro: Metro/Pinterest Style
             default: grid
             width: 1/2
 
@@ -27,10 +30,40 @@ columns:
             label: Images per Row
             type: select
             options:
+              1: 1 Column
               2: 2 Columns
               3: 3 Columns
               4: 4 Columns
+              5: 5 Columns
+              6: 6 Columns
             default: 3
+            width: 1/2
+            when:
+              layout: grid
+
+          image_aspect_ratio:
+            label: Image Aspect Ratio
+            type: select
+            options:
+              auto: Auto (Original)
+              square: Square (1:1)
+              landscape: Landscape (4:3)
+              wide: Wide (16:9)
+              portrait: Portrait (3:4)
+            default: auto
+            width: 1/2
+            when:
+              layout: grid
+
+          gap_size:
+            label: Gap Between Images
+            type: select
+            options:
+              sm: Small
+              md: Medium
+              lg: Large
+              xl: Extra Large
+            default: md
             width: 1/2
 
           enable_categories:
