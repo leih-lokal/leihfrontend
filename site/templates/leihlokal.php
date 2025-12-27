@@ -213,6 +213,8 @@ foreach ($page->hours()->toStructure() as $day) {
 <?php if ($site->importanttoggle()->bool()): ?>
 <?php // Get notice settings
   // Get notice settings
+  // Get notice settings
+  // Get notice settings
 
 $intensity = $site->notice_intensity()->value() ?: "info";
 $iconType = $site->notice_icon()->value() ?: "info"; // Define styling based on intensity
@@ -242,7 +244,6 @@ $styles = [
     "animation" => "notice-pulse",
   ],
 ];
-
 $style = $styles[$intensity]; // Define icons
 $icons = [
   "info" =>
@@ -302,7 +303,6 @@ function generateTimeSlots($start, $end)
 {
   $slots = [];
   $startTime = strtotime($start);
-
   $endTime = strtotime($end);
   while ($startTime < $endTime) {
     $slots[] = date("H:i", $startTime);
@@ -331,8 +331,7 @@ $daySchedule = [];
 $today = time();
 for ($i = -1; $i <= 6; $i++) {
   $timestamp = strtotime("+{$i} days", $today);
-  $dayOfWeek = date("w", $timestamp);
-  // 0 = Sunday, 6 = Saturday
+  $dayOfWeek = date("w", $timestamp); // 0 = Sunday, 6 = Saturday
   $dayCodesMap = [
     0 => "sun",
     1 => "mon",
@@ -462,18 +461,27 @@ for ($i = -1; $i <= 6; $i++) {
             </div>
         </div>
 
-        <!-- Subpages -->
+        <!-- Subpages and Files -->
         <?php
         $realSubpages = $page
           ->children()
           ->filterBy("intendedTemplate", "!=", "item");
-        if ($realSubpages->isNotEmpty()): ?>
+        $pageFiles = $page->files();
+        if ($realSubpages->isNotEmpty() || $pageFiles->isNotEmpty()): ?>
         <div class="border border-black">
             <div class="bg-leihlokal-500 text-white p-4">Mehr zum leih.lokal</div>
             <div class="p-4 space-y-2">
                 <?php foreach ($realSubpages as $subpage): ?>
                 <a href="<?= $subpage->url() ?>" class="block p-2 hover:bg-gray-100 transition-colors">
                     <?= $subpage->title() ?>
+                </a>
+                <?php endforeach; ?>
+                <?php foreach ($pageFiles as $file): ?>
+                <a href="<?= $file->url() ?>" download class="block p-2 hover:bg-gray-100 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4 text-leihlokal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span><?= $file->filename() ?></span>
                 </a>
                 <?php endforeach; ?>
             </div>
