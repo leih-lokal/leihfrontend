@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page->title() ?></title>
+    <title><?= $page->title() ?> | BSKA</title>
     <link rel="icon" href="/favicon-48x48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="<?= url("assets/css/tailwind.css") ?>">
