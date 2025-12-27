@@ -1,0 +1,7 @@
+title: Download
+
+fields:
+  title:
+    label: Display Name
+    type: text
+    help: The name shown on the website (leave empty to use filename)

@@ -74,3 +74,4 @@ columns:
         query: page.children.filterBy("intendedTemplate", "!=", "item")
       files:
         type: files
+        template: download
