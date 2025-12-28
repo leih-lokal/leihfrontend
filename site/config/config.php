@@ -11,7 +11,7 @@ return [
 
     // Janitor job for emergency closing
     'callemergency' => function ($model, $data = null) {
-        $baseUrl = 'https://stage.leihlokal-ka.de';
+        $baseUrl = 'https://buergerstiftung-karlsruhe.de';
         $email = 'kirby@llka.link';
         $password = 'meldetsichan';
 

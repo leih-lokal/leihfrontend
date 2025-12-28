@@ -79,7 +79,7 @@ class Cart {
 
 class LeihlocalAPI {
     constructor() {
-        this.pb = new PocketBase('https://stage.leihlokal-ka.de');
+        this.pb = new PocketBase('https://buergerstiftung-karlsruhe.de');
         this.isInitialized = false;
         this.ITEMS_PER_PAGE = 20;
         this.initializationPromise = null;

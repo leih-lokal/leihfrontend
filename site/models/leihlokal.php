@@ -42,7 +42,7 @@ class LeihlokalPage extends Page {
 
         // Loop through all pages to get ALL items
         do {
-            $url = 'https://stage.leihlokal-ka.de/api/collections/item_public/records?page=' . $currentPage . '&perPage=' . $perPage;
+            $url = 'https://buergerstiftung-karlsruhe.de/api/collections/item_public/records?page=' . $currentPage . '&perPage=' . $perPage;
             $request = Remote::get($url);
 
             if ($request->code() === 200) {
