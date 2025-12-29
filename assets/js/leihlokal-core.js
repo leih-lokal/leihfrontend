@@ -3,7 +3,7 @@
 // It handles authentication (no it don't) and provides methods for fetching items and searching.
 // The API is initialized lazily, so you don't have to worry about it.
 // The API instance is exported as a default export, so you can import it anywhere.
-// 
+//
 // API Schema:
 // Collection 'item_public' is a view copy of the item database. It includes:
 // - id: string. Item ID in the database. Returned as a string. Not relevant for users or volunteers.
@@ -18,10 +18,10 @@
 // - model: string. Item model. Returned as a string.
 // - parts: number. Amount of parts of an item. Returned as a number.
 // - copies: number. Amount of instances of an item. Returned as a number.
-//    SHOULD MENTION: 'copies' is the amount of items available for rent, 
+//    SHOULD MENTION: 'copies' is the amount of items available for rent,
 //    'parts' is the amount of parts of one instance of that item.
 // - synonyms: string, comma-delimited. Alternative names for items that should also be allowed in search.
-// 
+//
 // Collection 'reservation':
 // Don't worry about it hehe
 
@@ -105,9 +105,9 @@ class LeihlocalAPI {
 
         // Start new initialization
         this.initializationPromise = (async () => {
-            
+
             this.isInitialized = true;
-            
+
         })();
 
         return this.initializationPromise;
@@ -115,42 +115,42 @@ class LeihlocalAPI {
 
     transformItemImages(item) {
         if (!item.images || !item.images.length) return [];
-        
+
         return item.images.map(imageName => ({
             full: this.getImageUrl('item', item.id, imageName),
-            thumb: this.getImageUrl('item', item.id, imageName, '300x300f')
+            thumb: this.getImageUrl('item', item.id, imageName, '512x512f')
         }));
     }
 
     async getItems(page = 1, additionalFilter = '') {
         try {
-            
+
             const options = {
                 sort: 'iid'
             };
-    
+
             // Create status filter
             const statusFilter = `status = "${this.VALID_STATUSES.join('" || status = "')}"`;
-            
+
             // Combine with additional filter if provided
             if (additionalFilter) {
                 options.filter = `(${statusFilter}) && (${additionalFilter})`;
             } else {
                 options.filter = statusFilter;
             }
-            
+
             const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, options);
-            
+
             const transformedItems = items.items.map(item => ({
                 ...item,
                 images: this.transformItemImages(item)
             }));
-    
+
             console.log('Retrieved items:', {
                 ...items,
                 items: transformedItems
             });
-            
+
             return {
                 ...items,
                 items: transformedItems
@@ -163,24 +163,24 @@ class LeihlocalAPI {
 
     async searchItems(query, page = 1) {
         try {
-            
+
             // Search by name, iid, and synonyms
-            const searchFilter = `name ~ "${query}" || 
-                                iid ~ "${query}" || 
+            const searchFilter = `name ~ "${query}" ||
+                                iid ~ "${query}" ||
                                 synonyms ~ "${query}"`;
-            
+
             // Add status filter
             const statusFilter = `status = "${this.VALID_STATUSES.join('" || status = "')}"`;
-            
+
             // Combine filters
             const filter = `(${statusFilter}) && (${searchFilter})`;
-            
+
             const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, {
                 filter: filter,
                 sort: 'iid',
                 fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms'
             });
-            
+
             const transformedItems = items.items.map(item => ({
                 ...item,
                 images: this.transformItemImages(item)
@@ -191,7 +191,7 @@ class LeihlocalAPI {
                 totalItems: items.totalItems,
                 items: transformedItems
             });
-    
+
             return {
                 ...items,
                 items: transformedItems

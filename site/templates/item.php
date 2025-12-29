@@ -84,7 +84,7 @@
                data-lightbox="item-<?= $page->iid() ?>"
                data-title="<?= $page->name() ?>">
               <img
-                src="https://buergerstiftung-karlsruhe.de/api/files/item/<?= $recordId ?>/<?= trim($firstImage) ?>?thumb=300x300f"
+                src="https://buergerstiftung-karlsruhe.de/api/files/item/<?= $recordId ?>/<?= trim($firstImage) ?>?thumb=512x512f"
                 alt="<?= $page->name() ?>"
                 class="w-full h-auto cursor-pointer hover:opacity-90 transition-opacity"
                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23f3f4f6\' width=\'400\' height=\'300\'/%3E%3Ctext fill=\'%239ca3af\' font-family=\'sans-serif\' font-size=\'18\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\'%3EKein Bild verfügbar%3C/text%3E%3C/svg%3E';"
