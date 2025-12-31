@@ -125,7 +125,7 @@
       <?php if ($page->additional_content()->isNotEmpty()): ?>
       <section class="mt-12 pt-8 border-t border-gray-200">
         <div class="prose prose-lg max-w-none">
-          <?= $page->additional_content()->kt() ?>
+          <?= $page->additional_content() ?>
         </div>
       </section>
       <?php endif; ?>
