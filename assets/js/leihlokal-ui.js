@@ -8,6 +8,7 @@ const pageNumbers = document.getElementById("pageNumbers");
 
 let currentPage = 1;
 let currentCategory = "";
+let currentSearchQuery = "";
 let cart = api.cart;
 let showOnlyAvailable = true;
 
@@ -392,6 +393,8 @@ window.removeFromCart = function (itemId) {
 // Filter items by category
 async function filterByCategory(category) {
   currentCategory = category;
+  currentSearchQuery = "";
+  searchInput.value = "";
 
   // Update active state in UI
   document.querySelectorAll(".category-filter").forEach((el) => {
@@ -609,8 +612,10 @@ async function initializeApp() {
   }
 }
 
-// Load and render items
+// Load and render items (browse mode)
 window.loadItems = async function (page = 1) {
+  currentSearchQuery = "";
+
   try {
     let filter = [];
 
@@ -636,6 +641,15 @@ window.loadItems = async function (page = 1) {
   }
 };
 
+// Unified pagination function - routes to search or browse
+window.goToPage = async function (page) {
+  if (currentSearchQuery) {
+    await performSearch(currentSearchQuery, page);
+  } else {
+    await loadItems(page);
+  }
+};
+
 // Update pagination controls
 function updatePagination(totalPages) {
   prevPageBtn.disabled = currentPage === 1;
@@ -649,7 +663,7 @@ function updatePagination(totalPages) {
             <button
                 class="px-4 py-2 border border-black ${currentPage === 1 ? "bg-leihlokal-500 text-white" : "hover:bg-leihlokal-800 hover:text-white"}"
                 ${currentPage === 1 ? "disabled" : ""}
-                onclick="loadItems(1)"
+                onclick="goToPage(1)"
             >
                 1
             </button>
@@ -684,7 +698,7 @@ function updatePagination(totalPages) {
             <button
                 class="px-4 py-2 border border-black ${currentPage === totalPages ? "bg-leihlokal-500 text-white" : "hover:bg-leihlokal-800 hover:text-white"}"
                 ${currentPage === totalPages ? "disabled" : ""}
-                onclick="loadItems(${totalPages})"
+                onclick="goToPage(${totalPages})"
             >
                 ${totalPages}
             </button>
@@ -695,31 +709,38 @@ function updatePagination(totalPages) {
 }
 
 // Event listeners
-prevPageBtn.addEventListener("click", () => loadItems(currentPage - 1));
-nextPageBtn.addEventListener("click", () => loadItems(currentPage + 1));
+prevPageBtn.addEventListener("click", () => goToPage(currentPage - 1));
+nextPageBtn.addEventListener("click", () => goToPage(currentPage + 1));
 
 document.querySelectorAll(".category-filter").forEach((el) => {
   el.addEventListener("click", () => filterByCategory(el.dataset.category));
 });
 
+// Helper to perform search with current filters
+async function performSearch(query, page = 1) {
+  const results = await api.searchItems(query, page);
+  const filteredResults = showOnlyAvailable
+    ? {
+        items: results.items.filter((item) => item.status === "instock"),
+        totalPages: results.totalPages,
+      }
+    : results;
+
+  productGrid.innerHTML = filteredResults.items
+    .map((item) => createProductCard(item))
+    .join("");
+
+  currentPage = page;
+  updatePagination(results.totalPages);
+}
+
 searchInput.addEventListener(
   "input",
   debounce(async (e) => {
-    if (e.target.value) {
-      const results = await api.searchItems(e.target.value);
-      const filteredResults = showOnlyAvailable
-        ? {
-            items: results.items.filter((item) => item.status === "instock"),
-            totalPages: Math.ceil(
-              results.items.filter((item) => item.status === "instock").length /
-                20,
-            ), // Assuming 20 items per page
-          }
-        : results;
-
-      productGrid.innerHTML = filteredResults.items
-        .map((item) => createProductCard(item))
-        .join("");
+    const query = e.target.value.trim();
+    currentSearchQuery = query;
+    if (query) {
+      await performSearch(query);
     } else {
       loadItems(1);
     }
@@ -737,9 +758,13 @@ document.getElementById("itemModal").addEventListener("click", function (e) {
 
 document
   .getElementById("availableToggle")
-  .addEventListener("change", function (e) {
+  .addEventListener("change", async function (e) {
     showOnlyAvailable = e.target.checked;
-    loadItems(1); // Reload items with new filter
+    if (currentSearchQuery) {
+      await performSearch(currentSearchQuery);
+    } else {
+      loadItems(1);
+    }
   });
 
 document.addEventListener("click", function (e) {
