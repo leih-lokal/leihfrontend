@@ -34,3 +34,20 @@ tabs:
                 type: files
                 multiple: false
                 layout: cards
+          privacy:
+            type: fields
+            fields:
+              privacy_mode:
+                label: Privacy Mode
+                type: toggle
+                text:
+                  - Aus
+                  - An
+                help: When enabled, only date and time are shown. All other event details are hidden.
+              privacy_mode_title:
+                label: Privacy Mode Title
+                type: text
+                placeholder: Veranstaltung
+                help: Universal title shown for all events when privacy mode is enabled
+                when:
+                  privacy_mode: true

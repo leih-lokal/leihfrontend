@@ -164,6 +164,10 @@
         return strtotime($dateStr);
       }
 
+      // Privacy mode settings
+      $privacyMode = $page->privacy_mode()->toBool();
+      $privacyModeTitle = $page->privacy_mode_title()->or('Veranstaltung')->value();
+
       // Get events from Kirby structure
       $kirbyEvents = $site->events()->toStructure();
 
@@ -177,34 +181,66 @@
       $allEventsArray = [];
 
       foreach ($kirbyEvents as $event) {
-        $allEventsArray[] = [
-          'title' => $event->title()->value(),
-          'date_start' => $event->date_start()->toDate(),
-          'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate() : null,
-          'location' => $event->location()->value(),
-          'address' => $event->address()->value(),
-          'description' => $event->description()->kt()->value(),
-          'registration_required' => $event->registration_required()->toBool(),
-          'registration_link' => $event->registration_link()->value(),
-          'featured' => $event->featured()->toBool(),
-          'source' => 'kirby'
-        ];
+        if ($privacyMode) {
+          // Privacy mode: only date/time, use universal title
+          $allEventsArray[] = [
+            'title' => $privacyModeTitle,
+            'date_start' => $event->date_start()->toDate(),
+            'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate() : null,
+            'location' => '',
+            'address' => '',
+            'description' => '',
+            'registration_required' => false,
+            'registration_link' => '',
+            'featured' => false,
+            'source' => 'kirby'
+          ];
+        } else {
+          $allEventsArray[] = [
+            'title' => $event->title()->value(),
+            'date_start' => $event->date_start()->toDate(),
+            'date_end' => $event->date_end()->isNotEmpty() ? $event->date_end()->toDate() : null,
+            'location' => $event->location()->value(),
+            'address' => $event->address()->value(),
+            'description' => $event->description()->kt()->value(),
+            'registration_required' => $event->registration_required()->toBool(),
+            'registration_link' => $event->registration_link()->value(),
+            'featured' => $event->featured()->toBool(),
+            'source' => 'kirby'
+          ];
+        }
       }
 
       // Add iCal events
       foreach ($icalEvents as $icalEvent) {
-        $allEventsArray[] = [
-          'title' => $icalEvent['title'] ?? '',
-          'date_start' => $icalEvent['date_start'] ?? time(),
-          'date_end' => $icalEvent['date_end'] ?? null,
-          'location' => $icalEvent['location'] ?? '',
-          'address' => '',
-          'description' => $icalEvent['description'] ?? '',
-          'registration_required' => $icalEvent['registration_required'] ?? false,
-          'registration_link' => $icalEvent['registration_link'] ?? '',
-          'featured' => $icalEvent['featured'] ?? false,
-          'source' => 'ical'
-        ];
+        if ($privacyMode) {
+          // Privacy mode: only date/time, use universal title
+          $allEventsArray[] = [
+            'title' => $privacyModeTitle,
+            'date_start' => $icalEvent['date_start'] ?? time(),
+            'date_end' => $icalEvent['date_end'] ?? null,
+            'location' => '',
+            'address' => '',
+            'description' => '',
+            'registration_required' => false,
+            'registration_link' => '',
+            'featured' => false,
+            'source' => 'ical'
+          ];
+        } else {
+          $allEventsArray[] = [
+            'title' => $icalEvent['title'] ?? '',
+            'date_start' => $icalEvent['date_start'] ?? time(),
+            'date_end' => $icalEvent['date_end'] ?? null,
+            'location' => $icalEvent['location'] ?? '',
+            'address' => '',
+            'description' => $icalEvent['description'] ?? '',
+            'registration_required' => $icalEvent['registration_required'] ?? false,
+            'registration_link' => $icalEvent['registration_link'] ?? '',
+            'featured' => $icalEvent['featured'] ?? false,
+            'source' => 'ical'
+          ];
+        }
       }
 
       // Sort all events by date
