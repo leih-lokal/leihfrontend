@@ -46,7 +46,7 @@
       <!-- Introduction -->
       <?php if ($page->intro()->isNotEmpty()): ?>
       <div class="text-lg md:text-xl text-gray-700 mb-8 pb-8 border-b border-gray-200 leading-relaxed">
-        <?= $page->intro()->kt() ?>
+        <?= $page->intro() ?>
       </div>
       <?php endif; ?>
 
@@ -125,7 +125,7 @@
       <?php if ($page->additional_content()->isNotEmpty()): ?>
       <section class="mt-12 pt-8 border-t border-gray-200">
         <div class="prose prose-lg max-w-none">
-          <?= $page->additional_content() ?>
+          <?= $page->additional_content()->html() ?>
         </div>
       </section>
       <?php endif; ?>
