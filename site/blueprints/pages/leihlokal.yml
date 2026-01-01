@@ -7,6 +7,11 @@ columns:
       fields:
         type: fields
         fields:
+          holiday_message:
+            label: Feiertags-Hinweis
+            type: text
+            placeholder: "Heute geschlossen wegen Feiertag"
+            help: Optionale Nachricht, die an Feiertagen angezeigt wird. Leer lassen für Standard-Feiertagnamen.
           hours:
             label: Opening Hours
             type: structure
