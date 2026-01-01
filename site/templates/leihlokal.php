@@ -12,6 +12,73 @@ $daysTranslation = [
   "sun" => "Sonntag",
 ];
 
+/**
+ * Check if a given date is a public holiday in Baden-Württemberg, Germany
+ * Returns the holiday name if it's a holiday, false otherwise
+ *
+ * @param int|null $timestamp Unix timestamp to check (defaults to today)
+ * @return string|false Holiday name or false if not a holiday
+ */
+function isBadenWuerttembergHoliday($timestamp = null)
+{
+  if ($timestamp === null) {
+    $timestamp = time();
+  }
+
+  $year = (int) date("Y", $timestamp);
+  $month = (int) date("n", $timestamp);
+  $day = (int) date("j", $timestamp);
+
+  // Fixed holidays
+  $fixedHolidays = [
+    "1-1" => "Neujahrstag",
+    "1-6" => "Heilige Drei Könige",
+    "5-1" => "Tag der Arbeit",
+    "10-3" => "Tag der Deutschen Einheit",
+    "11-1" => "Allerheiligen",
+    "12-25" => "1. Weihnachtstag",
+    "12-26" => "2. Weihnachtstag",
+  ];
+
+  $dateKey = "{$month}-{$day}";
+  if (isset($fixedHolidays[$dateKey])) {
+    return $fixedHolidays[$dateKey];
+  }
+
+  // Calculate Easter Sunday for the year
+  // easter_date() returns timestamp for Easter Sunday
+  $easterTimestamp = easter_date($year);
+
+  // Movable holidays based on Easter
+  $movableHolidays = [
+    -2 => "Karfreitag",           // Good Friday: 2 days before Easter
+    1 => "Ostermontag",           // Easter Monday: 1 day after Easter
+    39 => "Christi Himmelfahrt",  // Ascension Day: 39 days after Easter
+    50 => "Pfingstmontag",        // Whit Monday: 50 days after Easter
+    60 => "Fronleichnam",         // Corpus Christi: 60 days after Easter
+  ];
+
+  foreach ($movableHolidays as $daysOffset => $holidayName) {
+    $holidayTimestamp = strtotime("{$daysOffset} days", $easterTimestamp);
+    if (
+      date("Y-m-d", $holidayTimestamp) === date("Y-m-d", $timestamp)
+    ) {
+      return $holidayName;
+    }
+  }
+
+  return false;
+}
+
+// Check if today is a holiday
+$todayHoliday = isBadenWuerttembergHoliday();
+$isHolidayToday = $todayHoliday !== false;
+
+// Get custom holiday message from page field, fallback to holiday name
+$holidayDisplayMessage = $page->holiday_message()->isNotEmpty()
+  ? $page->holiday_message()->value()
+  : $todayHoliday;
+
 // Day codes for PHP date function (used to get today)
 $dayCodesMap = [
   0 => "sun", // Sunday
@@ -123,7 +190,12 @@ foreach ($page->hours()->toStructure() as $day) {
         </svg>
         <div class="flex items-center gap-2">
           <span class="font-bold text-base">Heute (<?= $todayName ?>)</span>
-          <?php if ($todayHours && $todayHours->opened()->bool()): ?>
+          <?php if ($isHolidayToday): ?>
+            <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-2 py-1 text-xs font-semibold">
+              <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+              FEIERTAG
+            </span>
+          <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
             <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-2 py-1 text-xs font-semibold">
               <span class="w-2 h-2 bg-green-500 rounded-full"></span>
               GEÖFFNET
@@ -136,7 +208,9 @@ foreach ($page->hours()->toStructure() as $day) {
           <?php endif; ?>
         </div>
         <span class="ml-2 text-lg font-mono font-semibold text-leihlokal-600">
-          <?php if ($todayHours && $todayHours->opened()->bool()): ?>
+          <?php if ($isHolidayToday): ?>
+            <span class="text-amber-700"><?= $holidayDisplayMessage ?></span>
+          <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
             <?= formatTime($todayHours->open_time()) ?> - <?= formatTime(
    $todayHours->close_time(),
  ) ?>
@@ -351,9 +425,18 @@ for ($i = -1; $i <= 6; $i++) {
     "openTime" => "",
     "closeTime" => "",
     "middleTime" => "",
-  ]; // Check if today's closing time has passed
+  ];
+
+  // Check if this day is a Baden-Württemberg holiday
+  $holidayName = isBadenWuerttembergHoliday($timestamp);
+  $isHoliday = $holidayName !== false;
+
+  // If it's a holiday, override isOpen to false
+  $effectivelyOpen = $hours["isOpen"] && !$isHoliday;
+
+  // Check if today's closing time has passed
   $isPastClosing = false;
-  if ($i === 0 && $hours["isOpen"] && !empty($hours["closeTime"])) {
+  if ($i === 0 && $effectivelyOpen && !empty($hours["closeTime"])) {
     // Parse closing time (format: "HH:MM")
     [$closeHour, $closeMinute] = explode(":", $hours["closeTime"]);
     $closingTimestamp = strtotime(
@@ -372,7 +455,9 @@ for ($i = -1; $i <= 6; $i++) {
     "dayKey" => $dayKey,
     "isToday" => $i === 0,
     "isYesterday" => $i === -1,
-    "isOpen" => $hours["isOpen"],
+    "isOpen" => $effectivelyOpen,
+    "isHoliday" => $isHoliday,
+    "holidayName" => $holidayName ?: "",
     "openTime" => $hours["openTime"],
     "closeTime" => $hours["closeTime"],
     "middleTime" => $hours["middleTime"],
