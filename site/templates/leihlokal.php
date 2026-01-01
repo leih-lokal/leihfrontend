@@ -191,8 +191,11 @@ foreach ($page->hours()->toStructure() as $day) {
         <div class="flex items-center gap-2">
           <span class="font-bold text-base">Heute (<?= $todayName ?>)</span>
           <?php if ($isHolidayToday): ?>
+            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-800 px-2 py-1 text-xs font-semibold">
+              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+              GESCHLOSSEN
+            </span>
             <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-2 py-1 text-xs font-semibold">
-              <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
               FEIERTAG
             </span>
           <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
