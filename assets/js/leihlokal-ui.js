@@ -11,6 +11,12 @@ let currentCategory = "";
 let currentSearchQuery = "";
 let cart = api.cart;
 let showOnlyAvailable = true;
+let sortByNumber = false; // false = random (default), true = by iid
+
+// Helper function to get current sort value
+function getCurrentSort() {
+  return sortByNumber ? 'iid' : '@random';
+}
 
 // Helper function to format date
 function formatDate(date) {
@@ -413,7 +419,7 @@ async function filterByCategory(category) {
     }
 
     const finalFilter = filter.join(" && ");
-    const response = await api.getItems(1, finalFilter);
+    const response = await api.getItems(1, finalFilter, getCurrentSort());
 
     productGrid.innerHTML = response.items
       .map((item) => createProductCard(item))
@@ -628,7 +634,7 @@ window.loadItems = async function (page = 1) {
     }
 
     const finalFilter = filter.join(" && ");
-    const response = await api.getItems(page, finalFilter);
+    const response = await api.getItems(page, finalFilter, getCurrentSort());
 
     productGrid.innerHTML = response.items
       .map((item) => createProductCard(item))
@@ -718,7 +724,7 @@ document.querySelectorAll(".category-filter").forEach((el) => {
 
 // Helper to perform search with current filters
 async function performSearch(query, page = 1) {
-  const results = await api.searchItems(query, page);
+  const results = await api.searchItems(query, page, getCurrentSort());
   const filteredResults = showOnlyAvailable
     ? {
         items: results.items.filter((item) => item.status === "instock"),
@@ -760,6 +766,19 @@ document
   .getElementById("availableToggle")
   .addEventListener("change", async function (e) {
     showOnlyAvailable = e.target.checked;
+    if (currentSearchQuery) {
+      await performSearch(currentSearchQuery);
+    } else {
+      loadItems(1);
+    }
+  });
+
+document
+  .getElementById("sortToggle")
+  .addEventListener("change", async function (e) {
+    sortByNumber = e.target.checked;
+    // Update the label text
+    document.getElementById("sortLabel").textContent = sortByNumber ? "Nach Nummer" : "Zufall";
     if (currentSearchQuery) {
       await performSearch(currentSearchQuery);
     } else {

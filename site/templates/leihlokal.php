@@ -588,19 +588,28 @@ for ($i = -1; $i <= 6; $i++) {
     <!-- Right Content (Product List) -->
     <div class="w-full lg:w-2/3">
       <!-- Search Bar -->
-      <div class="mb-8 flex gap-4 items-center">
+      <div class="mb-8 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
           <div class="flex-1">
               <input type="text"
                      id="searchInput"
                      placeholder="Durchsuchen..."
                      class="w-full p-4 border border-black focus:outline-none focus:border-leihlokal-500">
           </div>
-          <div class="flex items-center gap-2">
-              <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="availableToggle" class="sr-only peer" checked>
-                  <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
-              </label>
-              <span class="text-sm text-gray-600">Nur ausleihbar</span>
+          <div class="flex items-center gap-4 flex-wrap">
+              <div class="flex items-center gap-2">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="sortToggle" class="sr-only peer">
+                      <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
+                  </label>
+                  <span class="text-sm text-gray-600" id="sortLabel">Zufall</span>
+              </div>
+              <div class="flex items-center gap-2">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="availableToggle" class="sr-only peer" checked>
+                      <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
+                  </label>
+                  <span class="text-sm text-gray-600">Nur ausleihbar</span>
+              </div>
           </div>
       </div>
 

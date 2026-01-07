@@ -122,11 +122,11 @@ class LeihlocalAPI {
         }));
     }
 
-    async getItems(page = 1, additionalFilter = '') {
+    async getItems(page = 1, additionalFilter = '', sortBy = '@random') {
         try {
 
             const options = {
-                sort: 'iid'
+                sort: sortBy
             };
 
             // Create status filter
@@ -161,7 +161,7 @@ class LeihlocalAPI {
         }
     }
 
-    async searchItems(query, page = 1) {
+    async searchItems(query, page = 1, sortBy = '@random') {
         try {
 
             // Search by name, iid, and synonyms
@@ -177,7 +177,7 @@ class LeihlocalAPI {
 
             const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, {
                 filter: filter,
-                sort: 'iid',
+                sort: sortBy,
                 fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms'
             });
 
