@@ -777,8 +777,6 @@ document
   .getElementById("sortToggle")
   .addEventListener("change", async function (e) {
     sortByNumber = e.target.checked;
-    // Update the label text
-    document.getElementById("sortLabel").textContent = sortByNumber ? "Nach Nummer" : "Zufall";
     if (currentSearchQuery) {
       await performSearch(currentSearchQuery);
     } else {

@@ -595,13 +595,13 @@ for ($i = -1; $i <= 6; $i++) {
                      placeholder="Durchsuchen..."
                      class="w-full p-4 border border-black focus:outline-none focus:border-leihlokal-500">
           </div>
-          <div class="flex items-center gap-4 flex-wrap">
+          <div class="flex flex-col gap-2">
               <div class="flex items-center gap-2">
                   <label class="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" id="sortToggle" class="sr-only peer">
                       <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
                   </label>
-                  <span class="text-sm text-gray-600" id="sortLabel">Zufall</span>
+                  <span class="text-sm text-gray-600">Sortieren</span>
               </div>
               <div class="flex items-center gap-2">
                   <label class="relative inline-flex items-center cursor-pointer">
