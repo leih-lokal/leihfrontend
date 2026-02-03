@@ -2,7 +2,7 @@ Title: Bürgerstiftung Karlsruhe
 
 ----
 
-Importantnotice: Closed today soz
+Importantnotice: Heute erst ab 17:00 geöffnet. Sorry!
 
 ----
 
@@ -10,7 +10,7 @@ Importanttoggle: false
 
 ----
 
-Notice-intensity: urgent
+Notice-intensity: warning
 
 ----
 

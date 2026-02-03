@@ -1,41 +1,240 @@
-title: Spezial - Startseite
+title: Startseite
 
-fields:
-  firstword:
-    label: First Word
-    type: text
-    width: 1/3
-  secondword:
-    label: Second Word
-    type: text
-    width: 1/3
-  thirdword:
-    label: Third Word
-    type: text
-    width: 1/3
-  immies:
-    label: Random images to use
-    type: files
-    layout: cards
-    size: tiny
-    multiple: true
-    query: page.images
-    width: 1
-  pretext:
-    label: Pretext
-    type: textarea
-  stats:
-    label: Stats
-    type: structure
-    fields:
-      stat:
-        label: Stat
-        type: text
-      value:
-        label: Value
-        type: number
-    width: 2/3
-  blurb:
-    label: Blurb
-    type: textarea
-    width: 1/3
+columns:
+  - width: 2/3
+    sections:
+      hero:
+        type: fields
+        fields:
+          hero_headline:
+            label: Hero-Überschrift
+            type: headline
+            numbered: false
+          hero_background_image:
+            label: Hintergrundbild (optional)
+            type: files
+            multiple: false
+            layout: cards
+            size: tiny
+            query: page.images
+            help: Wird mit niedriger Deckkraft hinter der kinetischen Typografie angezeigt
+          hero_kinetic_words:
+            label: Kinetische Hintergrund-Wörter
+            type: structure
+            help: Wörter die als animierte Typografie im Hero-Hintergrund schweben. "Riesig" für das Hauptwort (z.B. BÜRGERSTIFTUNG).
+            fields:
+              word:
+                label: Wort
+                type: text
+                width: 1/2
+              size:
+                label: Größe
+                type: select
+                width: 1/4
+                default: medium
+                options:
+                  hero: "Riesig"
+                  large: "Groß"
+                  medium: "Mittel"
+                  small: "Klein"
+              variant:
+                label: Stil
+                type: select
+                width: 1/4
+                default: normal
+                options:
+                  normal: "Normal"
+                  outline: "Umriss"
+                  brand: "Markenfarbe"
+          hero_words:
+            label: Hero-Text (Zeilen)
+            type: structure
+            fields:
+              word:
+                label: Text
+                type: text
+                width: 2/3
+              alignment:
+                label: Ausrichtung
+                type: select
+                width: 1/3
+                default: left
+                options:
+                  left: Links
+                  center: Mitte
+                  right: Rechts
+              color:
+                label: Farbe
+                type: select
+                width: 1/2
+                default: black
+                options:
+                  black: Schwarz
+                  brand: Markenfarbe
+                  white: Weiß
+          hero_subtext:
+            label: Hero-Untertext
+            type: textarea
+            size: small
+            help: Kurzer Text unterhalb der Hero-Überschrift
+
+          projects_headline:
+            label: Projekte
+            type: headline
+            numbered: false
+          projects:
+            label: Projekt-Slides
+            type: structure
+            fields:
+              title:
+                label: Projekttitel
+                type: text
+                width: 1/2
+              nav_label:
+                label: Minimap-Label (kurz)
+                type: text
+                width: 1/2
+                help: Kurzer Name für die Navigation (z.B. "LEIH.LOKAL")
+              tagline:
+                label: Untertitel/Tagline
+                type: text
+              style:
+                label: Slide-Stil
+                type: select
+                width: 1/2
+                default: hero-left
+                options:
+                  hero-left: "Hero Links (großer Text + Stats)"
+                  hero-center: "Hero Zentriert (dramatisch)"
+                  gallery-scroll: "Galerie (horizontaler Bildlauf)"
+                  minimal: "Minimal (Text + CTA)"
+              color_scheme:
+                label: Farbschema
+                type: select
+                width: 1/2
+                default: dark
+                options:
+                  dark: "Dunkel (schwarzer Hintergrund)"
+                  light: "Hell (weißer Hintergrund)"
+                  brand: "Markenfarbe (orange)"
+              background_image:
+                label: Hintergrundbild
+                type: files
+                multiple: false
+                layout: cards
+                size: tiny
+                query: page.images
+              gallery_images:
+                label: Galerie-Bilder
+                type: files
+                multiple: true
+                layout: cards
+                size: tiny
+                query: page.images
+                when:
+                  style: gallery-scroll
+              stats:
+                label: Statistiken
+                type: structure
+                fields:
+                  label:
+                    label: Beschreibung
+                    type: text
+                    width: 2/3
+                  value:
+                    label: Wert
+                    type: text
+                    width: 1/3
+                    help: Zahl oder Text (z.B. "1054+" oder "34")
+              cta_text:
+                label: Button-Text
+                type: text
+                width: 1/2
+              cta_link:
+                label: Button-Link
+                type: link
+                width: 1/2
+
+          stats_headline:
+            label: Statistiken-Sektion
+            type: headline
+            numbered: false
+          stats_section_title:
+            label: Überschrift
+            type: text
+            placeholder: "UNSERE WIRKUNG"
+          stats:
+            label: Haupt-Statistiken
+            type: structure
+            fields:
+              value:
+                label: Wert
+                type: text
+                width: 1/3
+              label:
+                label: Beschreibung
+                type: text
+                width: 2/3
+
+          volunteer_headline:
+            label: Ehrenamt-CTA
+            type: headline
+            numbered: false
+          volunteer_title:
+            label: Überschrift
+            type: text
+            placeholder: "WIR BRAUCHEN DICH."
+          volunteer_subtext:
+            label: Untertext
+            type: textarea
+            size: small
+          volunteer_cta_text:
+            label: Button-Text
+            type: text
+            width: 1/2
+            placeholder: "JETZT MITMACHEN"
+          volunteer_cta_link:
+            label: Button-Link
+            type: link
+            width: 1/2
+
+          location_headline:
+            label: Standort-Sektion
+            type: headline
+            numbered: false
+          location_title:
+            label: Überschrift
+            type: text
+            placeholder: "FINDE UNS"
+          location_address:
+            label: Adresse
+            type: text
+          location_hours:
+            label: Öffnungszeiten
+            type: textarea
+            size: small
+          location_map_embed:
+            label: Karten-Embed (optional)
+            type: textarea
+            size: small
+            help: Google Maps oder OpenStreetMap Embed-Code
+          location_contact_email:
+            label: E-Mail
+            type: email
+            width: 1/2
+          location_contact_phone:
+            label: Telefon
+            type: tel
+            width: 1/2
+
+  - width: 1/3
+    sections:
+      sidebar_info:
+        type: info
+        label: Hinweise
+        text: |
+          **Hero-Hintergrund**: Kinetische Typografie-Wand mit Stiftungsbegriffen. Wörter reagieren auf Mausbewegung (Parallax-Effekt).
+
+          **Projekt-Slides**: Nutze die Struktur um beliebig viele Projekte hinzuzufügen. Jedes Projekt wird als eigene Vollbild-Sektion angezeigt.
+
+          **Minimap**: Die Navigation rechts wird automatisch aus den Projekt-Labels generiert.
