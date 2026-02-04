@@ -213,9 +213,7 @@
   text-transform: uppercase;
   letter-spacing: -0.03em;
   overflow: hidden;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
+  white-space: nowrap;
 }
 
 .hero-word-inner {

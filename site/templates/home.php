@@ -365,6 +365,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     revealElements.forEach(el => revealObserver.observe(el));
 
+    // ========== FIT HERO WORDS TO CONTAINER WIDTH ==========
+    function fitHeroWords() {
+        const heroText = document.querySelector('.hero-text');
+        if (!heroText) return;
+        const available = heroText.clientWidth - parseFloat(getComputedStyle(heroText).paddingLeft) * 2;
+
+        document.querySelectorAll('.hero-word').forEach(word => {
+            const inner = word.querySelector('.hero-word-inner');
+            if (!inner) return;
+
+            // Reset to max size first
+            word.style.fontSize = '';
+            let size = parseFloat(getComputedStyle(word).fontSize);
+            const min = 16;
+
+            // Binary search for the largest size that fits
+            let lo = min, hi = size;
+            while (hi - lo > 1) {
+                const mid = Math.floor((lo + hi) / 2);
+                word.style.fontSize = mid + 'px';
+                if (inner.scrollWidth > available) {
+                    hi = mid;
+                } else {
+                    lo = mid;
+                }
+            }
+            word.style.fontSize = lo + 'px';
+        });
+    }
+
+    fitHeroWords();
+    let fitTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(fitTimer);
+        fitTimer = setTimeout(fitHeroWords, 150);
+    });
+
     // ========== HERO TEXT ANIMATION ==========
     const heroWords = document.querySelectorAll('.hero-word');
     heroWords.forEach((word, i) => {
