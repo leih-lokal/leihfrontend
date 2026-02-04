@@ -320,11 +320,16 @@ $heroImages = $page->images()->shuffle()->limit(20);
                 </div>
                 <?php endif; ?>
             </div>
+
+            <div class="location-footer reveal-up">
+                <a href="/colophon" class="location-footer-link">IMPRESSUM</a>
+                <span class="location-footer-sep" aria-hidden="true">/</span>
+                <a href="/privacy" class="location-footer-link">DATENSCHUTZ</a>
+                <span class="location-footer-sep" aria-hidden="true">/</span>
+                <span class="location-footer-copy">&copy; <?= date('Y') ?> BÜRGERSTIFTUNG KARLSRUHE</span>
+            </div>
         </div>
     </section>
-
-    <!-- Footer inside scroll container -->
-    <?php snippet("footer"); ?>
 
 </main>
 
@@ -386,9 +391,11 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
 
-        const sw = Math.min(400, sr.width * 0.35);
+        // On small screens, let subtext span wider and use less padding
+        const isSmall = sr.width < 600;
+        const sw = isSmall ? Math.min(sr.width - 32, 400) : Math.min(400, sr.width * 0.35);
         const sh = 80;
-        const pad = Math.max(60, sr.width * 0.06);
+        const pad = isSmall ? 16 : Math.max(60, sr.width * 0.06);
 
         const candidates = [
             { left: pad, top: sr.height * 0.7, align: 'left' },
@@ -588,3 +595,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
+</body>
+</html>
