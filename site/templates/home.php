@@ -27,7 +27,7 @@ $sections[] = ['id' => 'location', 'label' => 'KONTAKT'];
 $heroImages = $page->images()->shuffle()->limit(20);
 ?>
 
-<main class="home-scroll-container">
+<main class="home-scroll-container" tabindex="-1">
 
     <!-- ========== MINIMAP NAVIGATION ========== -->
     <nav class="minimap" aria-label="Seitennavigation">
@@ -527,6 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
     sections.forEach(s => minimapObserver.observe(s));
 
     // Minimap click handling
+    const scrollContainer = document.querySelector('.home-scroll-container');
     minimapDots.forEach(dot => {
         dot.addEventListener('click', (e) => {
             e.preventDefault();
@@ -534,6 +535,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const target = document.getElementById(targetId);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
+                dot.blur();
+                if (scrollContainer) scrollContainer.focus({ preventScroll: true });
             }
         });
     });
@@ -621,11 +624,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== SMOOTH SCROLL SNAP ==========
     // CSS handles the snap, but we ensure smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        // Skip minimap dots — they have their own handler
+        if (anchor.classList.contains('minimap-dot')) return;
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
+                this.blur();
+                if (scrollContainer) scrollContainer.focus({ preventScroll: true });
             }
         });
     });

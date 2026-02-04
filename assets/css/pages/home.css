@@ -8,6 +8,7 @@
   overflow-y: auto;
   height: calc(100vh - 57px); /* Account for header */
   scroll-behavior: smooth;
+  outline: none;
 }
 
 .home-section {
@@ -208,7 +209,7 @@
 .hero-word {
   font-family: "Univers", sans-serif;
   font-weight: 700;
-  font-size: clamp(2rem, 15vw, 12rem);
+  font-size: clamp(1.5rem, 10vw, 7rem);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: -0.03em;
@@ -1058,7 +1059,7 @@
   }
 
   .hero-word {
-    font-size: clamp(1.5rem, 8vh, 6rem);
+    font-size: clamp(1.25rem, 6vh, 4rem);
   }
 
   .scroll-hint {
