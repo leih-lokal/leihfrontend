@@ -225,7 +225,7 @@ $heroImages = $page->images()->shuffle()->limit(20);
             <?php endif; ?>
 
             <?php if ($project->cta_text()->isNotEmpty()): ?>
-            <a href="<?= $project->cta_link()->or('#') ?>" class="project-cta reveal-up">
+            <a href="<?= $project->cta_link()->toUrl() ?? '#' ?>" class="project-cta reveal-up">
                 <span><?= $project->cta_text()->html() ?></span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -264,7 +264,7 @@ $heroImages = $page->images()->shuffle()->limit(20);
             <?php endif; ?>
 
             <?php if ($page->volunteer_cta_text()->isNotEmpty()): ?>
-            <a href="<?= $page->volunteer_cta_link()->or('#') ?>" class="volunteer-cta reveal-up">
+            <a href="<?= $page->volunteer_cta_link()->toUrl() ?? '#' ?>" class="volunteer-cta reveal-up">
                 <span><?= $page->volunteer_cta_text()->html() ?></span>
             </a>
             <?php endif; ?>
