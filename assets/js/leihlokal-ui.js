@@ -482,7 +482,7 @@ function createProductCard(item) {
   const paddedIid = String(item.iid).padStart(4, "0");
 
   return `
-        <div class="border border-black">
+        <div class="border border-black ${item.is_protected ? 'opacity-50 grayscale' : ''}">
             <!-- ID Header -->
             <div class="bg-white px-4 pt-4 flex items-center justify-between ">
                 <span class="text-2xl font-bold font-mono">
@@ -505,12 +505,12 @@ function createProductCard(item) {
                 </div>
                 <h3 class="font-bold mb-2 cursor-pointer hover:text-leihlokal-600 item-detail-trigger" data-item-id="${item.id}">${item.name}</h3>
                 <p class="text-sm mb-4">${item.description || ""}</p>
-                <button class="w-full ${item.status === "instock" ? "bg-leihlokal-500 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"} p-2"
-                                    ${item.status !== "instock" ? "disabled" : ""}
+                <button class="w-full ${item.status === "instock" && !item.is_protected ? "bg-leihlokal-500 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"} p-2"
+                                    ${item.status !== "instock" || item.is_protected ? "disabled" : ""}
                                     data-item='${JSON.stringify(item)}'
-                                    ${item.status === "instock" ? 'data-action="add-to-cart"' : ""}
+                                    ${item.status === "instock" && !item.is_protected ? 'data-action="add-to-cart"' : ""}
                             >
-                                ${item.status === "instock" ? "In den Ausleihkorb" : "Bald wieder da!"}
+                                ${item.is_protected ? "Nicht vorbestellbar" : (item.status === "instock" ? "In den Ausleihkorb" : "Bald wieder da!")}
                             </button>
                         </div>
         </div>
@@ -570,7 +570,13 @@ function showItemDetails(itemId) {
         <!-- Buttons -->
         <div class="space-y-3">
           ${
-            item.status === "instock"
+            item.is_protected
+              ? `
+            <div class="w-full bg-gray-200 text-gray-500 p-3 font-bold text-center">
+              Nicht vorbestellbar
+            </div>
+          `
+              : item.status === "instock"
               ? `
             <button class="w-full bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-3 font-bold transition-colors"
                     data-item='${JSON.stringify(item)}'

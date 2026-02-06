@@ -99,6 +99,7 @@ class LeihlokalPage extends Page {
                     'synonyms'       => $item->synonyms ?? '',
                     'internal_note'  => $item->internal_note ?? '',
                     'highlight_color' => $item->highlight_color ?? '',
+                    'is_protected'   => $item->is_protected ?? false,
                     'added_on'       => $item->added_on ?? '',
                     'updated'        => $item->updated ?? '',
                     'uuid'           => $uuid,

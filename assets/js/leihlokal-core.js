@@ -43,12 +43,17 @@ class Cart {
     }
 
     addItem(item) {
+        if (item.is_protected) {
+            console.warn('Cannot add protected item to cart:', item.name);
+            return;
+        }
         if (!this.items.some(i => i.id === item.id)) {
             this.items.push({
                 id: item.id,
                 iid: item.iid,
                 name: item.name,
                 deposit: item.deposit,
+                is_protected: item.is_protected || false,
             });
             this.saveCart();
         }
@@ -178,7 +183,7 @@ class LeihlocalAPI {
             const items = await this.pb.collection('item_public').getList(page, this.ITEMS_PER_PAGE, {
                 filter: filter,
                 sort: sortBy,
-                fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms'
+                fields: 'id,iid,name,description,status,deposit,images,category,brand,model,parts,copies,synonyms,is_protected'
             });
 
             const transformedItems = items.items.map(item => ({
@@ -222,6 +227,13 @@ class LeihlocalAPI {
 
     async submitReservation(reservationData) {
         try {
+            // Check for protected items before submitting
+            const protectedItems = this.cart.items.filter(i => i.is_protected);
+            if (protectedItems.length > 0) {
+                const names = protectedItems.map(i => i.name).join(', ');
+                throw new Error(`Geschützte Artikel können nicht vorbestellt werden: ${names}`);
+            }
+
             const response = await fetch(
                 `${this.pb.baseUrl}/api/collections/reservation/records`,
                 {
