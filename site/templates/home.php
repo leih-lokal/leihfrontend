@@ -342,7 +342,7 @@ $heroImages = $page->images()->shuffle()->limit(20);
 </div>
 
 <!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 

@@ -18,6 +18,7 @@
     font-family: Univers;
     font-weight: 400;
     src: url(/assets/fonts/UniversLTStd.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -25,12 +26,14 @@
     font-weight: 400;
     font-style: italic;
     src: url(/assets/fonts/UniversLTStd-Obl.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
     font-family: Univers;
     font-weight: 700;
     src: url(/assets/fonts/UniversLTStd-Bold.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -38,12 +41,14 @@
     font-weight: 700;
     font-style: italic;
     src: url(/assets/fonts/UniversLTStd-BoldObl.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
     font-family: Univers;
     font-weight: 900;
     src: url(/assets/fonts/UniversLTStd-Black.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -51,6 +56,7 @@
     font-weight: 900;
     font-style: italic;
     src: url(/assets/fonts/UniversLTStd-BlackObl.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -58,6 +64,7 @@
     font-weight: 400;
     font-stretch: condensed;
     src: url(/assets/fonts/UniversLTStd-Cn.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -66,6 +73,7 @@
     font-style: italic;
     font-stretch: condensed;
     src: url(/assets/fonts/UniversLTStd-CnObl.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -73,6 +81,7 @@
     font-weight: 700;
     font-stretch: condensed;
     src: url(/assets/fonts/UniversLTStd-BoldCn.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -81,6 +90,7 @@
     font-style: italic;
     font-stretch: condensed;
     src: url(/assets/fonts/UniversLTStd-BoldCnObl.woff2) format("woff2");
+    font-display: swap;
   }
 
   /* Hyphenation rules for headlines */

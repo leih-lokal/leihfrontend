@@ -6,12 +6,15 @@
     <title><?= $page->title() ?> | BSKA</title>
     <link rel="icon" href="/favicon-48x48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="stylesheet" href="<?= url("assets/css/tailwind.css") ?>">
-    <link rel="stylesheet" href="<?= url(
-      "assets/css/pages/" . $page->intendedTemplate() . ".css",
-    ) ?>">
+    <link rel="stylesheet" href="<?= url("assets/css/tailwind.css") ?>?v=<?= filemtime($kirby->root('assets') . '/css/tailwind.css') ?>">
+    <?php
+    $pageCssFile = 'assets/css/pages/' . $page->intendedTemplate() . '.css';
+    $pageCssPath = $kirby->root('index') . '/' . $pageCssFile;
+    if (file_exists($pageCssPath)): ?>
+    <link rel="stylesheet" href="<?= url($pageCssFile) ?>?v=<?= filemtime($pageCssPath) ?>">
+    <?php endif; ?>
     <script src="<?= url("assets/js/main.js") ?>" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" media="print" onload="this.media='all'">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js" defer></script>
 </head>
 <body class="mb-[100px] font-sans leading-relaxed text-gray-700">
