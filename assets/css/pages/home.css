@@ -6,17 +6,31 @@
 .home-scroll-container {
   scroll-snap-type: y mandatory;
   overflow-y: auto;
-  height: calc(100vh - 57px); /* Account for header */
+  height: calc(100svh - 57px); /* svh avoids Safari address bar reflow loop */
+  height: calc(100dvh - 57px); /* dvh for browsers that support it */
   scroll-behavior: smooth;
   outline: none;
 }
 
+@supports not (height: 100svh) {
+  .home-scroll-container {
+    height: calc(100vh - 57px);
+  }
+}
+
 .home-section {
-  min-height: calc(100vh - 57px);
+  min-height: calc(100svh - 57px);
+  min-height: calc(100dvh - 57px);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   position: relative;
   overflow: hidden;
+}
+
+@supports not (min-height: 100svh) {
+  .home-section {
+    min-height: calc(100vh - 57px);
+  }
 }
 
 /* Hide default scrollbar */
@@ -979,6 +993,15 @@
 }
 
 @media (max-width: 768px) {
+  /* Relax snap on mobile — mandatory + overflowing content causes Safari to hang */
+  .home-scroll-container {
+    scroll-snap-type: y proximity;
+  }
+
+  .home-section {
+    scroll-snap-stop: normal;
+  }
+
   .project-section {
     padding: 2rem;
   }
@@ -1092,7 +1115,8 @@
   }
 
   .hero-section {
-    min-height: calc(100vh - 57px);
+    min-height: calc(100svh - 57px);
+    min-height: calc(100dvh - 57px);
   }
 }
 
