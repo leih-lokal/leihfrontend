@@ -41,6 +41,23 @@ A modern, file-based CMS website for Leihlokal - a community lending and borrowi
 6. **Access the admin panel**
    Navigate to `http://localhost:8000/panel` to set up your first admin account
 
+## Deployment (Docker / Podman)
+### Build
+```bash
+docker build -f Containerfile -t leihfrontend:dev .
+```
+
+### Run
+```bash
+docker run -d \
+    --name leihfrontend \
+    -p 8080:80 \
+    -v $(pwd)/content:/var/www/html/content \
+    leihfrontend:dev
+```
+
+**Important:** Replace `$(pwd)/content` with the path of your contents directory. The directory (and all its files) must be owned by `33:33` (`www-data` user and group inside the container).
+
 ## Development Workflow
 
 ### CSS Development

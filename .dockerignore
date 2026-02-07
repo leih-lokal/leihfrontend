@@ -1,0 +1,16 @@
+node_modules
+vendor
+.git
+.gitignore
+.env
+README.md
+CLAUDE.md
+TODO.md
+dist
+.vscode
+.idea
+site/accounts
+site/cache
+site/sessions
+content
+media
