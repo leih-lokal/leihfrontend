@@ -600,10 +600,29 @@ body {
     border-bottom: var(--ll-border);
   }
 
+  .ll-sidebar-section + .ll-sidebar-section {
+    margin-top: 0;
+  }
+
   .ll-sidebar-header {
     background: var(--ll-color);
     color: white;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.8rem;
+    font-family: "Univers", sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ll-sidebar-header .ll-sidebar-count {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.05em;
   }
 
   .ll-sidebar-item {
@@ -611,6 +630,11 @@ body {
     border-bottom: 1px solid oklch(60.62% 0.245 28.83 / 0.08);
     cursor: pointer;
     font-size: 0.8rem;
+    font-family: "Univers", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.15s;
   }
 
   .ll-sidebar-item[data-active="true"] {
@@ -621,6 +645,77 @@ body {
 
   .ll-sidebar-item:hover:not([data-active="true"]) {
     background: oklch(60.62% 0.245 28.83 / 0.05);
+  }
+
+  .ll-sidebar-item .ll-sidebar-arrow {
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    color: var(--ll-color);
+  }
+
+  .ll-sidebar-item:hover .ll-sidebar-arrow,
+  .ll-sidebar-item[data-active="true"] .ll-sidebar-arrow {
+    opacity: 1;
+  }
+
+  .ll-sidebar-item[data-active="true"] .ll-sidebar-arrow {
+    color: white;
+  }
+
+  /* Cart section styling */
+  .ll-sidebar-cart-empty {
+    color: oklch(60% 0 0);
+    font-size: 0.75rem;
+    font-style: italic;
+    padding: 0.75rem 0.8rem;
+  }
+
+  .ll-sidebar-cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    border-bottom: 1px solid oklch(60.62% 0.245 28.83 / 0.08);
+    font-size: 0.75rem;
+    font-family: "Univers", sans-serif;
+  }
+
+  .ll-sidebar-cart-item span:first-child {
+    font-family: monospace;
+    color: oklch(40% 0 0);
+  }
+
+  .ll-sidebar-actions {
+    padding: 0.5rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  /* Subpages/files section */
+  .ll-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid oklch(60.62% 0.245 28.83 / 0.08);
+    font-size: 0.8rem;
+    font-family: "Univers", sans-serif;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .ll-sidebar-link:hover {
+    background: oklch(60.62% 0.245 28.83 / 0.05);
+    color: var(--ll-color);
+  }
+
+  .ll-sidebar-link-icon {
+    font-size: 0.7rem;
+    color: var(--ll-color);
+    flex-shrink: 0;
   }
 
   .ll-main {

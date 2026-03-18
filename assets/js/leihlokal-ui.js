@@ -287,23 +287,23 @@ function updateCartUI() {
 
   // Desktop: sidebar cart
   const sidebarCart = document.getElementById("sidebarCartItems");
-  const sidebarReserve = document.getElementById("sidebarReserve");
-  const sidebarClear = document.getElementById("sidebarClearCart");
+  const sidebarActions = document.getElementById("sidebarCartActions");
+  const sidebarCount = document.getElementById("sidebarCartCount");
+
+  if (sidebarCount) sidebarCount.textContent = count;
 
   if (sidebarCart) {
     if (count === 0) {
-      sidebarCart.innerHTML = '<span style="color:oklch(60% 0 0);font-size:0.75rem;">Noch nichts drin.</span>';
-      if (sidebarReserve) sidebarReserve.style.display = "none";
-      if (sidebarClear) sidebarClear.style.display = "none";
+      sidebarCart.innerHTML = '<div class="ll-sidebar-cart-empty">Noch nichts drin.</div>';
+      if (sidebarActions) sidebarActions.style.display = "none";
     } else {
       sidebarCart.innerHTML = cart.items.map(item => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.08);font-size:0.75rem;">
-          <span>${formatIID(item.iid)} ${item.name}</span>
-          <button onclick="removeFromCart('${item.id}')" style="background:none;border:none;color:var(--ll-color);cursor:pointer;font-weight:700;">×</button>
+        <div class="ll-sidebar-cart-item">
+          <span>${formatIID(item.iid)} ${escapeHTML(item.name)}</span>
+          <button onclick="removeFromCart('${item.id}')" style="background:none;border:none;color:var(--ll-color);cursor:pointer;font-weight:700;font-size:0.85rem;">×</button>
         </div>
       `).join("");
-      if (sidebarReserve) sidebarReserve.style.display = "block";
-      if (sidebarClear) sidebarClear.style.display = "block";
+      if (sidebarActions) sidebarActions.style.display = "flex";
     }
   }
 

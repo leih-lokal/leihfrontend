@@ -342,26 +342,26 @@ for ($i = -1; $i <= 6; $i++) {
   <div class="ll-sidebar">
     <!-- Cart -->
     <div class="ll-sidebar-section">
-      <div class="ll-sidebar-header ll-section-header">Korb</div>
-      <div id="sidebarCartItems" style="padding:0.5rem 0.8rem;">
-        <span style="color:oklch(60% 0 0);font-size:0.75rem;">Noch nichts drin.</span>
+      <div class="ll-sidebar-header">Korb <span class="ll-sidebar-count" id="sidebarCartCount">0</span></div>
+      <div id="sidebarCartItems">
+        <div class="ll-sidebar-cart-empty">Noch nichts drin.</div>
       </div>
-      <div style="padding:0.5rem 0.8rem;">
-        <button id="sidebarReserve" class="ll-btn ll-btn-primary" style="width:100%;display:none;">Vorbestellen →</button>
-        <button id="sidebarClearCart" class="ll-btn ll-btn-close" style="width:100%;margin-top:0.4rem;display:none;">Alles zurücklegen</button>
+      <div class="ll-sidebar-actions" id="sidebarCartActions" style="display:none;">
+        <button id="sidebarReserve" class="ll-btn ll-btn-primary" style="width:100%;padding:0.5rem;">Vorbestellen →</button>
+        <button id="sidebarClearCart" class="ll-btn ll-btn-close" style="width:100%;padding:0.5rem;">Alles zurücklegen</button>
       </div>
     </div>
 
     <!-- Categories -->
     <div class="ll-sidebar-section">
-      <div class="ll-sidebar-header ll-section-header">Rubriken</div>
-      <div class="ll-sidebar-item category-filter" data-category="" data-active="true">Alle Sachen</div>
-      <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false">Freizeit</div>
-      <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false">Garten</div>
-      <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false">Haushalt</div>
-      <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false">Heimwerken</div>
-      <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false">Kinder</div>
-      <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false">Küche</div>
+      <div class="ll-sidebar-header">Rubriken <span class="ll-sidebar-count">7</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="" data-active="true"><span>Alle Sachen</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false"><span>Freizeit</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false"><span>Garten</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false"><span>Haushalt</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false"><span>Heimwerken</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false"><span>Kinder</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false"><span>Küche</span><span class="ll-sidebar-arrow">→</span></div>
     </div>
 
     <!-- Subpages and Files -->
@@ -370,12 +370,16 @@ for ($i = -1; $i <= 6; $i++) {
     $pageFiles = $page->files();
     if ($realSubpages->isNotEmpty() || $pageFiles->isNotEmpty()): ?>
     <div class="ll-sidebar-section">
-      <div class="ll-sidebar-header ll-section-header">Mehr zum leih.lokal</div>
+      <div class="ll-sidebar-header">Mehr <span class="ll-sidebar-count"><?= $realSubpages->count() + $pageFiles->count() ?></span></div>
       <?php foreach ($realSubpages as $subpage): ?>
-        <a href="<?= $subpage->url() ?>" class="ll-sidebar-item" style="display:block;text-decoration:none;color:inherit;"><?= $subpage->title() ?></a>
+        <a href="<?= $subpage->url() ?>" class="ll-sidebar-link">
+          <span class="ll-sidebar-link-icon">→</span>
+          <?= $subpage->title() ?>
+        </a>
       <?php endforeach; ?>
       <?php foreach ($pageFiles as $file): ?>
-        <a href="<?= $file->url() ?>" download class="ll-sidebar-item" style="display:block;text-decoration:none;color:inherit;">
+        <a href="<?= $file->url() ?>" download class="ll-sidebar-link">
+          <span class="ll-sidebar-link-icon">↓</span>
           <?= $file->title()->isNotEmpty() ? $file->title() : $file->filename() ?>
         </a>
       <?php endforeach; ?>
