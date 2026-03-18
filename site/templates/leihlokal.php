@@ -355,13 +355,34 @@ for ($i = -1; $i <= 6; $i++) {
     <!-- Categories -->
     <div class="ll-sidebar-section">
       <div class="ll-sidebar-header">Rubriken <span class="ll-sidebar-count">7</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="" data-active="true"><span>Alle Sachen</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false"><span>Freizeit</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false"><span>Garten</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false"><span>Haushalt</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false"><span>Heimwerken</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false"><span>Kinder</span><span class="ll-sidebar-arrow">→</span></div>
-      <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false"><span>Küche</span><span class="ll-sidebar-arrow">→</span></div>
+      <div class="ll-sidebar-item category-filter" data-category="" data-active="true">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Alle Sachen</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>Freizeit</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>Garten</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Haushalt</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Heimwerken</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19.5 10c.3 0 .5.1.7.3.2.2.3.4.3.7 0 3.1-1.1 5.8-2.8 7.7C16 20.6 13.8 22 12 22s-4-1.4-5.7-3.3C4.6 16.8 3.5 14.1 3.5 11c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3"/><path d="M8 2c1 .5 2 2 2 5"/><path d="M16 2c-1 .5-2 2-2 5"/></svg>Kinder</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
+      <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false">
+        <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Küche</span>
+        <span class="ll-sidebar-arrow">→</span>
+      </div>
     </div>
 
     <!-- Subpages and Files -->
