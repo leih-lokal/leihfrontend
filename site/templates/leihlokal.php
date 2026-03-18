@@ -308,7 +308,7 @@ for ($i = -1; $i <= 6; $i++) {
             <td>
               <?= $daysTranslation[$day->day()->value()] ?>
               <?php if ($day->day()->value() === $todayDayCode): ?>
-                <span style="display:inline-block;width:6px;height:6px;background:var(--ll-color);border-radius:50%;margin-left:4px;vertical-align:middle;"></span>
+                <span style="display:inline-block;width:6px;height:6px;background:var(--ll-color);margin-left:4px;vertical-align:middle;"></span>
               <?php endif; ?>
             </td>
             <td style="font-family:monospace;">

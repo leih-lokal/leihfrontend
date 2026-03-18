@@ -26,6 +26,11 @@ function formatIID(iid) {
   return num.slice(0, 2) + "." + num.slice(2);
 }
 
+function escapeHTML(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -50,12 +55,12 @@ function createProductCard(item) {
          data-item-id="${item.id}">
       <div class="ll-card-img">
         ${item.images?.[0]
-          ? `<img src="${item.images[0].thumb}" alt="${item.name}" loading="lazy">`
+          ? `<img src="${item.images[0].thumb}" alt="${escapeHTML(item.name)}" loading="lazy">`
           : ""}
       </div>
       <div class="ll-card-body">
-        <div class="ll-card-title">${item.name}</div>
-        <div class="ll-card-cat">${item.category || ""}</div>
+        <div class="ll-card-title">${escapeHTML(item.name)}</div>
+        <div class="ll-card-cat">${escapeHTML(item.category)}</div>
       </div>
       <div class="ll-card-footer" style="display:none;padding:0.4rem 0.6rem;border-top:var(--ll-border);justify-content:space-between;align-items:center;">
         <span style="font-weight:700;font-size:0.65rem;">${item.deposit ? item.deposit + " € Pfand" : ""}</span>
@@ -82,16 +87,16 @@ function createDetailElement(item, isMobile) {
     <div class="${isMobile ? 'll-detail-strip-inner' : ''}" style="${!isMobile ? 'display:grid;grid-template-columns:1fr 1fr;height:100%;' : ''}">
       <div class="${isMobile ? 'll-detail-img' : 'll-detail-img'}" style="${!isMobile ? 'border-right:var(--ll-border);min-height:250px;' : ''}">
         ${item.images?.[0]
-          ? `<img src="${item.images[0].full}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">`
+          ? `<img src="${item.images[0].full}" alt="${escapeHTML(item.name)}" style="width:100%;height:100%;object-fit:cover;">`
           : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:oklch(70% 0 0);font-size:0.7rem;text-transform:uppercase;">Kein Bild</div>'}
       </div>
       <div class="ll-detail-content" style="${!isMobile ? 'display:flex;flex-direction:column;padding:1.25rem;' : ''}">
-        <div class="ll-meta-label" style="color:var(--ll-color);">${item.category || ""}</div>
-        <div class="ll-detail-title" style="margin-top:0.25rem;">${item.name}</div>
+        <div class="ll-meta-label" style="color:var(--ll-color);">${escapeHTML(item.category)}</div>
+        <div class="ll-detail-title" style="margin-top:0.25rem;">${escapeHTML(item.name)}</div>
         ${item.brand || item.model
-          ? `<div style="font-size:0.75rem;color:oklch(50% 0 0);margin-top:0.25rem;">${item.brand || ""}${item.brand && item.model ? " — " : ""}${item.model || ""}</div>`
+          ? `<div style="font-size:0.75rem;color:oklch(50% 0 0);margin-top:0.25rem;">${escapeHTML(item.brand)}${item.brand && item.model ? " — " : ""}${escapeHTML(item.model)}</div>`
           : ""}
-        <div style="font-size:0.8rem;line-height:1.5;color:oklch(40% 0 0);margin-top:0.5rem;">${item.description || ""}</div>
+        <div style="font-size:0.8rem;line-height:1.5;color:oklch(40% 0 0);margin-top:0.5rem;">${escapeHTML(item.description)}</div>
         <div class="ll-detail-meta">
           <div class="ll-detail-meta-item">
             <span class="ll-detail-meta-value" style="color:var(--ll-color);">${item.deposit ? item.deposit + " €" : "—"}</span>
@@ -295,10 +300,16 @@ async function filterByCategory(category) {
   }
 }
 
-// Render items to grid
+// Render items to grid (replace)
 function renderItems(items) {
   collapseItemDetail();
   productGrid.innerHTML = items.map(item => createProductCard(item)).join("");
+}
+
+// Append items to grid (for mobile "load more")
+function appendItems(items) {
+  collapseItemDetail();
+  productGrid.insertAdjacentHTML("beforeend", items.map(item => createProductCard(item)).join(""));
 }
 
 // Search
@@ -390,8 +401,31 @@ document.getElementById("sortToggle")?.addEventListener("change", async function
   else loadItems(1);
 });
 
-// Load more (mobile pagination)
-document.getElementById("loadMore")?.addEventListener("click", () => goToPage(currentPage + 1));
+// Load more (mobile pagination — appends instead of replacing)
+document.getElementById("loadMore")?.addEventListener("click", async () => {
+  const nextPage = currentPage + 1;
+  try {
+    let filter = [];
+    if (currentCategory) filter.push(`category ~ "${currentCategory}"`);
+    if (showOnlyAvailable) filter.push('status = "instock"');
+
+    let response;
+    if (currentSearchQuery) {
+      response = await api.searchItems(currentSearchQuery, nextPage, getCurrentSort());
+      if (showOnlyAvailable) {
+        response = { items: response.items.filter(i => i.status === "instock"), totalPages: response.totalPages };
+      }
+    } else {
+      response = await api.getItems(nextPage, filter.join(" && "), getCurrentSort());
+    }
+
+    appendItems(response.items);
+    currentPage = nextPage;
+    updatePagination(response.totalPages);
+  } catch (error) {
+    console.error("Failed to load more items:", error);
+  }
+});
 
 // Delegated click handler for product grid
 document.addEventListener("click", function(e) {
@@ -425,6 +459,14 @@ document.getElementById("cartBarAction")?.addEventListener("click", () => {
 // Close panel
 document.getElementById("closeCartPanel")?.addEventListener("click", () => {
   cartPanel?.classList.remove("open");
+});
+
+// Click outside cart panel to close (desktop)
+document.addEventListener("click", function(e) {
+  if (cartPanel?.classList.contains("open") && !cartPanel.contains(e.target) &&
+      !e.target.closest("#cartBarAction") && !e.target.closest("#sidebarReserve")) {
+    cartPanel.classList.remove("open");
+  }
 });
 
 // Sidebar reserve button → open panel (desktop)
