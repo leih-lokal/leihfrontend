@@ -166,8 +166,46 @@ function isMobileView() {
   return window.innerWidth < 1024;
 }
 
+// FLIP animation: snapshot positions, mutate DOM, animate from old to new
+function flipAnimate(container, mutationFn) {
+  // First: snapshot current positions of all cards
+  const children = Array.from(container.querySelectorAll(".ll-card"));
+  const firstRects = new Map();
+  children.forEach(el => {
+    firstRects.set(el, el.getBoundingClientRect());
+  });
+
+  // Mutate the DOM
+  mutationFn();
+
+  // Last: get new positions and Invert+Play
+  const remaining = Array.from(container.querySelectorAll(".ll-card"));
+  remaining.forEach(el => {
+    const first = firstRects.get(el);
+    if (!first) return; // new element, skip
+    const last = el.getBoundingClientRect();
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    if (dx === 0 && dy === 0) return; // didn't move
+
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+    el.style.transition = "none";
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.transition = "transform 0.2s ease-out";
+        el.style.transform = "";
+        el.addEventListener("transitionend", function cleanup() {
+          el.style.transition = "";
+          el.removeEventListener("transitionend", cleanup);
+        }, { once: true });
+      });
+    });
+  });
+}
+
 async function expandItemDetail(itemId) {
-  // Close existing detail first
+  // Close existing detail first (no animation for the close, keeps it snappy)
   collapseItemDetail();
 
   const item = await api.getItem(itemId);
@@ -175,31 +213,33 @@ async function expandItemDetail(itemId) {
   const mobile = isMobileView();
 
   if (mobile) {
-    // Mobile: insert strip after the row containing the clicked card
-    const cards = Array.from(productGrid.children);
-    const clickedCard = cards.find(c => c.dataset.itemId === itemId);
-    if (!clickedCard) return;
+    flipAnimate(productGrid, () => {
+      const cards = Array.from(productGrid.children);
+      const clickedCard = cards.find(c => c.dataset.itemId === itemId);
+      if (!clickedCard) return;
 
-    clickedCard.classList.add("active");
-    const cardIndex = cards.indexOf(clickedCard);
-    const columnsPerRow = window.innerWidth >= 1024 ? 4 : 3;
-    const lastCardInRow = Math.min(cardIndex + (columnsPerRow - (cardIndex % columnsPerRow)), cards.length) - 1;
-    const insertAfter = cards[lastCardInRow];
+      clickedCard.classList.add("active");
+      const cardIndex = cards.indexOf(clickedCard);
+      const columnsPerRow = 3;
+      const lastCardInRow = Math.min(cardIndex + (columnsPerRow - (cardIndex % columnsPerRow)), cards.length) - 1;
+      const insertAfter = cards[lastCardInRow];
 
-    detailElement = createDetailElement(item, true);
-    insertAfter.after(detailElement);
-    detailElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      detailElement = createDetailElement(item, true);
+      insertAfter.after(detailElement);
+    });
+    detailElement?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else {
-    // Desktop: replace the clicked card with a 2x2 block
-    const cards = Array.from(productGrid.querySelectorAll(".ll-card, .ll-detail-2x2"));
-    const clickedCard = cards.find(c => c.dataset?.itemId === itemId);
-    if (!clickedCard) return;
+    flipAnimate(productGrid, () => {
+      const cards = Array.from(productGrid.querySelectorAll(".ll-card, .ll-detail-2x2"));
+      const clickedCard = cards.find(c => c.dataset?.itemId === itemId);
+      if (!clickedCard) return;
 
-    originalCardHTML = clickedCard.outerHTML;
-    originalCardIndex = Array.from(productGrid.children).indexOf(clickedCard);
+      originalCardHTML = clickedCard.outerHTML;
+      originalCardIndex = Array.from(productGrid.children).indexOf(clickedCard);
 
-    detailElement = createDetailElement(item, false);
-    clickedCard.replaceWith(detailElement);
+      detailElement = createDetailElement(item, false);
+      clickedCard.replaceWith(detailElement);
+    });
   }
 }
 
@@ -207,18 +247,20 @@ function collapseItemDetail() {
   if (!detailElement) return;
 
   if (isMobileView()) {
-    // Remove strip, deactivate card
-    detailElement.remove();
-    productGrid.querySelectorAll(".ll-card.active").forEach(c => c.classList.remove("active"));
-  } else {
-    // Restore original card
-    if (originalCardHTML) {
-      const temp = document.createElement("div");
-      temp.innerHTML = originalCardHTML;
-      detailElement.replaceWith(temp.firstElementChild);
-    } else {
+    flipAnimate(productGrid, () => {
       detailElement.remove();
-    }
+      productGrid.querySelectorAll(".ll-card.active").forEach(c => c.classList.remove("active"));
+    });
+  } else {
+    flipAnimate(productGrid, () => {
+      if (originalCardHTML) {
+        const temp = document.createElement("div");
+        temp.innerHTML = originalCardHTML;
+        detailElement.replaceWith(temp.firstElementChild);
+      } else {
+        detailElement.remove();
+      }
+    });
   }
 
   detailElement = null;
