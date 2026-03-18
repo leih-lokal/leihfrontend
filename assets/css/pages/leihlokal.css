@@ -661,6 +661,7 @@ body {
   /* Desktop pagination: numbered */
   .ll-page-numbers {
     display: flex;
+    flex-wrap: wrap;
     gap: 0;
   }
 

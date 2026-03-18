@@ -356,13 +356,28 @@ function updatePagination(totalPages) {
     loadMoreBtn.style.display = currentPage < totalPages ? "" : "none";
   }
 
-  // Desktop: page numbers
+  // Desktop: page numbers (truncated)
   const pageNumbers = document.getElementById("pageNumbers");
   if (pageNumbers) {
     const buttons = [];
+    const pages = [];
+
+    // Always show: first, last, current, and 1 neighbor on each side
     for (let i = 1; i <= totalPages; i++) {
-      buttons.push(`<button class="ll-btn ll-page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`);
+      if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+        pages.push(i);
+      }
     }
+
+    let prev = 0;
+    for (const p of pages) {
+      if (p - prev > 1) {
+        buttons.push(`<span class="ll-btn ll-page-btn" style="cursor:default;border:none;">…</span>`);
+      }
+      buttons.push(`<button class="ll-btn ll-page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`);
+      prev = p;
+    }
+
     pageNumbers.innerHTML = buttons.join("");
   }
 }
