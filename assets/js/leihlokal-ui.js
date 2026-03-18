@@ -598,14 +598,8 @@ let selectedPickupDay = null;
 
 document.querySelectorAll(".day-option").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".day-option").forEach(b => {
-      b.style.background = "white";
-      b.style.color = "var(--ll-black)";
-      b.style.borderColor = "var(--ll-color-20)";
-    });
-    btn.style.background = "var(--ll-color)";
-    btn.style.color = "white";
-    btn.style.borderColor = "var(--ll-color)";
+    document.querySelectorAll(".day-option").forEach(b => b.classList.remove("day-selected"));
+    btn.classList.add("day-selected");
     selectedPickupDay = {
       dateISO: btn.dataset.dateIso,
       time: btn.dataset.middleTime,
@@ -671,7 +665,7 @@ function showReservationSuccess(record, reservationData, reservedItems) {
 
   const pickupDate = new Date(reservationData.pickup);
   const formattedDate = pickupDate.toLocaleDateString("de-DE", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-  const formattedTime = pickupDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  // Time not shown to user — only date matters for pickup
   const totalDeposit = reservedItems.reduce((sum, item) => sum + (item.deposit || 0), 0);
 
   const summaryEl = document.getElementById("reservationSummary");
@@ -679,7 +673,7 @@ function showReservationSuccess(record, reservationData, reservedItems) {
     <div style="border-top:2px solid var(--ll-color);">
       <div style="padding:0.5rem 0.75rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.12);background:oklch(60.62% 0.245 28.83 / 0.04);">
         <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ll-color);margin-bottom:0.15rem;">Abholtermin</div>
-        <div style="font-size:0.8rem;">${formattedDate}, ${formattedTime} Uhr</div>
+        <div style="font-size:0.8rem;">${formattedDate}</div>
       </div>
       <div style="padding:0.5rem 0.75rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.12);">
         <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ll-color);margin-bottom:0.15rem;">Email</div>
@@ -709,7 +703,7 @@ function showReservationSuccess(record, reservationData, reservedItems) {
   const newShareBtn = shareBtn.cloneNode(true);
   shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
   newShareBtn.addEventListener("click", () => {
-    const text = `Meine Reservierung bei leih.lokal Karlsruhe\nAbholcode: ${record.otp}\nAbholung: ${formattedDate}, ${formattedTime} Uhr`;
+    const text = `Meine Reservierung bei leih.lokal Karlsruhe\nAbholcode: ${record.otp}\nAbholung: ${formattedDate}`;
     if (navigator.share) {
       navigator.share({ title: "leih.lokal Reservierung", text });
     } else {

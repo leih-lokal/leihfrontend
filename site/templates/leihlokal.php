@@ -509,21 +509,20 @@ for ($i = -1; $i <= 6; $i++) {
           <svg style="width:14px;height:14px;color:var(--ll-color);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span class="ll-section-header">Abholtermin</span>
         </label>
-        <div id="daySelector" style="display:flex;flex-direction:column;gap:0.35rem;">
+        <div id="daySelector" class="ll-day-selector">
           <?php foreach ($daySchedule as $day): ?>
             <?php if ($day["isOpen"] && !$day["isYesterday"] && !$day["isPastClosing"]): ?>
-            <button type="button" class="day-option" style="width:100%;text-align:left;padding:0.6rem 0.75rem;border:2px solid oklch(60.62% 0.245 28.83 / 0.15);background:white;color:var(--ll-black);display:flex;justify-content:space-between;align-items:center;min-height:44px;cursor:pointer;font-family:'Univers',sans-serif;font-size:0.8rem;transition:border-color 0.15s,background 0.15s;"
+            <button type="button" class="day-option ll-day-option"
               data-date-iso="<?= $day["dateISO"] ?>"
               data-middle-time="<?= $day["middleTime"] ?>">
-              <span style="display:flex;align-items:center;gap:0.4rem;">
-                <svg style="width:14px;height:14px;color:oklch(50% 0 0);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <strong><?= $day["dateFormatted"] ?></strong>
-                <span style="color:oklch(45% 0 0);"><?= $day["fullDayName"] ?></span>
+              <span class="ll-day-date"><?= $day["dateFormatted"] ?></span>
+              <span class="ll-day-info">
+                <span class="ll-day-name"><?= $day["fullDayName"] ?></span>
                 <?php if ($day["isToday"]): ?>
-                  <span style="background:var(--ll-color);color:white;font-size:0.5rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:0.1rem 0.3rem;">Heute</span>
+                  <span class="ll-day-badge">Heute</span>
                 <?php endif; ?>
               </span>
-              <span style="font-family:monospace;font-size:0.7rem;color:oklch(45% 0 0);"><?= $day["openTime"] ?>–<?= $day["closeTime"] ?></span>
+              <span class="ll-day-time"><?= $day["openTime"] ?>–<?= $day["closeTime"] ?></span>
             </button>
             <?php endif; ?>
           <?php endforeach; ?>

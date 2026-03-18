@@ -659,6 +659,94 @@ body {
   transform: translate(2px, -2px);
 }
 
+/* Day picker */
+.ll-day-selector {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--ll-color);
+}
+
+.ll-day-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  border: none;
+  border-bottom: 1px solid oklch(60.62% 0.245 28.83 / 0.12);
+  background: white;
+  color: var(--ll-black);
+  cursor: pointer;
+  font-family: "Univers", sans-serif;
+  font-size: 0.8rem;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.ll-day-option:last-child {
+  border-bottom: none;
+}
+
+.ll-day-option:nth-child(even) {
+  background: oklch(60.62% 0.245 28.83 / 0.03);
+}
+
+.ll-day-option:hover {
+  background: oklch(60.62% 0.245 28.83 / 0.08);
+}
+
+.ll-day-date {
+  font-weight: 700;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.ll-day-info {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ll-day-name {
+  color: oklch(40% 0 0);
+  font-size: 0.75rem;
+}
+
+.ll-day-badge {
+  background: var(--ll-color);
+  color: white;
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.3rem;
+}
+
+.ll-day-time {
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: oklch(45% 0 0);
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Selected day */
+.ll-day-option.day-selected {
+  background: var(--ll-color) !important;
+  color: white;
+}
+
+.ll-day-option.day-selected .ll-day-name,
+.ll-day-option.day-selected .ll-day-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ll-day-option.day-selected .ll-day-badge {
+  background: white;
+  color: var(--ll-color);
+}
+
 /* Success celebration */
 @keyframes success-bounce {
   0% { transform: scale(0); opacity: 0; }
