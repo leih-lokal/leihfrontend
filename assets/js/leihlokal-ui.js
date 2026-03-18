@@ -106,8 +106,8 @@ function createDetailElement(item, isMobile) {
   const content = `
     <div style="display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;width:100%;height:100%;background:white;">
 
-      <!-- Top-left: Image (square) -->
-      <div style="overflow:hidden;background:oklch(95% 0 0);position:relative;">
+      <!-- Top-left: Image (forced square) -->
+      <div style="aspect-ratio:1;overflow:hidden;background:oklch(95% 0 0);position:relative;">
         ${imgHTML}
         <button data-action="close-detail" style="position:absolute;top:0.4rem;left:0.4rem;z-index:2;background:rgba(255,255,255,0.9);border:2px solid var(--ll-color);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--ll-color);line-height:1;">×</button>
       </div>
