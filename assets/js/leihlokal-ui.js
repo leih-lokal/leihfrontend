@@ -89,52 +89,54 @@ function createDetailElement(item, isMobile) {
   const brandModel = [cleanStr(item.brand), cleanStr(item.model)].filter(Boolean).join(" — ");
 
   const statusLabel = isAvailable ? "VERFÜGBAR" : (item.is_protected ? "GESCHÜTZT" : "VERGEBEN");
-  const statusColor = isAvailable ? "#16a34a" : "#dc2626";
+  const statusColor = isAvailable ? "var(--ll-color)" : "#dc2626";
 
   const imgHTML = item.images?.[0]
     ? `<img src="${item.images[0].full}" alt="${escapeHTML(item.name)}" style="width:100%;height:100%;object-fit:cover;display:block;">`
     : '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:oklch(95% 0 0);color:oklch(70% 0 0);font-size:0.7rem;text-transform:uppercase;">Kein Bild</div>';
 
-  // Poster-style layout matching pencil mockup:
-  // Large image top-left, IID top-right stacked, status rotated right edge,
-  // name + brand bottom-left, action button bottom-right
+  // L-shaped layout from pencil mockup:
+  // CSS Grid with 2 cols, 2 rows. Image = top-left cell (78% x 78%).
+  // Right strip = top-right cell. Bottom strip = spans full width.
+  // Grid: [image 78%] [right-strip 22%]
+  //        [bottom-strip full width     ]
   const content = `
-    <div style="position:relative;aspect-ratio:1;overflow:hidden;background:oklch(95% 0 0);">
-      <!-- Full image background -->
-      <div style="position:absolute;inset:0;">
+    <div style="display:grid;grid-template-columns:78% 22%;grid-template-rows:auto auto;background:white;border:2px solid var(--ll-color);">
+
+      <!-- Top-left: Image (square) -->
+      <div style="aspect-ratio:1;overflow:hidden;background:oklch(95% 0 0);position:relative;">
         ${imgHTML}
+        <!-- Close button -->
+        <button data-action="close-detail" style="position:absolute;top:0.4rem;left:0.4rem;z-index:2;background:rgba(255,255,255,0.9);border:2px solid var(--ll-color);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--ll-color);line-height:1;">×</button>
       </div>
 
-      <!-- IID: top-right, stacked vertically -->
-      <div style="position:absolute;top:0.5rem;right:0.5rem;display:flex;flex-direction:column;z-index:1;">
-        <div style="background:var(--ll-color);color:white;font-family:monospace;font-size:1.4rem;font-weight:700;padding:0.25rem 0.4rem;text-align:center;line-height:1.2;">${paddedIid.slice(0, 2)}</div>
-        <div style="background:white;color:var(--ll-color);font-family:monospace;font-size:1.4rem;font-weight:700;padding:0.25rem 0.4rem;text-align:center;line-height:1.2;border:2px solid var(--ll-color);border-top:none;">${paddedIid.slice(2)}</div>
+      <!-- Top-right: IID stacked + status rotated -->
+      <div style="display:flex;flex-direction:column;align-items:center;padding:0.5rem 0.3rem;border-left:2px solid var(--ll-color);gap:0.3rem;">
+        <!-- IID stacked -->
+        <div style="font-family:monospace;font-weight:700;font-size:clamp(1.2rem, 2.5vw, 2rem);line-height:1;text-align:center;">
+          <div style="background:var(--ll-color);color:white;padding:0.2rem 0.35rem;">${paddedIid.slice(0, 2)}</div>
+          <div style="color:var(--ll-color);padding:0.2rem 0.35rem;border:2px solid var(--ll-color);border-top:none;">${paddedIid.slice(2)}</div>
+        </div>
+        <!-- Status rotated -->
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-family:'Univers',sans-serif;font-size:clamp(0.9rem, 2vw, 1.6rem);font-weight:700;color:${statusColor};letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">${statusLabel}</div>
+        </div>
       </div>
 
-      <!-- Status: rotated vertically, right edge -->
-      <div style="position:absolute;right:0.5rem;bottom:6rem;z-index:1;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-family:'Univers',sans-serif;font-size:1.2rem;font-weight:700;color:${statusColor};letter-spacing:0.05em;text-transform:uppercase;">${statusLabel}</div>
-
-      <!-- Bottom bar: name left, action right -->
-      <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;z-index:1;">
-        <!-- Name + brand -->
-        <div style="flex:1;background:rgba(255,255,255,0.92);padding:0.5rem 0.6rem;">
-          <div style="font-family:'Univers',sans-serif;font-size:0.85rem;font-weight:700;">${escapeHTML(item.name)}</div>
+      <!-- Bottom strip: name left, action right -->
+      <div style="grid-column:1/-1;display:flex;align-items:center;border-top:2px solid var(--ll-color);min-height:3.5rem;">
+        <div style="flex:1;padding:0.5rem 0.6rem;">
+          <div style="font-family:'Univers',sans-serif;font-size:clamp(0.75rem, 1.5vw, 1rem);font-weight:700;">${escapeHTML(item.name)}</div>
           ${brandModel ? `<div style="font-size:0.7rem;color:oklch(50% 0 0);">${escapeHTML(brandModel)}</div>` : ""}
           ${item.deposit ? `<div style="font-size:0.65rem;color:oklch(40% 0 0);margin-top:0.1rem;">${item.deposit} € Pfand</div>` : ""}
         </div>
-        <!-- Action button -->
         ${isAvailable
           ? `<button class="ll-btn" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'
-               style="background:var(--ll-color);color:white;padding:0.8rem;font-size:0.65rem;line-height:1.3;text-align:center;flex-shrink:0;min-width:4.5rem;">IN DEN<br>KORB</button>`
-          : `<div style="background:oklch(50% 0 0);color:white;padding:0.8rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;min-width:4.5rem;">${item.is_protected ? "NICHT<br>VORBE-<br>STELLBAR" : "NICHT<br>VERFÜG-<br>BAR"}</div>`
+               style="background:var(--ll-color);color:white;padding:0.75rem;font-size:clamp(0.6rem, 1.2vw, 0.8rem);line-height:1.3;text-align:center;flex-shrink:0;align-self:stretch;min-width:4rem;border-left:2px solid var(--ll-color);">IN DEN<br>KORB</button>`
+          : `<div style="background:oklch(50% 0 0);color:white;padding:0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;align-self:stretch;min-width:4rem;border-left:2px solid var(--ll-color);">${item.is_protected ? "GESCHÜTZT" : "VERGEBEN"}</div>`
         }
+        <a href="${detailUrl}" class="ll-btn ll-btn-close" style="text-decoration:none;text-align:center;align-self:stretch;display:flex;align-items:center;padding:0.5rem;border-left:2px solid var(--ll-color);font-size:0.6rem;">DETAILS</a>
       </div>
-
-      <!-- Close button: top-left -->
-      <button data-action="close-detail" style="position:absolute;top:0.4rem;left:0.4rem;z-index:2;background:rgba(255,255,255,0.85);border:2px solid var(--ll-color);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;cursor:pointer;color:var(--ll-color);">×</button>
-
-      <!-- Details link: bottom of status column area -->
-      <a href="${detailUrl}" style="position:absolute;right:0.4rem;bottom:0.4rem;z-index:2;display:none;text-decoration:none;" class="ll-detail-link">Details</a>
     </div>
   `;
 
