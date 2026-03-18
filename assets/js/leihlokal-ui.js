@@ -58,7 +58,7 @@ function createProductCard(item) {
           ? `<img src="${item.images[0].thumb}" alt="${escapeHTML(item.name)}" loading="lazy">`
           : ""}
       </div>
-      <div class="ll-card-iid">${formatIID(item.iid)}</div>
+      <div class="ll-card-iid"><span class="ll-card-iid-a">${String(item.iid).padStart(4, "0").slice(0, 2)}</span><span class="ll-card-iid-b">${String(item.iid).padStart(4, "0").slice(2)}</span></div>
       <div class="ll-card-body">
         <div class="ll-card-title">${escapeHTML(item.name)}</div>
         <div class="ll-card-cat">${escapeHTML(item.category)}</div>

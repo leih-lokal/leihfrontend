@@ -264,6 +264,12 @@
 .ll-product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+}
+
+/* Prevent horizontal overscroll from border widths */
+body {
+  overflow-x: hidden;
 }
 
 /* Product card — defined by grid lines, not individual borders */
@@ -283,10 +289,20 @@
   background: var(--ll-color);
 }
 
-.ll-card.active .ll-card-iid,
 .ll-card.active .ll-card-title,
 .ll-card.active .ll-card-cat {
   color: white;
+}
+
+.ll-card.active .ll-card-iid-a {
+  background: white;
+  color: var(--ll-color);
+  border-color: white;
+}
+
+.ll-card.active .ll-card-iid-b {
+  color: white;
+  border-color: white;
 }
 
 .ll-card.protected {
@@ -307,11 +323,26 @@
 }
 
 .ll-card-iid {
+  display: flex;
+  padding: 0.3rem 0.4rem 0;
   font-family: monospace;
-  font-size: 0.6rem;
   font-weight: 700;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.ll-card-iid-a {
+  background: var(--ll-color);
+  color: white;
+  padding: 0.15rem 0.2rem;
+  border: 1px solid var(--ll-color);
+}
+
+.ll-card-iid-b {
   color: var(--ll-color);
-  padding: 0.25rem 0.4rem 0;
+  padding: 0.15rem 0.2rem;
+  border: 1px solid var(--ll-color);
+  border-left: none;
 }
 
 .ll-card-body {
