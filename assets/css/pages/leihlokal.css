@@ -272,17 +272,15 @@ body {
   overflow-x: hidden;
 }
 
-/* Product card — defined by grid lines, not individual borders */
+/* Product card — every card gets right + bottom border.
+   Grid overflow:hidden clips the rightmost column's border.
+   This avoids nth-child issues when detail elements are in the DOM. */
 .ll-card {
   border-right: var(--ll-border);
   border-bottom: var(--ll-border);
   display: flex;
   flex-direction: column;
   cursor: pointer;
-}
-
-.ll-card:nth-child(3n) {
-  border-right: none;
 }
 
 .ll-card.active {
@@ -350,12 +348,25 @@ body {
   flex: 1;
 }
 
+/* Detail panel grow animation */
+@keyframes detail-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Mobile detail strip */
 .ll-detail-strip {
   grid-column: 1 / -1;
   border-top: var(--ll-border-heavy);
   border-bottom: var(--ll-border-heavy);
   background: white;
+  animation: detail-grow 0.2s ease-out;
 }
 
 .ll-detail-strip-inner {
@@ -618,13 +629,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .ll-card:nth-child(3n) {
-    border-right: var(--ll-border);
-  }
-
-  .ll-card:nth-child(4n) {
-    border-right: none;
-  }
+  /* All cards keep border-right; grid overflow:hidden clips the edge */
 
   /* Card footer visible on desktop */
   .ll-card-footer {
@@ -638,6 +643,7 @@ body {
     border-right: var(--ll-border);
     border-bottom: var(--ll-border);
     background: white;
+    animation: detail-grow 0.2s ease-out;
   }
 
   .ll-detail-2x2 .ll-detail-img {
