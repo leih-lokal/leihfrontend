@@ -1,832 +1,31 @@
 import api from "./leihlokal-core.js";
 
+// DOM references — new markup
 const productGrid = document.getElementById("productGrid");
 const searchInput = document.getElementById("searchInput");
-const prevPageBtn = document.getElementById("prevPage");
-const nextPageBtn = document.getElementById("nextPage");
-const pageNumbers = document.getElementById("pageNumbers");
+const cartBar = document.getElementById("cartBar");
+const cartBarCount = document.getElementById("cartBarCount");
+const cartPanel = document.getElementById("cartPanel");
 
+// State
 let currentPage = 1;
 let currentCategory = "";
 let currentSearchQuery = "";
 let cart = api.cart;
 let showOnlyAvailable = true;
-let sortByNumber = false; // false = random (default), true = by iid
+let sortByNumber = false;
+let expandedItemId = null; // Track which item detail is open
 
-// Helper function to get current sort value
+// Preserved helpers
 function getCurrentSort() {
-  return sortByNumber ? 'iid' : '@random';
+  return sortByNumber ? "iid" : "@random";
 }
 
-// Helper function to format date
-function formatDate(date) {
-  return date.toLocaleDateString("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
-
-// Helper function to get next occurrence of a weekday
-function getNextWeekdayDate(dayKey) {
-  const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-  const today = new Date();
-  const currentDay = today.getDay();
-  const targetDay = days.indexOf(dayKey);
-
-  let daysToAdd = targetDay - (currentDay - 1); // Adjusted for Monday-based week
-  if (daysToAdd <= 0) daysToAdd += 7;
-
-  const targetDate = new Date(today);
-  targetDate.setDate(today.getDate() + daysToAdd);
-  return targetDate;
-}
-
-// Function to generate ICS file
-function generateICS(pickup, items, otp = null) {
-  const event = {
-    start: new Date(pickup),
-    end: new Date(new Date(pickup).getTime() + 30 * 60000), // 30 minutes duration
-    title: "leih.lokal Abholung",
-    location: "leih.lokal Karlsruhe, Gerwigstraße 41, 76131 Karlsruhe",
-  };
-
-  // Build description with proper ICS formatting
-  let descriptionLines = ["Abholung deiner reservierten Artikel:"];
-
-  if (otp) {
-    descriptionLines.push("");
-    descriptionLines.push(`ABHOLCODE: ${otp}`);
-    descriptionLines.push("");
-  }
-
-  descriptionLines.push("");
-  descriptionLines.push("Reservierte Artikel:");
-  items.forEach((item) => {
-    descriptionLines.push(`- ${formatIID(item.iid)} ${item.name}`);
-  });
-
-  // Escape special characters for ICS format and join with \n
-  const description = descriptionLines
-    .join("\\n")
-    .replace(/\\/g, "\\\\")
-    .replace(/;/g, "\\;")
-    .replace(/,/g, "\\,");
-
-  const icsContent = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "BEGIN:VEVENT",
-    `DTSTART:${event.start
-      .toISOString()
-      .replace(/[-:]/g, "")
-      .replace(/\.\d{3}/, "")}`,
-    `DTEND:${event.end
-      .toISOString()
-      .replace(/[-:]/g, "")
-      .replace(/\.\d{3}/, "")}`,
-    `SUMMARY:${event.title}`,
-    `DESCRIPTION:${description}`,
-    `LOCATION:${event.location}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
-
-  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "leihlokal-abholung.ics";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-// ============================================================================
-// RESERVATION FLOW
-// ============================================================================
-
-let selectedPickupDay = null;
-
-// Show success screen
-function showReservationSuccess(record, reservationData, reservedItems) {
-  // Hide form, show success
-  document.getElementById("reservationForm").classList.add("hidden");
-  document.getElementById("successDisplay").classList.remove("hidden");
-
-  // Display OTP
-  if (record.otp) {
-    document.getElementById("otpNumber").textContent = record.otp;
-  }
-
-  // Build summary
-  const pickupDate = new Date(reservationData.pickup);
-  const formattedDate = pickupDate.toLocaleDateString("de-DE", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const formattedTime = pickupDate.toLocaleTimeString("de-DE", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const totalDeposit = reservedItems.reduce((sum, item) => sum + (item.deposit || 0), 0);
-
-  const summary = `
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-medium">Abholtermin:</span>
-      <span>${formattedDate}, ${formattedTime} Uhr</span>
-    </div>
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-medium">Email:</span>
-      <span>${reservationData.customer_email}</span>
-    </div>
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-medium">Artikel:</span>
-      <span>${reservationData.items.length} Stück</span>
-    </div>
-    <div class="flex justify-between font-bold text-lg">
-      <span>Gesamtpfand:</span>
-      <span class="text-leihlokal-600">${totalDeposit.toFixed(2).replace(".", ",")} €</span>
-    </div>
-  `;
-
-  document.getElementById("reservationSummary").innerHTML = summary;
-
-  // Confetti!
-  if (typeof confetti !== "undefined") {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-  }
-
-  // Setup calendar button
-  const calendarBtn = document.getElementById("addToCalendarBtn");
-  const newCalendarBtn = calendarBtn.cloneNode(true);
-  calendarBtn.parentNode.replaceChild(newCalendarBtn, calendarBtn);
-  newCalendarBtn.addEventListener("click", () => {
-    generateICS(reservationData.pickup, reservedItems, record.otp);
-  });
-
-  // Setup share button
-  const shareBtn = document.getElementById("shareReservationBtn");
-  const newShareBtn = shareBtn.cloneNode(true);
-  shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
-  newShareBtn.addEventListener("click", () => {
-    const otp = record.otp;
-    const text = `Meine Reservierung bei leih.lokal Karlsruhe\nAbholcode: ${otp}\nAbholung: ${formattedDate}, ${formattedTime} Uhr`;
-
-    if (navigator.share) {
-      navigator.share({
-        title: "leih.lokal Reservierung",
-        text: text,
-      });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert("In Zwischenablage kopiert!");
-    }
-  });
-}
-
-function updateCartUI() {
-  const cartItems = document.getElementById("cartItems");
-  const clearCartBtn = document.getElementById("clearCart");
-  const completeReservationBtn = document.getElementById("completeReservation");
-  const emptyMessage = cartItems.querySelector(".empty-cart-message");
-
-  if (cart.items.length === 0) {
-    cartItems.innerHTML =
-      '<div class="text-gray-500 text-sm">Hier ist noch nichts. Such\' dir was aus!</div>';
-    clearCartBtn.classList.add("hidden");
-    completeReservationBtn.classList.add("hidden");
-    return;
-  }
-
-  cartItems.innerHTML = cart.items
-    .map(
-      (item) => `
-        <div class="flex justify-between items-center border-b border-gray-200 pb-2">
-            <span class="font-mono">${formatIID(item.iid)} - ${item.name}</span>
-            <button
-                class="text-red-500 hover:text-red-700"
-                onclick="removeFromCart('${item.id}')"
-            >
-                ×
-            </button>
-        </div>
-    `,
-    )
-    .join("");
-
-  clearCartBtn.classList.remove("hidden");
-  completeReservationBtn.classList.remove("hidden");
-}
-
-function formatPickupDate(dateISO, timeSlot) {
-  // Parse ISO date (YYYY-MM-DD)
-  const [year, month, day] = dateISO.split('-').map(Number);
-  const [hours, minutes] = timeSlot.split(':').map(Number);
-
-  const pickupDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
-  return pickupDate.toISOString();
-}
-
-// Open reservation modal
-document.getElementById("completeReservation").addEventListener("click", () => {
-  if (cart.items.length === 0) {
-    alert("Dein Ausleihkorb ist leer");
-    return;
-  }
-
-  // Populate modal cart summary
-  const modalCartItems = document.getElementById("modalCartItems");
-  const totalDeposit = cart.items.reduce((sum, item) => sum + item.deposit, 0);
-
-  modalCartItems.innerHTML = cart.items
-    .map(
-      (item) => `
-      <div class="flex justify-between text-sm">
-        <span class="font-mono">${formatIID(item.iid)}</span>
-        <span class="flex-1 px-3">${item.name}</span>
-        <span class="font-bold">${item.deposit.toFixed(2)} €</span>
-      </div>
-    `
-    )
-    .join("");
-
-  document.getElementById("modalTotalDeposit").textContent =
-    totalDeposit.toFixed(2).replace(".", ",") + " €";
-
-  // Reset form state
-  selectedPickupDay = null;
-  document.querySelectorAll(".day-option").forEach((btn) => {
-    btn.classList.remove("day-selected");
-  });
-  document.getElementById("reservationForm").classList.remove("hidden");
-  document.getElementById("successDisplay").classList.add("hidden");
-
-  // Show modal
-  document.getElementById("reservationModal").classList.remove("hidden");
-});
-
-// Close modal handlers
-document.getElementById("closeReservationModal").addEventListener("click", () => {
-  document.getElementById("reservationModal").classList.add("hidden");
-  // If success screen was showing, refresh page to clear state
-  if (!document.getElementById("successDisplay").classList.contains("hidden")) {
-    window.location.reload();
-  }
-});
-
-document.getElementById("closeSuccessBtn")?.addEventListener("click", () => {
-  document.getElementById("reservationModal").classList.add("hidden");
-  // Refresh page to clear state
-  window.location.reload();
-});
-
-// Day selection
-document.querySelectorAll(".day-option").forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    const clickedBtn = e.currentTarget;
-
-    // Deselect all
-    document.querySelectorAll(".day-option").forEach((b) => {
-      b.classList.remove("day-selected");
-    });
-
-    // Select clicked
-    clickedBtn.classList.add("day-selected");
-
-    // Store selection
-    selectedPickupDay = {
-      dateISO: clickedBtn.dataset.dateIso,
-      time: clickedBtn.dataset.middleTime,
-    };
-  });
-});
-
-// Form submission
-document.getElementById("quickReservationForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  // Validation
-  const email = e.target.querySelector('input[name="email"]').value.trim();
-  if (!email) {
-    alert("Bitte gib deine Email-Adresse ein");
-    return;
-  }
-
-  if (!selectedPickupDay) {
-    alert("Bitte wähle einen Abholtermin aus");
-    return;
-  }
-
-  // Store cart items before clearing
-  const reservedItems = [...cart.items];
-
-  const submitBtn = document.getElementById("submitReservationBtn");
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = `
-    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
-    Wird verarbeitet...
-  `;
-
-  try {
-    // Build pickup datetime
-    const [year, month, day] = selectedPickupDay.dateISO.split("-").map(Number);
-    const [hours, minutes] = selectedPickupDay.time.split(":").map(Number);
-    const pickupDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
-
-    // Build reservation payload
-    const reservationData = {
-      customer_email: email,
-      items: cart.items.map((item) => item.id),
-      pickup: pickupDate.toISOString(),
-      comments: "",
-      is_new_customer: true,
-      done: false,
-    };
-
-    // Submit to API
-    const record = await api.submitReservation(reservationData);
-
-    // Show success
-    showReservationSuccess(record, reservationData, reservedItems);
-
-    // Clear cart
-    cart.clearCart();
-    updateCartUI();
-  } catch (error) {
-    console.error("Reservation failed:", error);
-
-    // Show error
-    submitBtn.classList.add("bg-red-500");
-    submitBtn.innerHTML = `
-      <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-      Fehler beim Reservieren
-    `;
-
-    // Reset after delay
-    setTimeout(() => {
-      submitBtn.disabled = false;
-      submitBtn.className = "w-full bg-leihlokal-500 text-white p-4 text-lg font-bold hover:bg-leihlokal-600 transition-colors";
-      submitBtn.innerHTML = "Jetzt reservieren →";
-    }, 3000);
-  }
-});
-
-// Function to add item to cart
-window.addToCart = function (item) {
-  cart.addItem(item);
-  updateCartUI();
-};
-
-// Function to remove item from cart
-window.removeFromCart = function (itemId) {
-  cart.removeItem(itemId);
-  updateCartUI();
-};
-
-// Filter items by category
-async function filterByCategory(category) {
-  currentCategory = category;
-  currentSearchQuery = "";
-  searchInput.value = "";
-
-  // Update active state in UI
-  document.querySelectorAll(".category-filter").forEach((el) => {
-    el.dataset.active = (el.dataset.category === category).toString();
-  });
-
-  try {
-    let filter = [];
-
-    if (category) {
-      filter.push(`category ~ "${category}"`);
-    }
-
-    if (showOnlyAvailable) {
-      filter.push('status = "instock"');
-    }
-
-    const finalFilter = filter.join(" && ");
-    const response = await api.getItems(1, finalFilter, getCurrentSort());
-
-    productGrid.innerHTML = response.items
-      .map((item) => createProductCard(item))
-      .join("");
-
-    currentPage = 1;
-    updatePagination(response.totalPages);
-  } catch (error) {
-    console.error("Failed to filter items:", error);
-  }
-}
-
-// Format item ID in SH.IT notation (as helper)
 function formatIID(iid) {
-  // Convert to string and pad with zeros
   const num = String(iid).padStart(4, "0");
-  // Insert the dot at position 2
   return num.slice(0, 2) + "." + num.slice(2);
 }
 
-// Create a product card HTML
-function createProductCard(item) {
-  const statusConfig = {
-    instock: {
-      bg: "bg-green-100",
-      text: "text-green-800",
-      label: "Ausleihbar",
-    },
-    deleted: { bg: "bg-gray-100", text: "text-gray-800", label: "Gelöscht" },
-    outofstock: {
-      bg: "bg-yellow-100",
-      text: "text-yellow-800",
-      label: "Ausgeliehen",
-    },
-    onbackorder: {
-      bg: "bg-purple-100",
-      text: "text-purple-800",
-      label: "Nachbestellt",
-    },
-    reserved: {
-      bg: "bg-blue-100",
-      text: "text-blue-800",
-      label: "Vorbestellt",
-    },
-    lost: { bg: "bg-orange-100", text: "text-orange-800", label: "Verloren" },
-    repairing: {
-      bg: "bg-red-100",
-      text: "text-red-800",
-      label: "In Reparatur",
-    },
-    forsale: {
-      bg: "bg-indigo-100",
-      text: "text-indigo-800",
-      label: "Zum Verkauf",
-    },
-  };
-
-  const status = statusConfig[item.status] || statusConfig.instock;
-
-  const paddedIid = String(item.iid).padStart(4, "0");
-
-  return `
-        <div class="border border-black ${item.is_protected ? 'opacity-50 grayscale' : ''}">
-            <!-- ID Header -->
-            <div class="bg-white px-4 pt-4 flex items-center justify-between ">
-                <span class="text-2xl font-bold font-mono">
-                    <span class="bg-leihlokal-500 text-white px-2 py-1">${paddedIid.slice(0, 2)}</span><span class="text-leihlokal-500 px-2 py-1">${paddedIid.slice(2)}</span>
-                </span>
-                <span class="${status.bg} ${status.text} px-2 py-1 text-sm font-medium">
-                    ${status.label}
-                </span>
-            </div>
-
-            <div class="p-4">
-                <div class="aspect-w-1 aspect-h-1 bg-gray-200 mb-4 h-48 cursor-pointer item-detail-trigger" data-item-id="${item.id}">
-                    ${
-                      item.images?.[0]
-                        ? `
-                        <img src="${item.images[0].thumb}" alt="${item.name}" class="w-full h-full object-cover">
-                    `
-                        : ""
-                    }
-                </div>
-                <h3 class="font-bold mb-2 cursor-pointer hover:text-leihlokal-600 item-detail-trigger" data-item-id="${item.id}">${item.name}</h3>
-                <p class="text-sm mb-4">${item.description || ""}</p>
-                <button class="w-full ${item.status === "instock" && !item.is_protected ? "bg-leihlokal-500 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"} p-2"
-                                    ${item.status !== "instock" || item.is_protected ? "disabled" : ""}
-                                    data-item='${JSON.stringify(item)}'
-                                    ${item.status === "instock" && !item.is_protected ? 'data-action="add-to-cart"' : ""}
-                            >
-                                ${item.is_protected ? "Nicht vorbestellbar" : (item.status === "instock" ? "In den Ausleihkorb" : "Bald wieder da!")}
-                            </button>
-                        </div>
-        </div>
-    `;
-}
-
-// Modal handling functions
-function showItemDetails(itemId) {
-  const modal = document.getElementById("itemModal");
-  const modalContent = document.getElementById("itemModalContent");
-
-  // Fetch item details
-  api.getItem(itemId).then((item) => {
-    const paddedIid = String(item.iid).padStart(4, "0");
-    const detailUrl = `/ll/${paddedIid}`;
-
-    modalContent.innerHTML = `
-      <!-- Image -->
-      <div class="relative">
-        ${
-          item.images?.[0]
-            ? `<img src="${item.images[0].full}" alt="${item.name}" class="w-full h-64 object-cover">`
-            : '<div class="w-full h-64 bg-gray-200 flex items-center justify-center"><span class="text-gray-400">Kein Bild</span></div>'
-        }
-      </div>
-
-      <!-- Content -->
-      <div class="p-6">
-        <!-- Item ID -->
-        <div class="text-center mb-4">
-          <div class="text-5xl py-4 font-bold font-mono leading-none inline-block">
-            <span class="border-2 border-leihlokal-500 bg-leihlokal-500 text-white p-2">${paddedIid.slice(0, 2)}</span><span class="border-2 border-leihlokal-500 p-2 text-leihlokal-500">${paddedIid.slice(2)}</span>
-          </div>
-        </div>
-
-        <!-- Name -->
-        <h2 class="text-2xl font-bold mb-2 text-center">${item.name}</h2>
-
-        ${
-          item.brand || item.model
-            ? `<p class="text-center text-gray-600 mb-4">${item.brand || ""}${item.brand && item.model ? " - " : ""}${item.model || ""}</p>`
-            : ""
-        }
-
-        <!-- Deposit -->
-        ${
-          item.deposit
-            ? `
-          <div class="bg-leihlokal-50 border-2 border-leihlokal-500 p-3 text-center mb-6">
-            <div class="text-xs text-gray-600 mb-1">Pfand</div>
-            <div class="text-3xl font-bold text-leihlokal-600">€${item.deposit}</div>
-          </div>
-        `
-            : ""
-        }
-
-        <!-- Buttons -->
-        <div class="space-y-3">
-          ${
-            item.is_protected
-              ? `
-            <div class="w-full bg-gray-200 text-gray-500 p-3 font-bold text-center">
-              Nicht vorbestellbar
-            </div>
-          `
-              : item.status === "instock"
-              ? `
-            <button class="w-full bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-3 font-bold transition-colors"
-                    data-item='${JSON.stringify(item)}'
-                    data-action="add-to-cart-modal">
-              In den Ausleihkorb
-            </button>
-          `
-              : `
-            <div class="w-full bg-gray-200 text-gray-500 p-3 font-bold text-center">
-              Zurzeit nicht verfügbar
-            </div>
-          `
-          }
-
-          <a href="${detailUrl}" class="block w-full border-2 border-black hover:bg-gray-100 text-center p-3 font-bold transition-colors">
-            Details →
-          </a>
-        </div>
-      </div>
-    `;
-
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.style.overflow = "hidden";
-  });
-}
-
-// Close the item modal
-function closeItemModal() {
-  const modal = document.getElementById("itemModal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
-  document.body.style.overflow = ""; // Restore scrolling
-}
-
-// Reservation Modal Functions
-
-// Initialize API and load initial data
-async function initializeApp() {
-  try {
-    await api.initialize();
-    await loadItems(1);
-  } catch (error) {
-    console.error("Failed to initialize app:", error);
-  }
-}
-
-// Load and render items (browse mode)
-window.loadItems = async function (page = 1) {
-  currentSearchQuery = "";
-
-  try {
-    let filter = [];
-
-    if (currentCategory) {
-      filter.push(`category ~ "${currentCategory}"`);
-    }
-
-    if (showOnlyAvailable) {
-      filter.push('status = "instock"');
-    }
-
-    const finalFilter = filter.join(" && ");
-    const response = await api.getItems(page, finalFilter, getCurrentSort());
-
-    productGrid.innerHTML = response.items
-      .map((item) => createProductCard(item))
-      .join("");
-
-    currentPage = page;
-    updatePagination(response.totalPages);
-  } catch (error) {
-    console.error("Failed to load items:", error);
-  }
-};
-
-// Unified pagination function - routes to search or browse
-window.goToPage = async function (page) {
-  if (currentSearchQuery) {
-    await performSearch(currentSearchQuery, page);
-  } else {
-    await loadItems(page);
-  }
-};
-
-// Update pagination controls
-function updatePagination(totalPages) {
-  prevPageBtn.disabled = currentPage === 1;
-  nextPageBtn.disabled = currentPage === totalPages;
-
-  const pageButtons = [];
-
-  // Always show first page
-  if (totalPages > 0) {
-    pageButtons.push(`
-            <button
-                class="px-4 py-2 border border-black ${currentPage === 1 ? "bg-leihlokal-500 text-white" : "hover:bg-leihlokal-800 hover:text-white"}"
-                ${currentPage === 1 ? "disabled" : ""}
-                onclick="goToPage(1)"
-            >
-                1
-            </button>
-        `);
-  }
-
-  // Add ellipsis if there's a gap
-  if (currentPage > 2) {
-    pageButtons.push('<span class="px-2">...</span>');
-  }
-
-  // Current page (if not first or last)
-  if (currentPage !== 1 && currentPage !== totalPages) {
-    pageButtons.push(`
-            <button
-                class="px-4 py-2 border border-black bg-leihlokal-500 text-white"
-                disabled
-            >
-                ${currentPage}
-            </button>
-        `);
-  }
-
-  // Add ellipsis if there's a gap
-  if (currentPage < totalPages - 1) {
-    pageButtons.push('<span class="px-2">...</span>');
-  }
-
-  // Always show last page
-  if (totalPages > 1) {
-    pageButtons.push(`
-            <button
-                class="px-4 py-2 border border-black ${currentPage === totalPages ? "bg-leihlokal-500 text-white" : "hover:bg-leihlokal-800 hover:text-white"}"
-                ${currentPage === totalPages ? "disabled" : ""}
-                onclick="goToPage(${totalPages})"
-            >
-                ${totalPages}
-            </button>
-        `);
-  }
-
-  pageNumbers.innerHTML = pageButtons.join("");
-}
-
-// Event listeners
-prevPageBtn.addEventListener("click", () => goToPage(currentPage - 1));
-nextPageBtn.addEventListener("click", () => goToPage(currentPage + 1));
-
-document.querySelectorAll(".category-filter").forEach((el) => {
-  el.addEventListener("click", () => filterByCategory(el.dataset.category));
-});
-
-// Helper to perform search with current filters
-async function performSearch(query, page = 1) {
-  const results = await api.searchItems(query, page, getCurrentSort());
-  const filteredResults = showOnlyAvailable
-    ? {
-        items: results.items.filter((item) => item.status === "instock"),
-        totalPages: results.totalPages,
-      }
-    : results;
-
-  productGrid.innerHTML = filteredResults.items
-    .map((item) => createProductCard(item))
-    .join("");
-
-  currentPage = page;
-  updatePagination(results.totalPages);
-}
-
-searchInput.addEventListener(
-  "input",
-  debounce(async (e) => {
-    const query = e.target.value.trim();
-    currentSearchQuery = query;
-    if (query) {
-      await performSearch(query);
-    } else {
-      loadItems(1);
-    }
-  }, 300),
-);
-
-document.getElementById("closeModal").addEventListener("click", closeItemModal);
-
-// Close on background click
-document.getElementById("itemModal").addEventListener("click", function (e) {
-  if (e.target === this) {
-    closeItemModal();
-  }
-});
-
-document
-  .getElementById("availableToggle")
-  .addEventListener("change", async function (e) {
-    showOnlyAvailable = e.target.checked;
-    if (currentSearchQuery) {
-      await performSearch(currentSearchQuery);
-    } else {
-      loadItems(1);
-    }
-  });
-
-document
-  .getElementById("sortToggle")
-  .addEventListener("change", async function (e) {
-    sortByNumber = e.target.checked;
-    if (currentSearchQuery) {
-      await performSearch(currentSearchQuery);
-    } else {
-      loadItems(1);
-    }
-  });
-
-document.addEventListener("click", function (e) {
-  // Handle item detail clicks
-  if (e.target.closest(".item-detail-trigger")) {
-    const itemId = e.target.closest(".item-detail-trigger").dataset.itemId;
-    showItemDetails(itemId);
-  }
-
-  // Handle add to cart clicks (from product grid)
-  if (e.target.matches('[data-action="add-to-cart"]')) {
-    const itemData = JSON.parse(e.target.dataset.item);
-    addToCart(itemData);
-    playAddToCartAnimation(e.target);
-  }
-
-  // Handle add to cart clicks (from modal)
-  if (e.target.matches('[data-action="add-to-cart-modal"]')) {
-    const itemData = JSON.parse(e.target.dataset.item);
-    addToCart(itemData);
-    playAddToCartAnimation(e.target);
-    // Close modal after adding
-    closeItemModal();
-  }
-});
-
-// Clear cart button
-document.getElementById("clearCart").addEventListener("click", () => {
-  cart.clearCart();
-  updateCartUI();
-});
-
-// Subscribe to cart updates
-cart.subscribe(updateCartUI);
-
-// Initialize cart UI
-updateCartUI();
-
-// Utility function for debouncing search
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -839,60 +38,587 @@ function debounce(func, wait) {
   };
 }
 
-// Function to play the add-to-cart animation
-function playAddToCartAnimation(buttonEl) {
-  // Create the flying dot
-  const dot = document.createElement("div");
-  dot.style.cssText = `
-        position: fixed;
-        width: 40px;
-        height: 40px;
-        background: #f00;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-    `;
-  document.body.appendChild(dot);
+// ============================================================================
+// STEP 2: Product card renderer (blueprint style)
+// ============================================================================
 
-  // Get the cart element position
-  const cart = document.querySelector(".border.border-black:nth-child(1)"); // Cart container
-  const cartRect = cart.getBoundingClientRect();
-  const buttonRect = buttonEl.getBoundingClientRect();
+function createProductCard(item) {
+  const isAvailable = item.status === "instock" && !item.is_protected;
 
-  // Set initial position
-  dot.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-  dot.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
+  return `
+    <div class="ll-card ${item.is_protected ? 'protected' : ''} ${expandedItemId === item.id ? 'active' : ''}"
+         data-item-id="${item.id}">
+      <div class="ll-card-img">
+        ${item.images?.[0]
+          ? `<img src="${item.images[0].thumb}" alt="${item.name}" loading="lazy">`
+          : ""}
+      </div>
+      <div class="ll-card-body">
+        <div class="ll-card-title">${item.name}</div>
+        <div class="ll-card-cat">${item.category || ""}</div>
+      </div>
+      <div class="ll-card-footer" style="display:none;padding:0.4rem 0.6rem;border-top:var(--ll-border);justify-content:space-between;align-items:center;">
+        <span style="font-weight:700;font-size:0.65rem;">${item.deposit ? item.deposit + " € Pfand" : ""}</span>
+        ${isAvailable
+          ? `<button class="ll-btn" style="background:var(--ll-black);color:white;padding:0.2rem 0.5rem;font-size:0.58rem;"
+               data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'>+ Korb</button>`
+          : `<span class="ll-meta-label" style="color:oklch(60% 0 0);">${item.is_protected ? "Geschützt" : "Vergeben"}</span>`
+        }
+      </div>
+    </div>
+  `;
+}
 
-  // Animate the dot
-  anime({
-    targets: dot,
-    left: cartRect.left + cartRect.width / 2,
-    top: cartRect.top + cartRect.height / 2,
-    scale: [1, 0.5],
-    opacity: [1, 0],
-    duration: 600,
-    easing: "easeOutQuart",
-    complete: () => {
-      dot.remove();
+// ============================================================================
+// STEP 3: Inline item detail — mobile strip and desktop 2×2
+// ============================================================================
 
-      // Add a quick pulse animation to the cart
-      anime({
-        targets: cart,
-        scale: [1, 1.03, 1],
-        duration: 200,
-        easing: "easeOutQuad",
-      });
-    },
+function createDetailElement(item, isMobile) {
+  const isAvailable = item.status === "instock" && !item.is_protected;
+  const paddedIid = String(item.iid).padStart(4, "0");
+  const detailUrl = `/ll/${paddedIid}`;
+
+  const content = `
+    <div class="${isMobile ? 'll-detail-strip-inner' : ''}" style="${!isMobile ? 'display:grid;grid-template-columns:1fr 1fr;height:100%;' : ''}">
+      <div class="${isMobile ? 'll-detail-img' : 'll-detail-img'}" style="${!isMobile ? 'border-right:var(--ll-border);min-height:250px;' : ''}">
+        ${item.images?.[0]
+          ? `<img src="${item.images[0].full}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">`
+          : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:oklch(70% 0 0);font-size:0.7rem;text-transform:uppercase;">Kein Bild</div>'}
+      </div>
+      <div class="ll-detail-content" style="${!isMobile ? 'display:flex;flex-direction:column;padding:1.25rem;' : ''}">
+        <div class="ll-meta-label" style="color:var(--ll-color);">${item.category || ""}</div>
+        <div class="ll-detail-title" style="margin-top:0.25rem;">${item.name}</div>
+        ${item.brand || item.model
+          ? `<div style="font-size:0.75rem;color:oklch(50% 0 0);margin-top:0.25rem;">${item.brand || ""}${item.brand && item.model ? " — " : ""}${item.model || ""}</div>`
+          : ""}
+        <div style="font-size:0.8rem;line-height:1.5;color:oklch(40% 0 0);margin-top:0.5rem;">${item.description || ""}</div>
+        <div class="ll-detail-meta">
+          <div class="ll-detail-meta-item">
+            <span class="ll-detail-meta-value" style="color:var(--ll-color);">${item.deposit ? item.deposit + " €" : "—"}</span>
+            <span class="ll-meta-label">Pfand</span>
+          </div>
+          <div class="ll-detail-meta-item">
+            <span class="ll-detail-meta-value" style="color:${isAvailable ? '#16a34a' : '#dc2626'};">${isAvailable ? "Verfügbar" : "Vergeben"}</span>
+            <span class="ll-meta-label">Status</span>
+          </div>
+        </div>
+        <div class="ll-detail-actions" style="${!isMobile ? 'margin-top:auto;' : ''}">
+          ${isAvailable
+            ? `<button class="ll-btn ll-btn-primary" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'>+ In den Korb</button>`
+            : `<span class="ll-btn" style="flex:1;background:oklch(90% 0 0);color:oklch(50% 0 0);text-align:center;padding:0.65rem;">${item.is_protected ? "Nicht vorbestellbar" : "Zurzeit nicht verfügbar"}</span>`
+          }
+          <a href="${detailUrl}" class="ll-btn ll-btn-close" style="text-decoration:none;text-align:center;">Details</a>
+          <button class="ll-btn ll-btn-close" data-action="close-detail">×</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const el = document.createElement("div");
+
+  if (isMobile) {
+    el.className = "ll-detail-strip";
+    el.innerHTML = content;
+  } else {
+    el.className = "ll-detail-2x2";
+    el.innerHTML = content;
+  }
+
+  el.dataset.detailFor = item.id;
+  return el;
+}
+
+// ============================================================================
+// STEP 4: Expand/collapse logic for item detail
+// ============================================================================
+
+let detailElement = null;
+let originalCardHTML = null;
+let originalCardIndex = null;
+
+function isMobileView() {
+  return window.innerWidth < 1024;
+}
+
+async function expandItemDetail(itemId) {
+  // Close existing detail first
+  collapseItemDetail();
+
+  const item = await api.getItem(itemId);
+  expandedItemId = item.id;
+  const mobile = isMobileView();
+
+  if (mobile) {
+    // Mobile: insert strip after the row containing the clicked card
+    const cards = Array.from(productGrid.children);
+    const clickedCard = cards.find(c => c.dataset.itemId === itemId);
+    if (!clickedCard) return;
+
+    clickedCard.classList.add("active");
+    const cardIndex = cards.indexOf(clickedCard);
+    const columnsPerRow = 2;
+    const lastCardInRow = Math.min(cardIndex + (columnsPerRow - (cardIndex % columnsPerRow)), cards.length) - 1;
+    const insertAfter = cards[lastCardInRow];
+
+    detailElement = createDetailElement(item, true);
+    insertAfter.after(detailElement);
+    detailElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } else {
+    // Desktop: replace the clicked card with a 2x2 block
+    const cards = Array.from(productGrid.querySelectorAll(".ll-card, .ll-detail-2x2"));
+    const clickedCard = cards.find(c => c.dataset?.itemId === itemId);
+    if (!clickedCard) return;
+
+    originalCardHTML = clickedCard.outerHTML;
+    originalCardIndex = Array.from(productGrid.children).indexOf(clickedCard);
+
+    detailElement = createDetailElement(item, false);
+    clickedCard.replaceWith(detailElement);
+  }
+}
+
+function collapseItemDetail() {
+  if (!detailElement) return;
+
+  if (isMobileView()) {
+    // Remove strip, deactivate card
+    detailElement.remove();
+    productGrid.querySelectorAll(".ll-card.active").forEach(c => c.classList.remove("active"));
+  } else {
+    // Restore original card
+    if (originalCardHTML) {
+      const temp = document.createElement("div");
+      temp.innerHTML = originalCardHTML;
+      detailElement.replaceWith(temp.firstElementChild);
+    } else {
+      detailElement.remove();
+    }
+  }
+
+  detailElement = null;
+  originalCardHTML = null;
+  originalCardIndex = null;
+  expandedItemId = null;
+}
+
+// ============================================================================
+// STEP 5: Cart UI — sticky bar (mobile) + sidebar (desktop)
+// ============================================================================
+
+function updateCartUI() {
+  const count = cart.items.length;
+  const totalDeposit = cart.items.reduce((sum, item) => sum + (item.deposit || 0), 0);
+
+  // Mobile: sticky cart bar
+  if (cartBar) {
+    cartBar.classList.toggle("visible", count > 0);
+    cartBarCount.textContent = `Korb (${count})`;
+  }
+
+  // Desktop: sidebar cart
+  const sidebarCart = document.getElementById("sidebarCartItems");
+  const sidebarReserve = document.getElementById("sidebarReserve");
+  const sidebarClear = document.getElementById("sidebarClearCart");
+
+  if (sidebarCart) {
+    if (count === 0) {
+      sidebarCart.innerHTML = '<span style="color:oklch(60% 0 0);font-size:0.75rem;">Noch nichts drin.</span>';
+      if (sidebarReserve) sidebarReserve.style.display = "none";
+      if (sidebarClear) sidebarClear.style.display = "none";
+    } else {
+      sidebarCart.innerHTML = cart.items.map(item => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.08);font-size:0.75rem;">
+          <span>${formatIID(item.iid)} ${item.name}</span>
+          <button onclick="removeFromCart('${item.id}')" style="background:none;border:none;color:var(--ll-color);cursor:pointer;font-weight:700;">×</button>
+        </div>
+      `).join("");
+      if (sidebarReserve) sidebarReserve.style.display = "block";
+      if (sidebarClear) sidebarClear.style.display = "block";
+    }
+  }
+
+  // Cart panel contents (for reservation flow)
+  const panelItems = document.getElementById("panelCartItems");
+  const panelTotal = document.getElementById("panelTotalDeposit");
+  if (panelItems) {
+    panelItems.innerHTML = cart.items.map(item => `
+      <div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:0.3rem 0;border-bottom:var(--ll-border);">
+        <span>${formatIID(item.iid)} ${item.name}</span>
+        <span style="font-weight:700;">${(item.deposit || 0).toFixed(2)} €</span>
+      </div>
+    `).join("");
+  }
+  if (panelTotal) {
+    panelTotal.textContent = `Gesamtpfand: ${totalDeposit.toFixed(2).replace(".", ",")} €`;
+  }
+}
+
+window.addToCart = function(item) {
+  cart.addItem(item);
+  updateCartUI();
+  // Micro-feedback: bump the cart count
+  if (cartBarCount) {
+    cartBarCount.classList.add("bump");
+    setTimeout(() => cartBarCount.classList.remove("bump"), 150);
+  }
+};
+
+window.removeFromCart = function(itemId) {
+  cart.removeItem(itemId);
+  updateCartUI();
+};
+
+// ============================================================================
+// STEP 6: Category filter, search, toggle, and pagination logic
+// ============================================================================
+
+// Category filtering — works for both chips (mobile) and sidebar items (desktop)
+async function filterByCategory(category) {
+  currentCategory = category;
+  currentSearchQuery = "";
+  searchInput.value = "";
+
+  document.querySelectorAll(".category-filter").forEach(el => {
+    el.dataset.active = (el.dataset.category === category).toString();
   });
 
-  // Also animate the button
-  anime({
-    targets: buttonEl,
-    scale: [1, 0.95, 1],
-    duration: 200,
-    easing: "easeOutQuad",
+  try {
+    let filter = [];
+    if (category) filter.push(`category ~ "${category}"`);
+    if (showOnlyAvailable) filter.push('status = "instock"');
+    const response = await api.getItems(1, filter.join(" && "), getCurrentSort());
+    renderItems(response.items);
+    currentPage = 1;
+    updatePagination(response.totalPages);
+  } catch (error) {
+    console.error("Failed to filter:", error);
+  }
+}
+
+// Render items to grid
+function renderItems(items) {
+  collapseItemDetail();
+  productGrid.innerHTML = items.map(item => createProductCard(item)).join("");
+}
+
+// Search
+async function performSearch(query, page = 1) {
+  const results = await api.searchItems(query, page, getCurrentSort());
+  const filtered = showOnlyAvailable
+    ? { items: results.items.filter(i => i.status === "instock"), totalPages: results.totalPages }
+    : results;
+  renderItems(filtered.items);
+  currentPage = page;
+  updatePagination(results.totalPages);
+}
+
+// Load items (browse mode)
+window.loadItems = async function(page = 1) {
+  currentSearchQuery = "";
+  try {
+    let filter = [];
+    if (currentCategory) filter.push(`category ~ "${currentCategory}"`);
+    if (showOnlyAvailable) filter.push('status = "instock"');
+    const response = await api.getItems(page, filter.join(" && "), getCurrentSort());
+    renderItems(response.items);
+    currentPage = page;
+    updatePagination(response.totalPages);
+  } catch (error) {
+    console.error("Failed to load items:", error);
+  }
+};
+
+window.goToPage = async function(page) {
+  if (currentSearchQuery) {
+    await performSearch(currentSearchQuery, page);
+  } else {
+    await loadItems(page);
+  }
+};
+
+// Pagination UI
+function updatePagination(totalPages) {
+  // Mobile: load more button
+  const loadMoreBtn = document.getElementById("loadMore");
+  if (loadMoreBtn) {
+    loadMoreBtn.style.display = currentPage < totalPages ? "" : "none";
+  }
+
+  // Desktop: page numbers
+  const pageNumbers = document.getElementById("pageNumbers");
+  if (pageNumbers) {
+    const buttons = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(`<button class="ll-btn ll-page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`);
+    }
+    pageNumbers.innerHTML = buttons.join("");
+  }
+}
+
+// ============================================================================
+// STEP 7: Event listeners and initialization
+// ============================================================================
+
+// Category filters (both mobile chips and desktop sidebar)
+document.querySelectorAll(".category-filter").forEach(el => {
+  el.addEventListener("click", () => filterByCategory(el.dataset.category));
+});
+
+// Search
+searchInput.addEventListener("input", debounce(async (e) => {
+  const query = e.target.value.trim();
+  currentSearchQuery = query;
+  if (query) {
+    await performSearch(query);
+  } else {
+    loadItems(1);
+  }
+}, 300));
+
+// Square toggles
+document.getElementById("availableToggle")?.addEventListener("change", async function(e) {
+  showOnlyAvailable = e.target.checked;
+  document.getElementById("availableToggleBox")?.classList.toggle("active", e.target.checked);
+  if (currentSearchQuery) await performSearch(currentSearchQuery);
+  else loadItems(1);
+});
+
+document.getElementById("sortToggle")?.addEventListener("change", async function(e) {
+  sortByNumber = e.target.checked;
+  document.getElementById("sortToggleBox")?.classList.toggle("active", e.target.checked);
+  if (currentSearchQuery) await performSearch(currentSearchQuery);
+  else loadItems(1);
+});
+
+// Load more (mobile pagination)
+document.getElementById("loadMore")?.addEventListener("click", () => goToPage(currentPage + 1));
+
+// Delegated click handler for product grid
+document.addEventListener("click", function(e) {
+  // Card click → expand detail
+  const card = e.target.closest(".ll-card");
+  if (card && !e.target.closest('[data-action]')) {
+    expandItemDetail(card.dataset.itemId);
+    return;
+  }
+
+  // Add to cart
+  if (e.target.closest('[data-action="add-to-cart"]')) {
+    const btn = e.target.closest('[data-action="add-to-cart"]');
+    const itemData = JSON.parse(btn.dataset.item);
+    addToCart(itemData);
+    return;
+  }
+
+  // Close detail
+  if (e.target.closest('[data-action="close-detail"]')) {
+    collapseItemDetail();
+    return;
+  }
+});
+
+// Cart bar → open panel (mobile)
+document.getElementById("cartBarAction")?.addEventListener("click", () => {
+  cartPanel?.classList.add("open");
+});
+
+// Close panel
+document.getElementById("closeCartPanel")?.addEventListener("click", () => {
+  cartPanel?.classList.remove("open");
+});
+
+// Sidebar reserve button → open panel (desktop)
+document.getElementById("sidebarReserve")?.addEventListener("click", () => {
+  cartPanel?.classList.add("open");
+});
+
+// Clear cart
+document.getElementById("sidebarClearCart")?.addEventListener("click", () => {
+  cart.clearCart();
+  updateCartUI();
+});
+
+// Subscribe to cart updates
+cart.subscribe(updateCartUI);
+updateCartUI();
+
+// ============================================================================
+// STEP 8: Reservation form submission
+// ============================================================================
+
+// Day selection
+let selectedPickupDay = null;
+
+document.querySelectorAll(".day-option").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".day-option").forEach(b => {
+      b.style.background = "white";
+      b.style.color = "var(--ll-black)";
+      b.style.borderColor = "var(--ll-color-20)";
+    });
+    btn.style.background = "var(--ll-color)";
+    btn.style.color = "white";
+    btn.style.borderColor = "var(--ll-color)";
+    selectedPickupDay = {
+      dateISO: btn.dataset.dateIso,
+      time: btn.dataset.middleTime,
+    };
+  });
+});
+
+// Form submission — preserved logic
+document.getElementById("reservationForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = e.target.querySelector('input[name="email"]').value.trim();
+  if (!email) { alert("Bitte gib deine Email-Adresse ein"); return; }
+  if (!selectedPickupDay) { alert("Bitte wähle einen Abholtermin aus"); return; }
+
+  const reservedItems = [...cart.items];
+  const submitBtn = document.getElementById("submitReservationBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Wird verarbeitet...";
+
+  try {
+    const [year, month, day] = selectedPickupDay.dateISO.split("-").map(Number);
+    const [hours, minutes] = selectedPickupDay.time.split(":").map(Number);
+    const pickupDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+    const reservationData = {
+      customer_email: email,
+      items: cart.items.map(item => item.id),
+      pickup: pickupDate.toISOString(),
+      comments: "",
+      is_new_customer: true,
+      done: false,
+    };
+
+    const record = await api.submitReservation(reservationData);
+    showReservationSuccess(record, reservationData, reservedItems);
+    cart.clearCart();
+    updateCartUI();
+  } catch (error) {
+    console.error("Reservation failed:", error);
+    submitBtn.style.background = "#dc2626";
+    submitBtn.textContent = "Fehler beim Reservieren";
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.style.background = "";
+      submitBtn.textContent = "Jetzt reservieren →";
+    }, 3000);
+  }
+});
+
+// ============================================================================
+// STEP 9: Success display + ICS/share
+// ============================================================================
+
+function showReservationSuccess(record, reservationData, reservedItems) {
+  document.getElementById("reservationForm").style.display = "none";
+  const successEl = document.getElementById("successDisplay");
+  successEl.style.display = "";
+
+  if (record.otp) {
+    document.getElementById("otpNumber").textContent = record.otp;
+  }
+
+  const pickupDate = new Date(reservationData.pickup);
+  const formattedDate = pickupDate.toLocaleDateString("de-DE", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const formattedTime = pickupDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  const totalDeposit = reservedItems.reduce((sum, item) => sum + (item.deposit || 0), 0);
+
+  document.getElementById("reservationSummary").innerHTML = `
+    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:var(--ll-border);">
+      <span style="font-weight:700;">Abholtermin:</span>
+      <span>${formattedDate}, ${formattedTime} Uhr</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:var(--ll-border);">
+      <span style="font-weight:700;">Email:</span>
+      <span>${reservationData.customer_email}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:var(--ll-border);">
+      <span style="font-weight:700;">Artikel:</span>
+      <span>${reservationData.items.length} Stück</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;font-weight:700;font-size:1rem;">
+      <span>Gesamtpfand:</span>
+      <span style="color:var(--ll-color);">${totalDeposit.toFixed(2).replace(".", ",")} €</span>
+    </div>
+  `;
+
+  // Calendar button
+  const calendarBtn = document.getElementById("addToCalendarBtn");
+  const newCalendarBtn = calendarBtn.cloneNode(true);
+  calendarBtn.parentNode.replaceChild(newCalendarBtn, calendarBtn);
+  newCalendarBtn.addEventListener("click", () => {
+    generateICS(reservationData.pickup, reservedItems, record.otp);
+  });
+
+  // Share button
+  const shareBtn = document.getElementById("shareReservationBtn");
+  const newShareBtn = shareBtn.cloneNode(true);
+  shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+  newShareBtn.addEventListener("click", () => {
+    const text = `Meine Reservierung bei leih.lokal Karlsruhe\nAbholcode: ${record.otp}\nAbholung: ${formattedDate}, ${formattedTime} Uhr`;
+    if (navigator.share) {
+      navigator.share({ title: "leih.lokal Reservierung", text });
+    } else {
+      navigator.clipboard.writeText(text);
+      alert("In Zwischenablage kopiert!");
+    }
   });
 }
 
-// Start the app
+// ICS generation — preserved verbatim
+function generateICS(pickup, items, otp = null) {
+  const event = {
+    start: new Date(pickup),
+    end: new Date(new Date(pickup).getTime() + 30 * 60000),
+    title: "leih.lokal Abholung",
+    location: "leih.lokal Karlsruhe, Gerwigstraße 41, 76131 Karlsruhe",
+  };
+
+  let descriptionLines = ["Abholung deiner reservierten Artikel:"];
+  if (otp) { descriptionLines.push("", `ABHOLCODE: ${otp}`, ""); }
+  descriptionLines.push("", "Reservierte Artikel:");
+  items.forEach(item => descriptionLines.push(`- ${formatIID(item.iid)} ${item.name}`));
+
+  const description = descriptionLines.join("\\n").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,");
+
+  const icsContent = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "BEGIN:VEVENT",
+    `DTSTART:${event.start.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    `DTEND:${event.end.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    `SUMMARY:${event.title}`, `DESCRIPTION:${description}`, `LOCATION:${event.location}`,
+    "END:VEVENT", "END:VCALENDAR"
+  ].join("\r\n");
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "leihlokal-abholung.ics";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Close success → reload
+document.getElementById("closeSuccessBtn")?.addEventListener("click", () => {
+  window.location.reload();
+});
+
+// ============================================================================
+// STEP 10: App initialization
+// ============================================================================
+
+async function initializeApp() {
+  try {
+    await api.initialize();
+    await loadItems(1);
+  } catch (error) {
+    console.error("Failed to initialize:", error);
+  }
+}
+
 initializeApp();
