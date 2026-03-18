@@ -210,6 +210,7 @@ async function expandItemDetail(itemId) {
 
   const item = await api.getItem(itemId);
   expandedItemId = item.id;
+  productGrid.classList.add("has-detail");
   const mobile = isMobileView();
 
   if (mobile) {
@@ -267,6 +268,7 @@ function collapseItemDetail() {
   originalCardHTML = null;
   originalCardIndex = null;
   expandedItemId = null;
+  productGrid.classList.remove("has-detail");
 }
 
 // ============================================================================

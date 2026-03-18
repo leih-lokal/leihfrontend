@@ -281,6 +281,13 @@ body {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+/* Wash out other cards when a detail panel is open */
+.ll-product-grid.has-detail .ll-card:not(.active) {
+  opacity: 0.35;
+  filter: grayscale(0.5);
 }
 
 .ll-card.active {
@@ -528,6 +535,27 @@ body {
 /* Desktop: numbered pagination */
 .ll-page-numbers {
   display: none;
+}
+
+/* Shine animation on detail "add to cart" button */
+@keyframes btn-shine {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ll-detail-strip [data-action="add-to-cart"],
+.ll-detail-2x2 [data-action="add-to-cart"] {
+  background-image: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.25) 40%,
+    rgba(255, 255, 255, 0.25) 60%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  background-color: var(--ll-color);
+  animation: btn-shine 2.5s ease-in-out infinite;
+  animation-delay: 1s;
 }
 
 /* Success celebration */
