@@ -516,13 +516,13 @@ for ($i = -1; $i <= 6; $i++) {
               data-date-iso="<?= $day["dateISO"] ?>"
               data-middle-time="<?= $day["middleTime"] ?>">
               <span class="ll-day-date"><?= $day["dateFormatted"] ?></span>
-              <span class="ll-day-info">
-                <span class="ll-day-name"><?= $day["fullDayName"] ?></span>
+              <span class="ll-day-sub">
+                <?= $day["fullDayName"] ?>
                 <?php if ($day["isToday"]): ?>
                   <span class="ll-day-badge">Heute</span>
                 <?php endif; ?>
+                · <?= $day["openTime"] ?>–<?= $day["closeTime"] ?>
               </span>
-              <span class="ll-day-time"><?= $day["openTime"] ?>–<?= $day["closeTime"] ?></span>
             </button>
             <?php endif; ?>
           <?php endforeach; ?>
