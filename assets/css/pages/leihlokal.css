@@ -171,18 +171,34 @@
 
 /* Search */
 .ll-search {
-  padding: 0.6rem 0.8rem;
+  padding: 0.5rem 0.6rem;
   border-bottom: var(--ll-border);
+}
+
+.ll-search-inner {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--ll-color);
+  padding: 0 0.6rem;
+  gap: 0.4rem;
+}
+
+.ll-search-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--ll-color);
+  flex-shrink: 0;
 }
 
 .ll-search input {
   width: 100%;
-  border: 1.5px solid var(--ll-black);
-  padding: 0.6rem 0.8rem;
+  border: none;
+  padding: 0.55rem 0;
   font-family: "Univers", sans-serif;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  outline: none;
 }
 
 .ll-search input::placeholder {
@@ -191,31 +207,40 @@
   color: oklch(60% 0 0);
 }
 
-/* Category chips — horizontal scroll */
+/* Mobile toolbar — chips + toggles in one band */
+.ll-mobile-toolbar {
+  display: flex;
+  align-items: stretch;
+  border-bottom: var(--ll-border);
+}
+
+/* Category chips — horizontal scroll, takes available space */
 .ll-chips {
   display: flex;
   overflow-x: auto;
-  border-bottom: var(--ll-border);
   -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-width: 0;
 }
 
 .ll-chips::-webkit-scrollbar { display: none; }
 
 .ll-chip {
-  padding: 0.6rem 0.8rem;
+  padding: 0.45rem 0.65rem;
   font-family: "Univers", sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
   cursor: pointer;
   border-right: 1px solid var(--ll-color-20);
-  min-height: 44px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   background: white;
   color: var(--ll-black);
+  transition: background 0.15s, color 0.15s;
 }
 
 .ll-chip[data-active="true"] {
@@ -223,7 +248,18 @@
   color: white;
 }
 
-/* Square toggles */
+/* Mobile toggles — pinned right of the toolbar */
+.ll-mobile-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.5rem;
+  border-left: var(--ll-border);
+  flex-shrink: 0;
+  background: white;
+}
+
+/* Square toggles (shared) */
 .ll-toggles {
   display: flex;
   gap: 1rem;
@@ -499,6 +535,7 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  border-right: 2px solid var(--ll-color);
 }
 
 .ll-cart-panel.open {
@@ -921,8 +958,8 @@ body {
     margin-left: auto;
   }
 
-  /* Hide mobile toggles on desktop */
-  .ll-toggles-mobile {
+  /* Hide mobile-only elements on desktop */
+  .ll-mobile-toolbar {
     display: none;
   }
 
@@ -933,7 +970,6 @@ body {
   }
 
   /* Desktop: hide mobile-only elements */
-  .ll-chips { display: none; }
   .ll-cart-bar { display: none; }
   .ll-load-more { display: none; }
 

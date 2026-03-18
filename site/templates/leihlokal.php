@@ -431,34 +431,40 @@ for ($i = -1; $i <= 6; $i++) {
 
   <!-- Main content area -->
   <div class="ll-main">
-    <!-- Search -->
+    <!-- Search with icon -->
     <div class="ll-search">
-      <input type="text" id="searchInput" placeholder="Durchsuchen...">
+      <div class="ll-search-inner">
+        <svg class="ll-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Durchsuchen...">
+      </div>
     </div>
 
-    <!-- Category chips (mobile only, hidden on desktop via CSS) -->
-    <div class="ll-chips">
-      <div class="ll-chip category-filter" data-category="" data-active="true">Alle</div>
-      <div class="ll-chip category-filter" data-category="Freizeit" data-active="false">Freizeit</div>
-      <div class="ll-chip category-filter" data-category="Garten" data-active="false">Garten</div>
-      <div class="ll-chip category-filter" data-category="Haushalt" data-active="false">Haushalt</div>
-      <div class="ll-chip category-filter" data-category="Heimwerken" data-active="false">Heimwerken</div>
-      <div class="ll-chip category-filter" data-category="Kinder" data-active="false">Kinder</div>
-      <div class="ll-chip category-filter" data-category="Küche" data-active="false">Küche</div>
-    </div>
-
-    <!-- Filter toggles (mobile only, desktop version is in sidebar) -->
-    <div class="ll-toggles ll-toggles-mobile">
-      <label class="ll-toggle">
-        <span class="ll-toggle-box active" id="availableToggleBoxMobile"></span>
-        <input type="checkbox" id="availableToggleMobile" checked style="display:none;">
-        Nur ausleihbar
-      </label>
-      <label class="ll-toggle">
-        <span class="ll-toggle-box" id="sortToggleBoxMobile"></span>
-        <input type="checkbox" id="sortToggleMobile" style="display:none;">
-        Sortieren
-      </label>
+    <!-- Mobile toolbar: chips + toggles in one band -->
+    <div class="ll-mobile-toolbar">
+      <!-- Category chips -->
+      <div class="ll-chips">
+        <div class="ll-chip category-filter" data-category="" data-active="true">Alle</div>
+        <div class="ll-chip category-filter" data-category="Freizeit" data-active="false">Freizeit</div>
+        <div class="ll-chip category-filter" data-category="Garten" data-active="false">Garten</div>
+        <div class="ll-chip category-filter" data-category="Haushalt" data-active="false">Haushalt</div>
+        <div class="ll-chip category-filter" data-category="Heimwerken" data-active="false">Heimwerken</div>
+        <div class="ll-chip category-filter" data-category="Kinder" data-active="false">Kinder</div>
+        <div class="ll-chip category-filter" data-category="Küche" data-active="false">Küche</div>
+      </div>
+      <!-- Toggles inline -->
+      <div class="ll-mobile-toggles">
+        <label class="ll-toggle">
+          <span class="ll-toggle-box active" id="availableToggleBoxMobile"></span>
+          <input type="checkbox" id="availableToggleMobile" checked style="display:none;">
+          Verfügbar
+        </label>
+        <span style="color:oklch(70% 0 0);">|</span>
+        <label class="ll-toggle">
+          <span class="ll-toggle-box" id="sortToggleBoxMobile"></span>
+          <input type="checkbox" id="sortToggleMobile" style="display:none;">
+          Sortieren
+        </label>
+      </div>
     </div>
 
     <!-- Product Grid -->
