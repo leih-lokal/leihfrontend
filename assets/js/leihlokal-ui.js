@@ -84,23 +84,17 @@ function createDetailElement(item, isMobile) {
   const paddedIid = String(item.iid).padStart(4, "0");
   const detailUrl = `/ll/${paddedIid}`;
 
-  // Only show brand/model if they actually have values
-  const brandModel = [item.brand, item.model].filter(Boolean).join(" — ");
+  // Only show brand/model if they have real values (filter out "/", empty, whitespace-only)
+  const cleanStr = (s) => s && s.trim() && s.trim() !== "/" ? s.trim() : "";
+  const brandModel = [cleanStr(item.brand), cleanStr(item.model)].filter(Boolean).join(" — ");
 
-  const iidHTML = `<div class="ll-card-iid" style="padding:0;margin-bottom:0.4rem;"><span class="ll-card-iid-a" style="font-size:1.2rem;padding:0.2rem 0.3rem;">${paddedIid.slice(0, 2)}</span><span class="ll-card-iid-b" style="font-size:1.2rem;padding:0.2rem 0.3rem;">${paddedIid.slice(2)}</span></div>`;
+  const iidHTML = `<div class="ll-card-iid" style="padding:0;margin-bottom:0.3rem;"><span class="ll-card-iid-a" style="font-size:1.2rem;padding:0.2rem 0.3rem;">${paddedIid.slice(0, 2)}</span><span class="ll-card-iid-b" style="font-size:1.2rem;padding:0.2rem 0.3rem;">${paddedIid.slice(2)}</span></div>`;
 
-  const infoHTML = `
-    <div style="display:flex;flex-direction:column;gap:0.3rem;">
-      ${iidHTML}
-      <div class="ll-meta-label" style="color:var(--ll-color);">${escapeHTML(item.category)}</div>
-      <div class="ll-detail-title">${escapeHTML(item.name)}</div>
-      ${brandModel ? `<div style="font-size:0.75rem;color:oklch(50% 0 0);">${escapeHTML(brandModel)}</div>` : ""}
-      ${item.description ? `<div style="font-size:0.75rem;line-height:1.4;color:oklch(40% 0 0);margin-top:0.2rem;">${escapeHTML(item.description)}</div>` : ""}
-      <div style="display:flex;gap:1rem;margin-top:0.3rem;padding-top:0.3rem;border-top:var(--ll-border);">
-        <div><span class="ll-detail-meta-value" style="color:var(--ll-color);">${item.deposit ? item.deposit + " €" : "—"}</span> <span class="ll-meta-label">Pfand</span></div>
-        <div><span class="ll-detail-meta-value" style="color:${isAvailable ? '#16a34a' : '#dc2626'};">${isAvailable ? "Verfügbar" : "Vergeben"}</span> <span class="ll-meta-label">Status</span></div>
-      </div>
-    </div>
+  const imgHTML = item.images?.[0]
+    ? `<img src="${item.images[0].full}" alt="${escapeHTML(item.name)}" style="width:100%;height:100%;object-fit:cover;display:block;">`
+    : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:oklch(70% 0 0);font-size:0.7rem;text-transform:uppercase;">Kein Bild</div>';
+
+  const actionsHTML = `
     <div class="ll-detail-actions" style="margin-top:0.5rem;">
       ${isAvailable
         ? `<button class="ll-btn ll-btn-primary" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'>+ In den Korb</button>`
@@ -111,36 +105,25 @@ function createDetailElement(item, isMobile) {
     </div>
   `;
 
-  const imgHTML = item.images?.[0]
-    ? `<img src="${item.images[0].full}" alt="${escapeHTML(item.name)}" style="width:100%;height:100%;object-fit:cover;">`
-    : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:oklch(70% 0 0);font-size:0.7rem;text-transform:uppercase;">Kein Bild</div>';
-
-  let content;
-  if (isMobile) {
-    // Horizontal layout: small image left, info right
-    content = `
-      <div style="display:flex;gap:0;">
-        <div style="width:35%;flex-shrink:0;background:oklch(95% 0 0);overflow:hidden;border-right:var(--ll-border);">
-          ${imgHTML}
-        </div>
-        <div style="flex:1;padding:0.6rem;">
-          ${infoHTML}
-        </div>
+  // Float-based L layout: square image top-left, content wraps in the L-space around it
+  const imgSize = isMobile ? "40%" : "45%";
+  const content = `
+    <div style="padding:0.6rem;overflow:hidden;">
+      <div style="float:left;width:${imgSize};aspect-ratio:1;margin:0 0.6rem 0.4rem 0;background:oklch(95% 0 0);overflow:hidden;border:var(--ll-border);">
+        ${imgHTML}
       </div>
-    `;
-  } else {
-    // Desktop 2x2: image left half, info right half
-    content = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;">
-        <div style="background:oklch(95% 0 0);overflow:hidden;border-right:var(--ll-border);min-height:200px;">
-          ${imgHTML}
-        </div>
-        <div style="padding:1rem;display:flex;flex-direction:column;">
-          ${infoHTML}
-        </div>
+      ${iidHTML}
+      <div class="ll-meta-label" style="color:var(--ll-color);">${escapeHTML(item.category)}</div>
+      <div class="ll-detail-title" style="margin:0.15rem 0;">${escapeHTML(item.name)}</div>
+      ${brandModel ? `<div style="font-size:0.75rem;color:oklch(50% 0 0);">${escapeHTML(brandModel)}</div>` : ""}
+      ${item.description ? `<div style="font-size:0.75rem;line-height:1.4;color:oklch(40% 0 0);margin-top:0.25rem;">${escapeHTML(item.description)}</div>` : ""}
+      <div style="display:flex;gap:1rem;margin-top:0.4rem;padding-top:0.4rem;border-top:var(--ll-border);">
+        <div><span class="ll-detail-meta-value" style="color:var(--ll-color);">${item.deposit ? item.deposit + " €" : "—"}</span> <span class="ll-meta-label">Pfand</span></div>
+        <div><span class="ll-detail-meta-value" style="color:${isAvailable ? '#16a34a' : '#dc2626'};">${isAvailable ? "Verfügbar" : "Vergeben"}</span> <span class="ll-meta-label">Status</span></div>
       </div>
-    `;
-  }
+      ${actionsHTML}
+    </div>
+  `;
 
   const el = document.createElement("div");
 
