@@ -832,9 +832,9 @@ body {
   /* Desktop: show sidebar-only elements */
   .ll-sidebar { display: flex; flex-direction: column; }
 
-  /* Desktop: slightly larger min so cards don't get too small with sidebar */
+  /* Desktop: max 5 columns, larger min card width */
   .ll-product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
   }
 
   /* All cards keep border-right; grid overflow:hidden clips the edge */
