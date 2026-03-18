@@ -376,7 +376,7 @@ document.querySelectorAll(".category-filter").forEach(el => {
 });
 
 // Search
-searchInput.addEventListener("input", debounce(async (e) => {
+searchInput?.addEventListener("input", debounce(async (e) => {
   const query = e.target.value.trim();
   currentSearchQuery = query;
   if (query) {
