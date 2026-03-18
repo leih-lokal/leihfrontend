@@ -631,14 +631,10 @@ body {
     display: flex;
   }
 
-  /* Desktop detail: 2x2 block */
+  /* Desktop detail: spans full grid width */
   .ll-detail-2x2 {
-    grid-column: span 2;
-    grid-row: span 2;
-    border-right: var(--ll-border);
+    grid-column: 1 / -1;
     border-bottom: var(--ll-border);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     background: white;
   }
 
