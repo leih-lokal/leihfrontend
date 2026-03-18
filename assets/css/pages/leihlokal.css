@@ -263,7 +263,8 @@
 /* Product grid — mobile: 2 columns */
 .ll-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Fluid grid: 2 cols on small phones, 3 on larger, scales up on desktop */
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   overflow: hidden;
 }
 
@@ -831,9 +832,9 @@ body {
   /* Desktop: show sidebar-only elements */
   .ll-sidebar { display: flex; flex-direction: column; }
 
-  /* Product grid: 4 columns on desktop */
+  /* Desktop: slightly larger min so cards don't get too small with sidebar */
   .ll-product-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 
   /* All cards keep border-right; grid overflow:hidden clips the edge */

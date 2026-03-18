@@ -225,7 +225,9 @@ async function expandItemDetail(itemId) {
 
       clickedCard.classList.add("active");
       const cardIndex = cards.indexOf(clickedCard);
-      const columnsPerRow = 3;
+      // Detect actual column count from computed grid
+      const gridStyle = getComputedStyle(productGrid);
+      const columnsPerRow = gridStyle.gridTemplateColumns.split(" ").length;
       const lastCardInRow = Math.min(cardIndex + (columnsPerRow - (cardIndex % columnsPerRow)), cards.length) - 1;
       const insertAfter = cards[lastCardInRow];
 
