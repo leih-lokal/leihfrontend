@@ -598,6 +598,62 @@ body {
   color: var(--ll-color);
 }
 
+/* Success action buttons */
+.ll-success-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.6rem;
+  border: 2px solid var(--ll-color);
+  background: white;
+  color: var(--ll-color);
+  font-family: "Univers", sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.ll-success-action-btn:hover {
+  background: var(--ll-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.ll-success-action-btn:active {
+  transform: translateY(0);
+}
+
+.ll-success-done-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.65rem;
+  border: none;
+  background: var(--ll-black);
+  color: white;
+  font-family: "Univers", sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.ll-success-done-btn:hover {
+  filter: brightness(1.3);
+}
+
+.ll-success-done-btn:active {
+  transform: scale(0.98);
+}
+
 .ll-detail-name-link:hover .ll-detail-goto {
   opacity: 1;
   transform: translate(2px, -2px);

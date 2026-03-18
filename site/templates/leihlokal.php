@@ -486,63 +486,102 @@ for ($i = -1; $i <= 6; $i++) {
     <span class="ll-section-header">Vorbestellung</span>
     <button id="closeCartPanel" class="ll-btn" style="background:none;color:white;font-size:1.5rem;line-height:1;">×</button>
   </div>
-  <div style="padding:0.75rem;flex:1;">
+  <div style="padding:0;flex:1;display:flex;flex-direction:column;">
     <!-- Cart summary -->
-    <div id="panelCartItems" style="margin-bottom:1rem;"></div>
-    <div id="panelTotalDeposit" style="font-weight:700;font-size:1rem;padding-top:0.5rem;border-top:var(--ll-border);margin-bottom:1rem;"></div>
+    <div style="padding:0.75rem;border-bottom:var(--ll-border);">
+      <div id="panelCartItems"></div>
+      <div id="panelTotalDeposit" style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.85rem;padding-top:0.5rem;margin-top:0.5rem;border-top:var(--ll-border);"></div>
+    </div>
 
     <!-- Reservation form -->
-    <form id="reservationForm">
-      <label class="ll-section-header" style="display:block;margin-bottom:0.5rem;">Email-Adresse</label>
-      <input type="email" name="email" required placeholder="deine@email.de"
-        style="width:100%;padding:0.75rem;border:1.5px solid var(--ll-black);font-size:1rem;margin-bottom:1rem;">
-
-      <label class="ll-section-header" style="display:block;margin-bottom:0.5rem;">Abholtermin</label>
-      <div id="daySelector" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
-        <?php foreach ($daySchedule as $day): ?>
-          <?php if ($day["isOpen"] && !$day["isYesterday"] && !$day["isPastClosing"]): ?>
-          <button type="button" class="day-option ll-btn" style="width:100%;text-align:left;padding:0.75rem;border:1.5px solid var(--ll-color-20);background:white;color:var(--ll-black);display:flex;justify-content:space-between;align-items:center;min-height:48px;"
-            data-date-iso="<?= $day["dateISO"] ?>"
-            data-middle-time="<?= $day["middleTime"] ?>">
-            <span>
-              <strong><?= $day["dateFormatted"] ?></strong>
-              <span style="margin-left:0.5rem;color:oklch(40% 0 0);"><?= $day["fullDayName"] ?></span>
-              <?php if ($day["isToday"]): ?>
-                <span class="ll-status-badge" style="background:var(--ll-color);color:white;margin-left:0.5rem;">Heute</span>
-              <?php endif; ?>
-            </span>
-            <span style="font-family:monospace;font-size:0.75rem;color:oklch(40% 0 0);"><?= $day["openTime"] ?> — <?= $day["closeTime"] ?></span>
-          </button>
-          <?php endif; ?>
-        <?php endforeach; ?>
+    <form id="reservationForm" style="flex:1;display:flex;flex-direction:column;">
+      <div style="padding:0.75rem;border-bottom:var(--ll-border);">
+        <label style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.4rem;">
+          <svg style="width:14px;height:14px;color:var(--ll-color);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span class="ll-section-header">Email-Adresse</span>
+        </label>
+        <input type="email" name="email" required placeholder="deine@email.de"
+          style="width:100%;padding:0.6rem;border:2px solid var(--ll-color);font-family:'Univers',sans-serif;font-size:0.85rem;box-sizing:border-box;">
       </div>
 
-      <button type="submit" id="submitReservationBtn" class="ll-btn ll-btn-primary" style="width:100%;padding:0.75rem;font-size:0.85rem;">
-        Jetzt reservieren →
-      </button>
+      <div style="padding:0.75rem;flex:1;">
+        <label style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
+          <svg style="width:14px;height:14px;color:var(--ll-color);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="ll-section-header">Abholtermin</span>
+        </label>
+        <div id="daySelector" style="display:flex;flex-direction:column;gap:0.35rem;">
+          <?php foreach ($daySchedule as $day): ?>
+            <?php if ($day["isOpen"] && !$day["isYesterday"] && !$day["isPastClosing"]): ?>
+            <button type="button" class="day-option" style="width:100%;text-align:left;padding:0.6rem 0.75rem;border:2px solid oklch(60.62% 0.245 28.83 / 0.15);background:white;color:var(--ll-black);display:flex;justify-content:space-between;align-items:center;min-height:44px;cursor:pointer;font-family:'Univers',sans-serif;font-size:0.8rem;transition:border-color 0.15s,background 0.15s;"
+              data-date-iso="<?= $day["dateISO"] ?>"
+              data-middle-time="<?= $day["middleTime"] ?>">
+              <span style="display:flex;align-items:center;gap:0.4rem;">
+                <svg style="width:14px;height:14px;color:oklch(50% 0 0);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong><?= $day["dateFormatted"] ?></strong>
+                <span style="color:oklch(45% 0 0);"><?= $day["fullDayName"] ?></span>
+                <?php if ($day["isToday"]): ?>
+                  <span style="background:var(--ll-color);color:white;font-size:0.5rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:0.1rem 0.3rem;">Heute</span>
+                <?php endif; ?>
+              </span>
+              <span style="font-family:monospace;font-size:0.7rem;color:oklch(45% 0 0);"><?= $day["openTime"] ?>–<?= $day["closeTime"] ?></span>
+            </button>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
+      <div style="padding:0.75rem;border-top:var(--ll-border);">
+        <button type="submit" id="submitReservationBtn" class="ll-detail-cart-btn" style="width:100%;flex-direction:row;padding:0.75rem;font-size:0.8rem;gap:0.5rem;">
+          <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <span>Jetzt reservieren</span>
+        </button>
+      </div>
     </form>
 
     <!-- Success state (hidden initially) -->
-    <div id="successDisplay" style="display:none;text-align:center;padding:1rem 0;">
-      <div class="ll-success-icon" style="display:inline-block;background:var(--ll-color);padding:0.75rem;margin-bottom:1rem;">
-        <svg style="width:40px;height:40px;color:white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-        </svg>
+    <div id="successDisplay" style="display:none;">
+
+      <!-- Success header -->
+      <div style="text-align:center;padding:1.5rem 1rem 1rem;">
+        <div class="ll-success-icon" style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:var(--ll-color);margin-bottom:0.75rem;">
+          <svg style="width:32px;height:32px;color:white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h3 style="font-family:'Univers',sans-serif;font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 0.2rem;">Geschafft!</h3>
+        <p style="color:oklch(50% 0 0);margin:0;font-size:0.8rem;">Deine Reservierung wurde bestätigt</p>
       </div>
-      <h3 style="font-family:'Univers',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin:0 0 0.25rem;">Geschafft!</h3>
-      <p style="color:oklch(40% 0 0);margin:0 0 1rem;">Deine Reservierung wurde bestätigt</p>
-      <div style="background:var(--ll-color);padding:1rem;margin-bottom:1rem;">
-        <p style="color:white;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 0.5rem;">Dein Abholcode:</p>
-        <div style="background:white;padding:0.75rem;">
-          <p id="otpNumber" class="ll-success-code">----</p>
+
+      <!-- OTP Code -->
+      <div style="margin:0 0.75rem;border:2px solid var(--ll-color);">
+        <div style="background:var(--ll-color);padding:0.4rem 0.6rem;">
+          <span style="color:white;font-family:'Univers',sans-serif;font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;">Dein Abholcode</span>
+        </div>
+        <div style="padding:0.75rem;text-align:center;background:white;">
+          <p id="otpNumber" style="font-family:monospace;font-size:2rem;font-weight:700;letter-spacing:0.2em;color:var(--ll-color);margin:0;">----</p>
         </div>
       </div>
-      <div id="reservationSummary" style="text-align:left;border:var(--ll-border);padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;"></div>
-      <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
-        <button id="addToCalendarBtn" class="ll-btn ll-btn-close" style="flex:1;padding:0.6rem;">Zum Kalender</button>
-        <button id="shareReservationBtn" class="ll-btn ll-btn-close" style="flex:1;padding:0.6rem;">Teilen</button>
+
+      <!-- Summary -->
+      <div id="reservationSummary" style="margin:0.75rem;font-size:0.8rem;"></div>
+
+      <!-- Action buttons -->
+      <div style="padding:0 0.75rem 0.75rem;display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="display:flex;gap:0.4rem;">
+          <button id="addToCalendarBtn" class="ll-success-action-btn" style="flex:1;">
+            <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Zum Kalender</span>
+          </button>
+          <button id="shareReservationBtn" class="ll-success-action-btn" style="flex:1;">
+            <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>Teilen</span>
+          </button>
+        </div>
+        <button id="closeSuccessBtn" class="ll-success-done-btn">
+          <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Fertig</span>
+        </button>
       </div>
-      <button id="closeSuccessBtn" class="ll-btn" style="width:100%;padding:0.6rem;background:oklch(90% 0 0);color:var(--ll-black);">Fertig</button>
     </div>
   </div>
 </div>
