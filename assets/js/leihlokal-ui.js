@@ -100,42 +100,42 @@ function createDetailElement(item, isMobile) {
   // Right strip = top-right cell. Bottom strip = spans full width.
   // Grid: [image 78%] [right-strip 22%]
   //        [bottom-strip full width     ]
+  // L-shaped layout: image top-left, right strip, bottom strip.
+  // No outer border — the product grid cell provides border-right and border-bottom.
+  // Use fr units so right strip and bottom-right buttons align.
   const content = `
-    <div style="display:grid;grid-template-columns:78% 22%;grid-template-rows:auto auto;background:white;border:2px solid var(--ll-color);">
+    <div style="display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;width:100%;height:100%;background:white;">
 
       <!-- Top-left: Image (square) -->
-      <div style="aspect-ratio:1;overflow:hidden;background:oklch(95% 0 0);position:relative;">
+      <div style="overflow:hidden;background:oklch(95% 0 0);position:relative;">
         ${imgHTML}
-        <!-- Close button -->
         <button data-action="close-detail" style="position:absolute;top:0.4rem;left:0.4rem;z-index:2;background:rgba(255,255,255,0.9);border:2px solid var(--ll-color);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--ll-color);line-height:1;">×</button>
       </div>
 
       <!-- Top-right: IID stacked + status rotated -->
-      <div style="display:flex;flex-direction:column;align-items:center;padding:0.5rem 0.3rem;border-left:2px solid var(--ll-color);gap:0.3rem;">
-        <!-- IID stacked -->
+      <div style="display:flex;flex-direction:column;align-items:center;padding:0.5rem 0.4rem;border-left:2px solid var(--ll-color);gap:0.3rem;min-width:3.5rem;">
         <div style="font-family:monospace;font-weight:700;font-size:clamp(1.2rem, 2.5vw, 2rem);line-height:1;text-align:center;">
           <div style="background:var(--ll-color);color:white;padding:0.2rem 0.35rem;">${paddedIid.slice(0, 2)}</div>
           <div style="color:var(--ll-color);padding:0.2rem 0.35rem;border:2px solid var(--ll-color);border-top:none;">${paddedIid.slice(2)}</div>
         </div>
-        <!-- Status rotated -->
         <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
           <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-family:'Univers',sans-serif;font-size:clamp(0.9rem, 2vw, 1.6rem);font-weight:700;color:${statusColor};letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">${statusLabel}</div>
         </div>
       </div>
 
-      <!-- Bottom strip: name left, action right -->
-      <div style="grid-column:1/-1;display:flex;align-items:center;border-top:2px solid var(--ll-color);min-height:3.5rem;">
-        <div style="flex:1;padding:0.5rem 0.6rem;">
+      <!-- Bottom strip: spans both columns -->
+      <div style="grid-column:1/-1;display:flex;align-items:stretch;border-top:2px solid var(--ll-color);">
+        <div style="flex:1;padding:0.5rem 0.6rem;display:flex;flex-direction:column;justify-content:center;">
           <div style="font-family:'Univers',sans-serif;font-size:clamp(0.75rem, 1.5vw, 1rem);font-weight:700;">${escapeHTML(item.name)}</div>
           ${brandModel ? `<div style="font-size:0.7rem;color:oklch(50% 0 0);">${escapeHTML(brandModel)}</div>` : ""}
           ${item.deposit ? `<div style="font-size:0.65rem;color:oklch(40% 0 0);margin-top:0.1rem;">${item.deposit} € Pfand</div>` : ""}
         </div>
         ${isAvailable
           ? `<button class="ll-btn" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'
-               style="background:var(--ll-color);color:white;padding:0.75rem;font-size:clamp(0.6rem, 1.2vw, 0.8rem);line-height:1.3;text-align:center;flex-shrink:0;align-self:stretch;min-width:4rem;border-left:2px solid var(--ll-color);">IN DEN<br>KORB</button>`
-          : `<div style="background:oklch(50% 0 0);color:white;padding:0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;align-self:stretch;min-width:4rem;border-left:2px solid var(--ll-color);">${item.is_protected ? "GESCHÜTZT" : "VERGEBEN"}</div>`
+               style="background:var(--ll-color);color:white;padding:0.6rem 0.75rem;font-size:clamp(0.6rem, 1.2vw, 0.8rem);line-height:1.3;text-align:center;flex-shrink:0;border-left:2px solid var(--ll-color);">IN DEN<br>KORB</button>`
+          : `<div style="background:oklch(50% 0 0);color:white;padding:0.6rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;border-left:2px solid var(--ll-color);display:flex;align-items:center;">${item.is_protected ? "GESCHÜTZT" : "VERGEBEN"}</div>`
         }
-        <a href="${detailUrl}" class="ll-btn ll-btn-close" style="text-decoration:none;text-align:center;align-self:stretch;display:flex;align-items:center;padding:0.5rem;border-left:2px solid var(--ll-color);font-size:0.6rem;">DETAILS</a>
+        <a href="${detailUrl}" class="ll-btn ll-btn-close" style="text-decoration:none;text-align:center;display:flex;align-items:center;padding:0.5rem;border-left:2px solid var(--ll-color);font-size:0.6rem;">DETAILS</a>
       </div>
     </div>
   `;
