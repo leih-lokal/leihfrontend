@@ -58,6 +58,7 @@ function createProductCard(item) {
           ? `<img src="${item.images[0].thumb}" alt="${escapeHTML(item.name)}" loading="lazy">`
           : ""}
       </div>
+      <div class="ll-card-iid">${formatIID(item.iid)}</div>
       <div class="ll-card-body">
         <div class="ll-card-title">${escapeHTML(item.name)}</div>
         <div class="ll-card-cat">${escapeHTML(item.category)}</div>
@@ -161,7 +162,7 @@ async function expandItemDetail(itemId) {
 
     clickedCard.classList.add("active");
     const cardIndex = cards.indexOf(clickedCard);
-    const columnsPerRow = 2;
+    const columnsPerRow = window.innerWidth >= 1024 ? 4 : 3;
     const lastCardInRow = Math.min(cardIndex + (columnsPerRow - (cardIndex % columnsPerRow)), cards.length) - 1;
     const insertAfter = cards[lastCardInRow];
 

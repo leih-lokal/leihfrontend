@@ -5,8 +5,8 @@
 
 /* Custom properties for the border system */
 :root {
-  --ll-border: 1px solid oklch(60.62% 0.245 28.83 / 0.2);
-  --ll-border-heavy: 2px solid oklch(60.62% 0.245 28.83 / 0.35);
+  --ll-border: 2px solid oklch(60.62% 0.245 28.83);
+  --ll-border-heavy: 2px solid oklch(60.62% 0.245 28.83);
   --ll-color: oklch(60.62% 0.245 28.83);
   --ll-color-20: oklch(60.62% 0.245 28.83 / 0.2);
   --ll-color-35: oklch(60.62% 0.245 28.83 / 0.35);
@@ -263,7 +263,7 @@
 /* Product grid — mobile: 2 columns */
 .ll-product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* Product card — defined by grid lines, not individual borders */
@@ -275,7 +275,7 @@
   cursor: pointer;
 }
 
-.ll-card:nth-child(2n) {
+.ll-card:nth-child(3n) {
   border-right: none;
 }
 
@@ -283,6 +283,7 @@
   background: var(--ll-color);
 }
 
+.ll-card.active .ll-card-iid,
 .ll-card.active .ll-card-title,
 .ll-card.active .ll-card-cat {
   color: white;
@@ -294,7 +295,7 @@
 }
 
 .ll-card-img {
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 3;
   background: oklch(95% 0 0);
   overflow: hidden;
 }
@@ -305,8 +306,16 @@
   object-fit: cover;
 }
 
+.ll-card-iid {
+  font-family: monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--ll-color);
+  padding: 0.25rem 0.4rem 0;
+}
+
 .ll-card-body {
-  padding: 0.4rem 0.6rem;
+  padding: 0.2rem 0.4rem 0.3rem;
   flex: 1;
 }
 
@@ -573,16 +582,16 @@
   /* Desktop: show sidebar-only elements */
   .ll-sidebar { display: flex; flex-direction: column; }
 
-  /* Product grid: 3 columns on desktop */
+  /* Product grid: 4 columns on desktop */
   .ll-product-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .ll-card:nth-child(2n) {
-    border-right: var(--ll-border);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .ll-card:nth-child(3n) {
+    border-right: var(--ll-border);
+  }
+
+  .ll-card:nth-child(4n) {
     border-right: none;
   }
 
