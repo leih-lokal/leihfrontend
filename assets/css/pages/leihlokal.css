@@ -671,7 +671,9 @@ body {
   }
 
   .ll-sidebar-item .ll-sidebar-arrow {
-    font-size: 0.7rem;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
     opacity: 0;
     transition: opacity 0.15s, transform 0.15s;
     color: var(--ll-color);
@@ -683,7 +685,7 @@ body {
   }
 
   .ll-sidebar-item[data-active="true"] .ll-sidebar-arrow {
-    color: white;
+    stroke: white;
   }
 
   /* Cart section styling */
@@ -736,9 +738,24 @@ body {
   }
 
   .ll-sidebar-link-icon {
-    font-size: 0.7rem;
+    width: 14px;
+    height: 14px;
     color: var(--ll-color);
     flex-shrink: 0;
+  }
+
+  /* Sidebar toggle items */
+  .ll-sidebar-toggle-item {
+    cursor: pointer;
+  }
+
+  .ll-sidebar-toggle-item .ll-toggle-box {
+    margin-left: auto;
+  }
+
+  /* Hide mobile toggles on desktop */
+  .ll-toggles-mobile {
+    display: none;
   }
 
   .ll-main {

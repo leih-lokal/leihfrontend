@@ -357,32 +357,53 @@ for ($i = -1; $i <= 6; $i++) {
       <div class="ll-sidebar-header">Rubriken <span class="ll-sidebar-count">7</span></div>
       <div class="ll-sidebar-item category-filter" data-category="" data-active="true">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Alle Sachen</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>Freizeit</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>Garten</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Haushalt</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Heimwerken</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19.5 10c.3 0 .5.1.7.3.2.2.3.4.3.7 0 3.1-1.1 5.8-2.8 7.7C16 20.6 13.8 22 12 22s-4-1.4-5.7-3.3C4.6 16.8 3.5 14.1 3.5 11c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3"/><path d="M8 2c1 .5 2 2 2 5"/><path d="M16 2c-1 .5-2 2-2 5"/></svg>Kinder</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
       <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false">
         <span class="ll-sidebar-item-label"><svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Küche</span>
-        <span class="ll-sidebar-arrow">→</span>
+        <svg class="ll-sidebar-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="ll-sidebar-section">
+      <div class="ll-sidebar-header">Filter</div>
+      <label class="ll-sidebar-item ll-sidebar-toggle-item">
+        <span class="ll-sidebar-item-label">
+          <svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Nur ausleihbar
+        </span>
+        <span class="ll-toggle-box active" id="availableToggleBox"></span>
+        <input type="checkbox" id="availableToggle" checked style="display:none;">
+      </label>
+      <label class="ll-sidebar-item ll-sidebar-toggle-item">
+        <span class="ll-sidebar-item-label">
+          <svg class="ll-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+          Sortieren
+        </span>
+        <span class="ll-toggle-box" id="sortToggleBox"></span>
+        <input type="checkbox" id="sortToggle" style="display:none;">
+      </label>
     </div>
 
     <!-- Subpages and Files -->
@@ -394,13 +415,13 @@ for ($i = -1; $i <= 6; $i++) {
       <div class="ll-sidebar-header">Mehr <span class="ll-sidebar-count"><?= $realSubpages->count() + $pageFiles->count() ?></span></div>
       <?php foreach ($realSubpages as $subpage): ?>
         <a href="<?= $subpage->url() ?>" class="ll-sidebar-link">
-          <span class="ll-sidebar-link-icon">→</span>
+          <svg class="ll-sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           <?= $subpage->title() ?>
         </a>
       <?php endforeach; ?>
       <?php foreach ($pageFiles as $file): ?>
         <a href="<?= $file->url() ?>" download class="ll-sidebar-link">
-          <span class="ll-sidebar-link-icon">↓</span>
+          <svg class="ll-sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <?= $file->title()->isNotEmpty() ? $file->title() : $file->filename() ?>
         </a>
       <?php endforeach; ?>
@@ -426,16 +447,16 @@ for ($i = -1; $i <= 6; $i++) {
       <div class="ll-chip category-filter" data-category="Küche" data-active="false">Küche</div>
     </div>
 
-    <!-- Filter toggles -->
-    <div class="ll-toggles">
+    <!-- Filter toggles (mobile only, desktop version is in sidebar) -->
+    <div class="ll-toggles ll-toggles-mobile">
       <label class="ll-toggle">
-        <span class="ll-toggle-box active" id="availableToggleBox"></span>
-        <input type="checkbox" id="availableToggle" checked style="display:none;">
+        <span class="ll-toggle-box active" id="availableToggleBoxMobile"></span>
+        <input type="checkbox" id="availableToggleMobile" checked style="display:none;">
         Nur ausleihbar
       </label>
       <label class="ll-toggle">
-        <span class="ll-toggle-box" id="sortToggleBox"></span>
-        <input type="checkbox" id="sortToggle" style="display:none;">
+        <span class="ll-toggle-box" id="sortToggleBoxMobile"></span>
+        <input type="checkbox" id="sortToggleMobile" style="display:none;">
         Sortieren
       </label>
     </div>

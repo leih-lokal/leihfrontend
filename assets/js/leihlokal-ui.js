@@ -466,20 +466,39 @@ searchInput?.addEventListener("input", debounce(async (e) => {
   }
 }, 300));
 
-// Square toggles
-document.getElementById("availableToggle")?.addEventListener("change", async function(e) {
-  showOnlyAvailable = e.target.checked;
-  document.getElementById("availableToggleBox")?.classList.toggle("active", e.target.checked);
-  if (currentSearchQuery) await performSearch(currentSearchQuery);
-  else loadItems(1);
-});
+// Square toggles — sync desktop (sidebar) and mobile versions
+function setupTogglePair(desktopId, mobileId, boxDesktopId, boxMobileId, onToggle) {
+  [desktopId, mobileId].forEach(id => {
+    document.getElementById(id)?.addEventListener("change", async function(e) {
+      const checked = e.target.checked;
+      // Sync both checkboxes and visual boxes
+      [desktopId, mobileId].forEach(syncId => {
+        const el = document.getElementById(syncId);
+        if (el && el !== e.target) el.checked = checked;
+      });
+      [boxDesktopId, boxMobileId].forEach(boxId => {
+        document.getElementById(boxId)?.classList.toggle("active", checked);
+      });
+      await onToggle(checked);
+    });
+  });
+}
 
-document.getElementById("sortToggle")?.addEventListener("change", async function(e) {
-  sortByNumber = e.target.checked;
-  document.getElementById("sortToggleBox")?.classList.toggle("active", e.target.checked);
-  if (currentSearchQuery) await performSearch(currentSearchQuery);
-  else loadItems(1);
-});
+setupTogglePair("availableToggle", "availableToggleMobile", "availableToggleBox", "availableToggleBoxMobile",
+  async (checked) => {
+    showOnlyAvailable = checked;
+    if (currentSearchQuery) await performSearch(currentSearchQuery);
+    else loadItems(1);
+  }
+);
+
+setupTogglePair("sortToggle", "sortToggleMobile", "sortToggleBox", "sortToggleBoxMobile",
+  async (checked) => {
+    sortByNumber = checked;
+    if (currentSearchQuery) await performSearch(currentSearchQuery);
+    else loadItems(1);
+  }
+);
 
 // Load more (mobile pagination — appends instead of replacing)
 document.getElementById("loadMore")?.addEventListener("click", async () => {
