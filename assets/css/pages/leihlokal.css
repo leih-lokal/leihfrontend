@@ -631,9 +631,11 @@ body {
     display: flex;
   }
 
-  /* Desktop detail: spans full grid width */
+  /* Desktop detail: 2x2 block in 4-col grid */
   .ll-detail-2x2 {
-    grid-column: 1 / -1;
+    grid-column: span 2;
+    grid-row: span 2;
+    border-right: var(--ll-border);
     border-bottom: var(--ll-border);
     background: white;
   }
