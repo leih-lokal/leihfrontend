@@ -180,203 +180,6 @@ foreach ($page->hours()->toStructure() as $day) {
 }
 ?>
 
-<!-- Today's Opening Hours with Toggle -->
-<div class="relative bg-white border-b border-leihlokal-500">
-  <div class="container mx-auto px-4 py-3">
-    <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors px-2 -mx-2 rounded" id="toggleHours">
-      <div class="flex items-center gap-3">
-        <svg class="h-6 w-6 text-leihlokal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-base">Heute (<?= $todayName ?>)</span>
-          <?php if ($isHolidayToday): ?>
-            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-800 px-2 py-1 text-xs font-semibold">
-              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-              GESCHLOSSEN
-            </span>
-            <span class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-2 py-1 text-xs font-semibold">
-              FEIERTAG
-            </span>
-          <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
-            <span class="inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-2 py-1 text-xs font-semibold">
-              <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-              GEÖFFNET
-            </span>
-          <?php else: ?>
-            <span class="inline-flex items-center gap-1.5 bg-red-100 text-red-800 px-2 py-1 text-xs font-semibold">
-              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-              GESCHLOSSEN
-            </span>
-          <?php endif; ?>
-        </div>
-        <span class="ml-2 text-lg font-mono font-semibold text-leihlokal-600">
-          <?php if ($isHolidayToday): ?>
-            <span class="text-amber-700"><?= $holidayDisplayMessage ?></span>
-          <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
-            <?= formatTime($todayHours->open_time()) ?> - <?= formatTime(
-   $todayHours->close_time(),
- ) ?>
-          <?php else: ?>
-            —
-          <?php endif; ?>
-        </span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-gray-500 hidden sm:inline">Alle Zeiten</span>
-        <svg id="hoursChevron" class="h-5 w-5 text-gray-600 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
-    </div>
-  </div>
-
-  <!-- Full Hours Dropdown -->
-  <div id="fullHours" class="hidden border-t border-leihlokal-500 bg-white overflow-hidden transition-all duration-300">
-    <div class="container mx-auto px-4 py-6">
-      <h3 class="font-bold text-xl mb-4 flex items-center gap-2">
-        <svg class="h-5 w-5 text-leihlokal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Wochenübersicht
-      </h3>
-      <div class="border border-leihlokal-500">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-leihlokal-500 text-white">
-              <th class="text-left py-3 px-4 font-bold">Tag</th>
-              <th class="text-left py-3 px-4 font-bold">Öffnungszeiten</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($page->hours()->toStructure() as $day): ?>
-              <tr class="border-t border-gray-300 <?= $day->day()->value() ===
-              $todayDayCode
-                ? "bg-leihlokal-50"
-                : "bg-white" ?> hover:bg-gray-50 transition-colors">
-                <td class="py-3 px-4 font-medium <?= $day->day()->value() ===
-                $todayDayCode
-                  ? "text-leihlokal-600 font-bold"
-                  : "" ?>">
-                  <div class="flex items-center gap-2">
-                    <?= $daysTranslation[$day->day()->value()] ?>
-                    <?php if ($day->day()->value() === $todayDayCode): ?>
-                      <span class="inline-block w-2 h-2 bg-leihlokal-500 rounded-full"></span>
-                    <?php endif; ?>
-                  </div>
-                </td>
-                <td class="py-3 px-4 font-mono <?= $day->day()->value() ===
-                $todayDayCode
-                  ? "font-bold text-leihlokal-600"
-                  : "" ?>">
-                  <?php if ($day->opened()->bool()): ?>
-                    <?= formatTime($day->open_time()) ?> - <?= formatTime(
-   $day->close_time(),
- ) ?>
-                  <?php else: ?>
-                    <span class="text-gray-400">Geschlossen</span>
-                  <?php endif; ?>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Important Notice -->
-<?php if ($site->importanttoggle()->bool()): ?>
-<?php // Get notice settings
-  // Get notice settings
-  // Get notice settings
-  // Get notice settings
-  // Get notice settings
-  // Get notice settings
-  // Get notice settings
-  // Get notice settings
-
-$intensity = $site->notice_intensity()->value() ?: "info";
-$iconType = $site->notice_icon()->value() ?: "info"; // Define styling based on intensity
-$styles = [
-  "info" => [
-    "container" => "bg-blue-50 border-l-4 border-blue-400",
-    "icon_color" => "text-blue-500",
-    "text_color" => "text-blue-800",
-    "text_size" => "text-sm",
-    "icon_size" => "h-5 w-5",
-    "animation" => "",
-  ],
-  "warning" => [
-    "container" => "bg-yellow-50 border-l-4 border-yellow-500",
-    "icon_color" => "text-yellow-600",
-    "text_color" => "text-yellow-900",
-    "text_size" => "text-base",
-    "icon_size" => "h-6 w-6",
-    "animation" => "",
-  ],
-  "urgent" => [
-    "container" => "bg-red-100 border-l-4 border-leihlokal-500",
-    "icon_color" => "text-leihlokal-500",
-    "text_color" => "text-leihlokal-600",
-    "text_size" => "text-base font-bold",
-    "icon_size" => "h-7 w-7",
-    "animation" => "notice-pulse",
-  ],
-];
-$style = $styles[$intensity]; // Define icons
-$icons = [
-  "info" =>
-    '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />',
-  "warning" =>
-    '<path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />',
-  "alert" =>
-    '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />',
-  "clock" =>
-    '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />',
-];
-$icon = $icons[$iconType];
-?>
-<div class="<?= $style["container"] ?> p-4 my-2 <?= $style["animation"] ?>">
-  <div class="container mx-auto">
-    <div class="flex items-start gap-3">
-      <div class="flex-shrink-0 <?= $intensity === "urgent"
-        ? "notice-bounce"
-        : "" ?>">
-        <svg class="<?= $style["icon_size"] ?> <?= $style[
-   "icon_color"
- ] ?>" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <?= $icon ?>
-        </svg>
-      </div>
-      <div class="flex-1">
-        <div class="<?= $style["text_color"] ?> <?= $style[
-   "text_size"
- ] ?>"><?= $site->importantnotice()->kt() ?></div>
-      </div>
-    </div>
-  </div>
-</div>
-<?php endif; ?>
-
-<!-- Hours Toggle Script -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggleHours = document.getElementById('toggleHours');
-    const fullHours = document.getElementById('fullHours');
-    const hoursChevron = document.getElementById('hoursChevron');
-
-    toggleHours.addEventListener('click', function() {
-      fullHours.classList.toggle('hidden');
-      hoursChevron.classList.toggle('rotate-180');
-    });
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
-
 <?php // Helper function to generate 30-minute time slots
 
 
@@ -470,420 +273,248 @@ for ($i = -1; $i <= 6; $i++) {
 }
 ?>
 
-<!-- Container and Skeleton -->
-<div class="container mx-auto px-4 py-8">
-  <div class="flex flex-col lg:flex-row gap-8">
+<!-- Hours Band -->
+<div class="ll-band">
+  <div class="ll-hours" id="toggleHours">
+    <span class="ll-hours-label">Heute — <?= $todayName ?></span>
+    <?php if ($isHolidayToday): ?>
+      <span class="ll-status-badge" style="background:#dc2626;color:white;">Geschlossen</span>
+      <span class="ll-status-badge" style="background:#d97706;color:white;">Feiertag</span>
+      <span class="ll-hours-time" style="color:#d97706;"><?= $holidayDisplayMessage ?></span>
+    <?php elseif ($todayHours && $todayHours->opened()->bool()): ?>
+      <span class="ll-status-badge" style="background:#16a34a;color:white;">Geöffnet</span>
+      <span class="ll-hours-time"><?= formatTime($todayHours->open_time()) ?> — <?= formatTime($todayHours->close_time()) ?></span>
+    <?php else: ?>
+      <span class="ll-status-badge" style="background:#dc2626;color:white;">Geschlossen</span>
+      <span class="ll-hours-time">—</span>
+    <?php endif; ?>
+    <svg id="hoursChevron" style="width:16px;height:16px;margin-left:auto;transition:transform 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
 
-    <!-- Left Sidebar (Categories & Cart) -->
-    <div class="w-full lg:w-1/3">
-      <!-- Mobile Toggle Button -->
-      <button id="sidebarToggleBtn" class="lg:hidden w-full mb-4 p-4 bg-leihlokal-500 text-white text-left flex justify-between items-center">
-        Menu & Cart
-        <svg id="sidebarToggleIcon" class="w-6 h-6 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
-        </svg>
-      </button>
-
-      <!-- Sidebar Content (toggleable on mobile) -->
-      <div class="hidden lg:block space-y-8 lg:sticky lg:top-8" id="mobileSidebar">
-        <!-- Cart -->
-        <div class="border border-black">
-            <div class="bg-leihlokal-500 text-white p-4">Ausleihkorb</div>
-            <div id="cartItems" class="p-4 space-y-2">
-                <!-- Cart items will be inserted here -->
-                <div class="empty-cart-message text-gray-500 text-sm">Hier ist noch nichts. Such' dir was aus!</div>
-            </div>
-            <div class="p-4">
-                <button id="completeReservation" class="w-full mb-2 bg-leihlokal-500 hover:bg-leihlokal-600 text-white p-2 hidden">
-                  Vorbestellung absenden
-                </button>
-                <button id="clearCart" class="w-full bg-white hover:bg-gray-200 text-black border p-2 hidden">
-                  Alles zurücklegen
-                </button>
-            </div>
-        </div>
-
-
-        <!-- Categories -->
-        <div class="border border-black">
-            <div class="bg-leihlokal-500 text-white p-4">Rubriken</div>
-            <div class="p-4 space-y-2">
-                <div id="cat-all"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category=""
-                     data-active="true">
-                    Alle Sachen
-                </div>
-                <div id="cat-freizeit"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Freizeit"
-                     data-active="false">
-                    Freizeit
-                </div>
-                <div id="cat-garten"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Garten"
-                     data-active="false">
-                    Garten
-                </div>
-                <div id="cat-haushalt"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Haushalt"
-                     data-active="false">
-                    Haushalt
-                </div>
-                <div id="cat-heimwerken"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Heimwerken"
-                     data-active="false">
-                    Heimwerken
-                </div>
-                <div id="cat-kinder"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Kinder"
-                     data-active="false">
-                    Kinder
-                </div>
-                <div id="cat-kueche"
-                     class="cursor-pointer p-2 hover:bg-gray-100 transition-colors category-filter font-normal data-[active=true]:bg-leihlokal-500 data-[active=true]:text-white"
-                     data-category="Küche"
-                     data-active="false">
-                    Küche
-                </div>
-            </div>
-        </div>
-
-        <!-- Subpages and Files -->
-        <?php
-        $realSubpages = $page
-          ->children()
-          ->filterBy("intendedTemplate", "!=", "item");
-        $pageFiles = $page->files();
-        if ($realSubpages->isNotEmpty() || $pageFiles->isNotEmpty()): ?>
-        <div class="border border-black">
-            <div class="bg-leihlokal-500 text-white p-4">Mehr zum leih.lokal</div>
-            <div class="p-4 space-y-2">
-                <?php foreach ($realSubpages as $subpage): ?>
-                <a href="<?= $subpage->url() ?>" class="block p-2 hover:bg-gray-100 transition-colors">
-                    <?= $subpage->title() ?>
-                </a>
-                <?php endforeach; ?>
-                <?php foreach ($pageFiles as $file): ?>
-                <a href="<?= $file->url() ?>" download class="block p-2 hover:bg-gray-100 transition-colors flex items-center gap-2">
-                    <svg class="w-4 h-4 text-leihlokal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span><?= $file->title()->isNotEmpty()
-                      ? $file->title()
-                      : $file->filename() ?></span>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif;
-        ?>
-      </div>
-    </div>
-
-    <!-- Right Content (Product List) -->
-    <div class="w-full lg:w-2/3">
-      <!-- Search Bar -->
-      <div class="mb-8 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
-          <div class="flex-1">
-              <input type="text"
-                     id="searchInput"
-                     placeholder="Durchsuchen..."
-                     class="w-full p-4 border border-black focus:outline-none focus:border-leihlokal-500">
-          </div>
-          <div class="flex flex-col gap-2">
-              <div class="flex items-center gap-2">
-                  <label class="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" id="sortToggle" class="sr-only peer">
-                      <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
-                  </label>
-                  <span class="text-sm text-gray-600">Sortieren</span>
-              </div>
-              <div class="flex items-center gap-2">
-                  <label class="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" id="availableToggle" class="sr-only peer" checked>
-                      <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-leihlokal-500"></div>
-                  </label>
-                  <span class="text-sm text-gray-600">Nur ausleihbar</span>
-              </div>
-          </div>
-      </div>
-
-      <!-- Product Grid -->
-      <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-7">
-        <!-- Products will be inserted here via JavaScript -->
-      </div>
-
-      <!-- Pagination -->
-      <div id="pagination" class="mt-8 flex justify-center space-x-2">
-        <button id="prevPage" class="px-4 py-2 border border-black hover:bg-leihlokal-800 hover:text-white">
-          &larr; Previous
-        </button>
-        <div id="pageNumbers" class="flex space-x-2">
-          <!-- Page numbers will be inserted here -->
-        </div>
-        <button id="nextPage" class="px-4 py-2 border border-black hover:bg-leihlokal-800 hover:text-white">
-          Next &rarr;
-        </button>
-      </div>
-    </div>
-
+  <!-- Full Hours Dropdown -->
+  <div id="fullHours" class="ll-band" style="display:none;">
+    <table class="ll-hours-table">
+      <thead>
+        <tr>
+          <th>Tag</th>
+          <th>Öffnungszeiten</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($page->hours()->toStructure() as $day): ?>
+          <tr class="<?= $day->day()->value() === $todayDayCode ? 'll-hours-today' : '' ?>">
+            <td>
+              <?= $daysTranslation[$day->day()->value()] ?>
+              <?php if ($day->day()->value() === $todayDayCode): ?>
+                <span style="display:inline-block;width:6px;height:6px;background:var(--ll-color);border-radius:50%;margin-left:4px;vertical-align:middle;"></span>
+              <?php endif; ?>
+            </td>
+            <td style="font-family:monospace;">
+              <?php if ($day->opened()->bool()): ?>
+                <?= formatTime($day->open_time()) ?> — <?= formatTime($day->close_time()) ?>
+              <?php else: ?>
+                <span style="color:oklch(60% 0 0);">Geschlossen</span>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
   </div>
 </div>
 
-<!-- Modal Container -->
-<div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-white max-w-lg w-full relative border-2 border-black">
-        <!-- Close button -->
-        <button id="closeModal" class="absolute  bg-white border-2 border-black p-2 hover:bg-gray-100">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
+<!-- Notice Band -->
+<?php if ($site->importanttoggle()->bool()):
+  $intensity = $site->notice_intensity()->value() ?: "info";
+  $intensityClass = "ll-notice--" . $intensity;
+?>
+<div class="ll-band ll-notice <?= $intensityClass ?>">
+  <div class="ll-section-header" style="color:var(--ll-color);"><?= $site->importantnotice()->kt() ?></div>
+</div>
+<?php endif; ?>
 
-        <!-- Modal Content -->
-        <div id="itemModalContent">
-            <!-- Content will be inserted here -->
-        </div>
+<!-- Catalog Body -->
+<div class="ll-catalog">
+
+  <!-- Sidebar (desktop only, rendered in HTML, hidden via CSS on mobile) -->
+  <div class="ll-sidebar">
+    <!-- Cart -->
+    <div class="ll-sidebar-section">
+      <div class="ll-sidebar-header ll-section-header">Korb</div>
+      <div id="sidebarCartItems" style="padding:0.5rem 0.8rem;">
+        <span style="color:oklch(60% 0 0);font-size:0.75rem;">Noch nichts drin.</span>
+      </div>
+      <div style="padding:0.5rem 0.8rem;">
+        <button id="sidebarReserve" class="ll-btn ll-btn-primary" style="width:100%;display:none;">Vorbestellen →</button>
+        <button id="sidebarClearCart" class="ll-btn ll-btn-close" style="width:100%;margin-top:0.4rem;display:none;">Alles zurücklegen</button>
+      </div>
     </div>
+
+    <!-- Categories -->
+    <div class="ll-sidebar-section">
+      <div class="ll-sidebar-header ll-section-header">Rubriken</div>
+      <div class="ll-sidebar-item category-filter" data-category="" data-active="true">Alle Sachen</div>
+      <div class="ll-sidebar-item category-filter" data-category="Freizeit" data-active="false">Freizeit</div>
+      <div class="ll-sidebar-item category-filter" data-category="Garten" data-active="false">Garten</div>
+      <div class="ll-sidebar-item category-filter" data-category="Haushalt" data-active="false">Haushalt</div>
+      <div class="ll-sidebar-item category-filter" data-category="Heimwerken" data-active="false">Heimwerken</div>
+      <div class="ll-sidebar-item category-filter" data-category="Kinder" data-active="false">Kinder</div>
+      <div class="ll-sidebar-item category-filter" data-category="Küche" data-active="false">Küche</div>
+    </div>
+
+    <!-- Subpages and Files -->
+    <?php
+    $realSubpages = $page->children()->filterBy("intendedTemplate", "!=", "item");
+    $pageFiles = $page->files();
+    if ($realSubpages->isNotEmpty() || $pageFiles->isNotEmpty()): ?>
+    <div class="ll-sidebar-section">
+      <div class="ll-sidebar-header ll-section-header">Mehr zum leih.lokal</div>
+      <?php foreach ($realSubpages as $subpage): ?>
+        <a href="<?= $subpage->url() ?>" class="ll-sidebar-item" style="display:block;text-decoration:none;color:inherit;"><?= $subpage->title() ?></a>
+      <?php endforeach; ?>
+      <?php foreach ($pageFiles as $file): ?>
+        <a href="<?= $file->url() ?>" download class="ll-sidebar-item" style="display:block;text-decoration:none;color:inherit;">
+          <?= $file->title()->isNotEmpty() ? $file->title() : $file->filename() ?>
+        </a>
+      <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Main content area -->
+  <div class="ll-main">
+    <!-- Search -->
+    <div class="ll-search">
+      <input type="text" id="searchInput" placeholder="Durchsuchen...">
+    </div>
+
+    <!-- Category chips (mobile only, hidden on desktop via CSS) -->
+    <div class="ll-chips">
+      <div class="ll-chip category-filter" data-category="" data-active="true">Alle</div>
+      <div class="ll-chip category-filter" data-category="Freizeit" data-active="false">Freizeit</div>
+      <div class="ll-chip category-filter" data-category="Garten" data-active="false">Garten</div>
+      <div class="ll-chip category-filter" data-category="Haushalt" data-active="false">Haushalt</div>
+      <div class="ll-chip category-filter" data-category="Heimwerken" data-active="false">Heimwerken</div>
+      <div class="ll-chip category-filter" data-category="Kinder" data-active="false">Kinder</div>
+      <div class="ll-chip category-filter" data-category="Küche" data-active="false">Küche</div>
+    </div>
+
+    <!-- Filter toggles -->
+    <div class="ll-toggles">
+      <label class="ll-toggle">
+        <span class="ll-toggle-box active" id="availableToggleBox"></span>
+        <input type="checkbox" id="availableToggle" checked style="display:none;">
+        Nur ausleihbar
+      </label>
+      <label class="ll-toggle">
+        <span class="ll-toggle-box" id="sortToggleBox"></span>
+        <input type="checkbox" id="sortToggle" style="display:none;">
+        Sortieren
+      </label>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="ll-product-grid">
+      <!-- Products rendered by JS -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="ll-pagination">
+      <button id="loadMore" class="ll-btn ll-load-more">Mehr laden</button>
+      <div id="pageNumbers" class="ll-page-numbers"></div>
+    </div>
+  </div>
 </div>
 
-<!-- Reservation Modal -->
-<div id="reservationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-
-        <!-- Header -->
-        <div class="sticky top-0 bg-leihlokal-500 text-white p-6 flex justify-between items-center">
-            <h2 class="text-2xl font-bold">Vorbestellung abschließen</h2>
-            <button id="closeReservationModal" class="text-white hover:text-gray-200 text-3xl font-bold leading-none">×</button>
-        </div>
-
-        <!-- Reservation Form (initial state) -->
-        <div id="reservationForm" class="p-6">
-
-            <!-- Cart Summary -->
-            <div class="mb-6 p-4 bg-gray-50 border-2 border-gray-200">
-                <h3 class="font-bold text-lg mb-3">Deine Auswahl:</h3>
-                <div id="modalCartItems" class="space-y-2 mb-4">
-                    <!-- Cart items rendered here -->
-                </div>
-                <div class="border-t-2 border-gray-300 pt-3 flex justify-between items-center">
-                    <span class="font-bold">Gesamtpfand:</span>
-                    <span id="modalTotalDeposit" class="text-xl font-bold text-leihlokal-600">0,00 €</span>
-                </div>
-            </div>
-
-            <form id="quickReservationForm">
-                <!-- Email Input -->
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">
-                        Email-Adresse
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        placeholder="deine@email.de"
-                        class="w-full p-4 text-lg border-2 border-leihlokal-500 focus:outline-none focus:border-leihlokal-600 transition-all"
-                    >
-                </div>
-
-                <!-- Day Selector -->
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">
-                        Wann möchtest du abholen?
-                    </label>
-                    <div class="space-y-2" id="daySelector">
-                        <?php foreach ($daySchedule as $day): ?>
-                            <?php if (
-                              $day["isOpen"] &&
-                              !$day["isYesterday"] &&
-                              !$day["isPastClosing"]
-                            ): ?>
-                            <button
-                                type="button"
-                                class="day-option w-full group p-4 border-2 transition-all text-left
-                                       border-leihlokal-300 hover:border-leihlokal-500 hover:bg-leihlokal-50"
-                                data-date-iso="<?= $day["dateISO"] ?>"
-                                data-middle-time="<?= $day["middleTime"] ?>"
-                            >
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-3 mb-1">
-                                            <span class="text-lg font-bold text-leihlokal-600 group-hover:text-leihlokal-700">
-                                                <?= $day["dateFormatted"] ?>
-                                            </span>
-                                            <span class="text-base text-gray-700 group-hover:text-leihlokal-600">
-                                                <?= $day["fullDayName"] ?>
-                                            </span>
-                                            <?php if ($day["isToday"]): ?>
-                                            <span class="inline-flex items-center gap-1 bg-leihlokal-500 text-white px-2 py-1 text-xs font-bold">
-                                                <span class="w-2 h-2 bg-white rounded-full"></span>
-                                                HEUTE
-                                            </span>
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="text-sm font-mono text-gray-600 group-hover:text-leihlokal-600">
-                                            <?= $day["openTime"] ?> - <?= $day[
-   "closeTime"
- ] ?>
-                                        </div>
-                                    </div>
-                                    <div class="day-selected-indicator hidden">
-                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </button>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button
-                    type="submit"
-                    id="submitReservationBtn"
-                    class="w-full bg-leihlokal-500 text-white p-4 text-lg font-bold hover:bg-leihlokal-600 transition-colors"
-                >
-                    Jetzt reservieren →
-                </button>
-            </form>
-        </div>
-
-        <!-- Success Display (hidden initially) -->
-        <div id="successDisplay" class="hidden p-4">
-
-            <!-- Success Icon -->
-            <div class="text-center mb-4">
-                <div class="inline-block p-3 bg-leihlokal-500 mb-2 shadow-xl">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-leihlokal-600 mb-1">Geschafft!</h3>
-                <p class="text-lg text-gray-600">Deine Reservierung wurde bestätigt</p>
-            </div>
-
-            <!-- OTP Display -->
-            <div class="mb-4">
-                <div class="bg-leihlokal-500 border-4 border-black p-4 mx-auto max-w-md shadow-xl">
-                    <p class="text-white text-sm font-bold mb-2">🎫 Dein Abholcode:</p>
-                    <div class="bg-white p-4 mb-2 shadow-inner">
-                        <p id="otpNumber" class="text-4xl font-bold font-mono text-leihlokal-600 tracking-wider text-center">
-                            ----
-                        </p>
-                    </div>
-                    <p class="text-white text-sm">
-                        Zeige diesen Code beim Abholen vor
-                    </p>
-                </div>
-            </div>
-
-            <!-- Reservation Summary -->
-            <div class="bg-gray-50 border-2 border-gray-200 p-4 mb-4">
-                <h4 class="font-bold text-base mb-3">Zusammenfassung</h4>
-                <div id="reservationSummary" class="space-y-2">
-                    <!-- Summary details rendered here -->
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex gap-3">
-                <button id="addToCalendarBtn" class="flex-1 bg-white border-2 border-leihlokal-500 text-leihlokal-600 p-3 font-bold hover:bg-leihlokal-50 transition-colors">
-                    📅 Zum Kalender
-                </button>
-                <button id="shareReservationBtn" class="flex-1 bg-white border-2 border-leihlokal-500 text-leihlokal-600 p-3 font-bold hover:bg-leihlokal-50 transition-colors">
-                    🔗 Teilen
-                </button>
-            </div>
-
-            <!-- Close Button -->
-            <button id="closeSuccessBtn" class="w-full mt-3 bg-gray-200 text-gray-700 p-3 font-bold hover:bg-gray-300 transition-colors">
-                Fertig
-            </button>
-        </div>
-
-    </div>
+<!-- Sticky Cart Bar (mobile) -->
+<div class="ll-cart-bar" id="cartBar">
+  <span class="ll-cart-bar-count" id="cartBarCount">Korb (0)</span>
+  <button class="ll-cart-bar-action" id="cartBarAction">Vorbestellen →</button>
 </div>
-<!-- Custom Styles for Reservation Flow -->
-<style>
-/* Smooth transitions for modal and forms */
-.transition-all {
-    transition: all 0.3s ease;
-}
 
-/* Success icon bounce animation */
-@keyframes bounce-once {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-}
+<!-- Cart / Reservation Panel (mobile) -->
+<div class="ll-cart-panel" id="cartPanel">
+  <div class="ll-cart-panel-header">
+    <span class="ll-section-header">Vorbestellung</span>
+    <button id="closeCartPanel" class="ll-btn" style="background:none;color:white;font-size:1.5rem;line-height:1;">×</button>
+  </div>
+  <div style="padding:0.75rem;flex:1;">
+    <!-- Cart summary -->
+    <div id="panelCartItems" style="margin-bottom:1rem;"></div>
+    <div id="panelTotalDeposit" style="font-weight:700;font-size:1rem;padding-top:0.5rem;border-top:var(--ll-border);margin-bottom:1rem;"></div>
 
-.animate-bounce-once {
-    animation: bounce-once 0.6s ease-out;
-}
+    <!-- Reservation form -->
+    <form id="reservationForm">
+      <label class="ll-section-header" style="display:block;margin-bottom:0.5rem;">Email-Adresse</label>
+      <input type="email" name="email" required placeholder="deine@email.de"
+        style="width:100%;padding:0.75rem;border:1.5px solid var(--ll-black);font-size:1rem;margin-bottom:1rem;">
 
-/* Time slot button selected state */
-.time-slot-button.bg-leihlokal-500 {
-    background-color: #ff0000;
-    color: white;
-    border-color: #cc0000;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+      <label class="ll-section-header" style="display:block;margin-bottom:0.5rem;">Abholtermin</label>
+      <div id="daySelector" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+        <?php foreach ($daySchedule as $day): ?>
+          <?php if ($day["isOpen"] && !$day["isYesterday"] && !$day["isPastClosing"]): ?>
+          <button type="button" class="day-option ll-btn" style="width:100%;text-align:left;padding:0.75rem;border:1.5px solid var(--ll-color-20);background:white;color:var(--ll-black);display:flex;justify-content:space-between;align-items:center;min-height:48px;"
+            data-date-iso="<?= $day["dateISO"] ?>"
+            data-middle-time="<?= $day["middleTime"] ?>">
+            <span>
+              <strong><?= $day["dateFormatted"] ?></strong>
+              <span style="margin-left:0.5rem;color:oklch(40% 0 0);"><?= $day["fullDayName"] ?></span>
+              <?php if ($day["isToday"]): ?>
+                <span class="ll-status-badge" style="background:var(--ll-color);color:white;margin-left:0.5rem;">Heute</span>
+              <?php endif; ?>
+            </span>
+            <span style="font-family:monospace;font-size:0.75rem;color:oklch(40% 0 0);"><?= $day["openTime"] ?> — <?= $day["closeTime"] ?></span>
+          </button>
+          <?php endif; ?>
+        <?php endforeach; ?>
+      </div>
 
-/* Day selector button selected state */
-.day-selector-button[data-selected="true"] {
-    background-color: #ff0000;
-    border-color: #cc0000;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+      <button type="submit" id="submitReservationBtn" class="ll-btn ll-btn-primary" style="width:100%;padding:0.75rem;font-size:0.85rem;">
+        Jetzt reservieren →
+      </button>
+    </form>
 
-.day-selector-button[data-selected="true"] .text-gray-800,
-.day-selector-button[data-selected="true"] .text-gray-600 {
-    color: white !important;
-}
-
-.day-selector-button[data-selected="true"] .selected-indicator {
-    display: block;
-}
-
-.day-selector-button:disabled {
-    transform: none !important;
-}
-</style>
+    <!-- Success state (hidden initially) -->
+    <div id="successDisplay" style="display:none;text-align:center;padding:1rem 0;">
+      <div class="ll-success-icon" style="display:inline-block;background:var(--ll-color);padding:0.75rem;margin-bottom:1rem;">
+        <svg style="width:40px;height:40px;color:white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h3 style="font-family:'Univers',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin:0 0 0.25rem;">Geschafft!</h3>
+      <p style="color:oklch(40% 0 0);margin:0 0 1rem;">Deine Reservierung wurde bestätigt</p>
+      <div style="background:var(--ll-color);padding:1rem;margin-bottom:1rem;">
+        <p style="color:white;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 0.5rem;">Dein Abholcode:</p>
+        <div style="background:white;padding:0.75rem;">
+          <p id="otpNumber" class="ll-success-code">----</p>
+        </div>
+      </div>
+      <div id="reservationSummary" style="text-align:left;border:var(--ll-border);padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;"></div>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+        <button id="addToCalendarBtn" class="ll-btn ll-btn-close" style="flex:1;padding:0.6rem;">Zum Kalender</button>
+        <button id="shareReservationBtn" class="ll-btn ll-btn-close" style="flex:1;padding:0.6rem;">Teilen</button>
+      </div>
+      <button id="closeSuccessBtn" class="ll-btn" style="width:100%;padding:0.6rem;background:oklch(90% 0 0);color:var(--ll-black);">Fertig</button>
+    </div>
+  </div>
+</div>
 
 <!-- Scripts -->
-<script type="text/javascript">
-
-// Mobile sidebar toggle
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-    const toggleBtn = document.getElementById('sidebarToggleBtn');
-    const toggleIcon = document.getElementById('sidebarToggleIcon');
-
-    toggleBtn.addEventListener('click', function() {
-        const sidebar = document.getElementById('mobileSidebar');
-        if (sidebar) {
-            sidebar.classList.toggle('hidden');
-            // Rotate icon when toggled
-            toggleIcon.classList.toggle('rotate-180');
-        }
-    });
+  document.getElementById('toggleHours').addEventListener('click', function() {
+    var fullHours = document.getElementById('fullHours');
+    var chevron = document.getElementById('hoursChevron');
+    fullHours.style.display = fullHours.style.display === 'none' ? '' : 'none';
+    chevron.style.transform = fullHours.style.display === 'none' ? '' : 'rotate(180deg)';
+  });
 });
 
-    window.daySchedule = <?= json_encode($daySchedule) ?>;
-
+window.daySchedule = <?= json_encode($daySchedule) ?>;
 </script>
 
-<!-- Module Script -->
 <script type="module" src="<?= url("assets/js/leihlokal-ui.js") ?>"></script>
 
 <?php snippet("footer"); ?>
