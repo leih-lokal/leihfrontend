@@ -126,16 +126,20 @@ function createDetailElement(item, isMobile) {
       <!-- Bottom strip: spans both columns -->
       <div style="grid-column:1/-1;display:flex;align-items:stretch;border-top:2px solid var(--ll-color);">
         <div style="flex:1;padding:0.5rem 0.6rem;display:flex;flex-direction:column;justify-content:center;">
-          <div style="font-family:'Univers',sans-serif;font-size:clamp(0.75rem, 1.5vw, 1rem);font-weight:700;">${escapeHTML(item.name)}</div>
+          <a href="${detailUrl}" class="ll-detail-name-link" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.35rem;">
+            <span style="font-family:'Univers',sans-serif;font-size:clamp(0.75rem, 1.5vw, 1rem);font-weight:700;">${escapeHTML(item.name)}</span>
+            <svg class="ll-detail-goto" style="width:14px;height:14px;flex-shrink:0;color:var(--ll-color);opacity:0.5;transition:opacity 0.15s,transform 0.15s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
           ${brandModel ? `<div style="font-size:0.7rem;color:oklch(50% 0 0);">${escapeHTML(brandModel)}</div>` : ""}
           ${item.deposit ? `<div style="font-size:0.65rem;color:oklch(40% 0 0);margin-top:0.1rem;">${item.deposit} € Pfand</div>` : ""}
         </div>
         ${isAvailable
-          ? `<button class="ll-btn" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'
-               style="background:var(--ll-color);color:white;padding:0.6rem 0.75rem;font-size:clamp(0.6rem, 1.2vw, 0.8rem);line-height:1.3;text-align:center;flex-shrink:0;border-left:2px solid var(--ll-color);">IN DEN<br>KORB</button>`
-          : `<div style="background:oklch(50% 0 0);color:white;padding:0.6rem 0.75rem;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;border-left:2px solid var(--ll-color);display:flex;align-items:center;">${item.is_protected ? "GESCHÜTZT" : "VERGEBEN"}</div>`
+          ? `<button class="ll-detail-cart-btn" data-action="add-to-cart" data-item='${JSON.stringify(item).replace(/'/g, "&#39;")}'>
+              <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span>IN DEN KORB</span>
+            </button>`
+          : `<div style="background:oklch(40% 0 0);color:white;padding:0.6rem 0.75rem;font-family:'Univers',sans-serif;font-size:0.6rem;font-weight:700;text-transform:uppercase;line-height:1.3;text-align:center;flex-shrink:0;border-left:2px solid var(--ll-color);display:flex;align-items:center;">${item.is_protected ? "GESCHÜTZT" : "VERGEBEN"}</div>`
         }
-        <a href="${detailUrl}" class="ll-btn ll-btn-close" style="text-decoration:none;text-align:center;display:flex;align-items:center;padding:0.5rem;border-left:2px solid var(--ll-color);font-size:0.6rem;">DETAILS</a>
       </div>
     </div>
   `;
