@@ -676,22 +676,22 @@ function showReservationSuccess(record, reservationData, reservedItems) {
 
   const summaryEl = document.getElementById("reservationSummary");
   summaryEl.innerHTML = `
-    <div style="border:2px solid var(--ll-color);">
-      <div style="display:flex;justify-content:space-between;padding:0.45rem 0.6rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.15);font-size:0.8rem;">
-        <span style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:oklch(40% 0 0);">Abholtermin</span>
-        <span>${formattedDate}, ${formattedTime} Uhr</span>
+    <div style="border-top:2px solid var(--ll-color);">
+      <div style="padding:0.5rem 0.75rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.12);background:oklch(60.62% 0.245 28.83 / 0.04);">
+        <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ll-color);margin-bottom:0.15rem;">Abholtermin</div>
+        <div style="font-size:0.8rem;">${formattedDate}, ${formattedTime} Uhr</div>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:0.45rem 0.6rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.15);font-size:0.8rem;">
-        <span style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:oklch(40% 0 0);">Email</span>
-        <span style="word-break:break-all;">${escapeHTML(reservationData.customer_email)}</span>
+      <div style="padding:0.5rem 0.75rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.12);">
+        <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ll-color);margin-bottom:0.15rem;">Email</div>
+        <div style="font-size:0.8rem;word-break:break-all;">${escapeHTML(reservationData.customer_email)}</div>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:0.45rem 0.6rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.15);font-size:0.8rem;">
-        <span style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:oklch(40% 0 0);">Artikel</span>
-        <span>${reservationData.items.length} Stück</span>
+      <div style="padding:0.5rem 0.75rem;border-bottom:1px solid oklch(60.62% 0.245 28.83 / 0.12);background:oklch(60.62% 0.245 28.83 / 0.04);">
+        <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ll-color);margin-bottom:0.15rem;">Artikel</div>
+        <div style="font-size:0.8rem;">${reservationData.items.length} Stück</div>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:0.45rem 0.6rem;font-size:0.9rem;font-weight:700;background:oklch(60.62% 0.245 28.83 / 0.05);">
-        <span>Gesamtpfand</span>
-        <span style="color:var(--ll-color);">${totalDeposit.toFixed(2).replace(".", ",")} €</span>
+      <div style="padding:0.5rem 0.75rem;background:var(--ll-color);">
+        <div style="font-family:'Univers',sans-serif;font-weight:700;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.7);margin-bottom:0.15rem;">Gesamtpfand</div>
+        <div style="font-size:1rem;font-weight:700;color:white;">${totalDeposit.toFixed(2).replace(".", ",")} €</div>
       </div>
     </div>
   `;
