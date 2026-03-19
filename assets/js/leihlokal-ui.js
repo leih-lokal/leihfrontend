@@ -759,7 +759,18 @@ document.getElementById("closeSuccessBtn")?.addEventListener("click", () => {
 async function initializeApp() {
   try {
     await api.initialize();
-    await loadItems(1);
+
+    // Check for ?q= search param in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get("q");
+
+    if (searchParam) {
+      searchInput.value = searchParam;
+      currentSearchQuery = searchParam;
+      await performSearch(searchParam);
+    } else {
+      await loadItems(1);
+    }
   } catch (error) {
     console.error("Failed to initialize:", error);
   }
