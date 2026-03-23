@@ -179,7 +179,7 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="border-t pt-6">
+        <div class="border-t pt-6 flex flex-wrap gap-3 items-center">
           <a
             href="<?= $page->parent()->url() ?>"
             class="inline-block bg-leihlokal-500 hover:bg-leihlokal-600 text-white px-6 py-3 transition-colors"
@@ -188,9 +188,62 @@
           </a>
 
           <?php
-          // Note: Reservation functionality via basket/cookie is implemented on the main leihlokal page
-          // Users can add items to basket there. Direct reservation from detail page to be added later.
+          $isAvailable = $status === 'instock' && !$page->content()->get('is_protected')->bool();
+          if ($isAvailable):
           ?>
+          <button
+            id="addToCartBtn"
+            type="button"
+            class="inline-flex items-center gap-2 border-2 border-leihlokal-500 text-leihlokal-600 hover:bg-leihlokal-500 hover:text-white px-6 py-3 font-bold transition-colors"
+          >
+            <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            In den Korb
+          </button>
+
+          <script>
+          (function() {
+            var CART_KEY = 'leihlocalCart';
+            var item = {
+              id: <?= json_encode($page->recordid()->value()) ?>,
+              iid: <?= json_encode((int) $page->iid()->value()) ?>,
+              name: <?= json_encode($page->name()->value()) ?>,
+              deposit: <?= json_encode((float) $page->deposit()->value()) ?>,
+              is_protected: false
+            };
+
+            var btn = document.getElementById('addToCartBtn');
+
+            function getCart() {
+              try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+              catch(e) { return []; }
+            }
+
+            function saveCart(cart) {
+              localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            }
+
+            // Check if already in cart on load
+            var cart = getCart();
+            if (cart.some(function(i) { return i.id === item.id; })) {
+              btn.textContent = '✓ Im Korb';
+              btn.classList.remove('border-leihlokal-500', 'text-leihlokal-600', 'hover:bg-leihlokal-500', 'hover:text-white');
+              btn.classList.add('bg-leihlokal-500', 'text-white');
+              btn.disabled = true;
+            }
+
+            btn.addEventListener('click', function() {
+              var cart = getCart();
+              if (cart.some(function(i) { return i.id === item.id; })) return;
+              cart.push(item);
+              saveCart(cart);
+              btn.textContent = '✓ Im Korb';
+              btn.classList.remove('border-leihlokal-500', 'text-leihlokal-600', 'hover:bg-leihlokal-500', 'hover:text-white');
+              btn.classList.add('bg-leihlokal-500', 'text-white');
+              btn.disabled = true;
+            });
+          })();
+          </script>
+          <?php endif ?>
         </div>
       </div>
     </div>
