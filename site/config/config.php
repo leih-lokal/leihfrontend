@@ -8,6 +8,14 @@ return [
     'api'=> [
         'slug' => 'rest'
     ],
+    'upload' => [
+        'mime' => [
+            'text/html',
+            'text/css',
+            'text/javascript',
+            'application/javascript',
+        ]
+    ],
 
     // Janitor job for emergency closing
     'callemergency' => function ($model, $data = null) {

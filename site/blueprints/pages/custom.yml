@@ -1,0 +1,58 @@
+title: Custom Page
+
+columns:
+  main:
+    width: 2/3
+    sections:
+      options:
+        type: fields
+        fields:
+          show_header:
+            label: Header anzeigen
+            type: toggle
+            text:
+              - Aus
+              - An
+            default: true
+            width: 1/2
+          show_footer:
+            label: Footer anzeigen
+            type: toggle
+            text:
+              - Aus
+              - An
+            default: true
+            width: 1/2
+          html_file:
+            label: HTML
+            type: files
+            uploads:
+              accept: .html,.htm
+            max: 1
+            help: Upload an HTML file (body content only, no doctype/head needed unless header is off)
+          css_file:
+            label: CSS
+            type: files
+            uploads:
+              accept: .css
+            max: 1
+          js_file:
+            label: JavaScript
+            type: files
+            uploads:
+              accept: .js
+            max: 1
+          fallback_html:
+            label: HTML (inline fallback)
+            type: textarea
+            size: huge
+            buttons: false
+            font: monospace
+            help: Used if no HTML file is uploaded
+  sidebar:
+    width: 1/3
+    sections:
+      assets:
+        label: Assets
+        type: files
+        help: Upload images, fonts, or any other assets referenced by your HTML/CSS/JS
